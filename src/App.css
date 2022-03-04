@@ -6,8 +6,25 @@
 }
 
 ::-webkit-scrollbar {
-  width: 0; /* Remove scrollbar space */
-  background: transparent; /* Optional: just make scrollbar invisible */
+  width: 0;
+  /* Remove scrollbar space */
+  background: transparent;
+  /* Optional: just make scrollbar invisible */
+}
+
+.ce-chat-list-column {
+    box-sizing: border-box;
+    min-height: 1px;
+    position: relative;
+    padding-left: 0px;
+    padding-right: 0px;
+    width: 20%;
+    flex: 0 0 25%;
+    max-width: 21% !important;
+    margin-left: 0%;
+    right: auto;
+    left: auto;
+    height: 100vh;
 }
 
 .ce-chat-list {
@@ -73,6 +90,14 @@
 }
 
 /* CUSTOM FEED */
+.buddy-name {
+  position:absolute;
+  font-size: 2.5rem;
+  color: red;
+  top:1%;
+  left: 75%;
+}
+
 .ce-wrapper {
   margin-left: 0px;
   margin-right: 0px;
@@ -82,19 +107,19 @@
   flex-shrink: 0;
   align-items: normal;
   justify-content: flex-start;
-  background-color: rgb(252, 245, 203);
+  background-color: rgb(251 247 226);
 }
 
 .chat-feed {
-  display:flex;
+  display: flex;
   flex-direction: column;
-  height: 65vh;
-  width: 145%;
+  height: 58vh;
+  width: 140%;
   border: 3px inset;
   overflow: scroll;
   background-color: white;
-  margin-left: 15px;
-  margin-top: 20px;
+  margin-left: 115px;
+  margin-top: 12%;
 }
 
 .chat-title-container {
@@ -106,7 +131,7 @@
   color: #7554a0;
   font-weight: 800;
   font-size: 24px;
-  display:none;
+  display: none;
 }
 
 .chat-subtitle {
@@ -114,32 +139,92 @@
   font-weight: 600;
   font-size: 12px;
   padding-top: 4px;
-  display:none;
+  display: none;
 }
 
+.their-message {
+  color: red;
+  font-weight: bold;
+}
+
+.user-message {
+  color: blue;
+  font-weight: bold;
+}
+
+.user-avatar {
+  position: absolute;
+  left: 1%;
+  bottom:23.25%;
+  height: 70px;
+  width: 100px;
+}
+
+.user-avatar img {
+  height: 100%;
+  width: 100%;
+}
+
+.friend-avatar {
+  position: absolute;
+  left: 1%;
+  height: 70px;
+  width: 100px;
+}
+
+.friend-avatar img {
+  height: 100%;
+  width: 100%;
+}
+
+
+
+/* MESSAGE FORM STYLING */
+
 .font-color {
-  color:blue;
-  background:none;
-  border:none;
-  font-weight:bold;
+  color: blue;
+  background: none;
+  border: none;
+  font-weight: bold;
   margin-right: 20px;
 }
 
 .font-highlight-color {
-  background-color: blue;
-  width:14px;
-  color:white;
-  border:none;
-  height:fit-content;
+  background-color: blue !important;
+  text-align: center;
+  width: 14px;
+  color: white;
+  border: none;
+  height: fit-content;
   margin-right: 25px;
 }
 
 .font-color-settings {
-  width: 20%;
+  width: 15%;
   display: flex;
   justify-content: center;
   align-items: center;
-  font-size:1rem;
+  font-size: 1rem;
+}
+
+.font-size-settings {
+  width: 15%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 1rem;
+}
+
+.font-size-normal {
+  font-size: 16px;
+}
+
+.font-size-increase {
+  font-size: 18px;
+}
+
+.font-size-decrease {
+  font-size: 14px;
 }
 
 .message-row {
@@ -165,20 +250,14 @@
 }
 
 .message {
-  font-size: 16px;
+  font-size: 22px;
   border-radius: 6px;
   max-width: 60%;
 }
 
 .message-image {
-  margin-right: 18px;
-  object-fit: cover;
-  border-radius: 6px;
-  height: 30vw;
-  max-height: 200px;
-  max-width: 200px;
-  min-height: 100px;
-  min-width: 100px;
+  height: 100px;
+  width: 100px;
 }
 
 .read-receipts {
@@ -197,14 +276,14 @@
 }
 
 .message-form-actions {
-  background-color: rgb(252, 245, 203); 
+  background-color: rgb(251 247 226);
 }
 
 .message-form-container {
   position: absolute;
   bottom: 22px;
-  width: 144.5%;
-  background-color: rgb(252, 245, 203);
+  width: 139.5%;
+  background-color: rgb(251 247 226);
 }
 
 .message-form-wrapper {
@@ -225,14 +304,23 @@
   resize: none;
   border: 2px inset;
   width: 100%;
+  height: 200px;
+  font-size: 26px;
 }
 
 .message-tab-actions {
   height: 25px;
-  border:1px solid grey;
-  background-color: rgb(252, 245, 203);
+  border: 1px solid grey;
+  background-color: rgb(251 247 226);
   width: 100%;
-  display:flex;
+  display: flex;
+  align-items: center;
+}
+
+.message-tab-actions button {
+  background: none;
+  border: none;
+  font-weight: bold;
 }
 
 .message-tab-actions button:hover {
@@ -241,14 +329,14 @@
 
 .image-button {
   cursor: pointer;
-  background-color: rgb(252, 245, 203);
+  background-color: rgb(251 247 226);
   padding: 0px 12px;
   height: 100%;
 }
 
 .send-button {
   height: 42px;
-  background-color: rgb(252, 245, 203);
+  background-color: rgb(251 247 226);
   border: none;
   padding: 0px 18px;
   cursor: pointer;
@@ -266,15 +354,6 @@
   font-size: 14px;
 }
 
-.their-message {
-  color:red;
-  font-weight: bold;
-}
-
-.user-message {
-  color:blue;
-  font-weight: bold;
-}
 
 /* ICON WINDOW STYLES */
 .icon-change-form {
@@ -309,13 +388,13 @@
 .icon-change-form button:active {
   background: #e5e5e5;
   -webkit-box-shadow: inset 0px 0px 5px #c1c1c1;
-     -moz-box-shadow: inset 0px 0px 5px #c1c1c1;
-          box-shadow: inset 0px 0px 5px #c1c1c1;
-   outline: none;
+  -moz-box-shadow: inset 0px 0px 5px #c1c1c1;
+  box-shadow: inset 0px 0px 5px #c1c1c1;
+  outline: none;
 }
 
 .icon-change-form label {
-  margin-bottom: 5px; 
+  margin-bottom: 5px;
 }
 
 /* STATUS WINDOW STYLES */
@@ -326,7 +405,7 @@
 
 .character-count {
   font-size: .7rem;
-  position:absolute;
+  position: absolute;
   top: 12px;
   right: 9px;
 }
@@ -351,7 +430,7 @@
 
 .status-options {
   width: 100%;
-  margin-top:25px;
+  margin-top: 25px;
   display: flex;
 }
 
@@ -384,9 +463,9 @@
 .status-options button:active {
   background: #e5e5e5;
   -webkit-box-shadow: inset 0px 0px 5px #c1c1c1;
-     -moz-box-shadow: inset 0px 0px 5px #c1c1c1;
-          box-shadow: inset 0px 0px 5px #c1c1c1;
-   outline: none;
+  -moz-box-shadow: inset 0px 0px 5px #c1c1c1;
+  box-shadow: inset 0px 0px 5px #c1c1c1;
+  outline: none;
 }
 
 .status-change-form label {
@@ -396,7 +475,7 @@
 
 .status-options label {
   font-size: .9rem;
-  font-weight:normal;
+  font-weight: normal;
 }
 
 /* CHAT LIST STYLES */
@@ -404,7 +483,7 @@
   height: 100vh;
   background-color: rgb(211, 211, 211);
   border-right: 2px solid black;
-} 
+}
 
 .channel-list {
   list-style: none;
@@ -453,23 +532,23 @@
 }
 
 .new-friend-form {
-  width:100%;
+  width: 100%;
   text-align: center;
 }
 
 .new-friend-form input {
-  width:95%;
+  width: 95%;
   height: 30px;
   border: 2px inset;
 }
 
 .new-friend-form input:focus {
-  outline:none;
+  outline: none;
 }
 
 .status-change-word {
-  display:none;
-  color:blue;
+  display: none;
+  color: blue;
 }
 
 .user {
@@ -482,7 +561,7 @@
 }
 
 .user-actions {
-  display:flex;
+  display: flex;
   height: 7%;
   align-items: center;
   justify-content: space-around;
@@ -498,13 +577,13 @@
 .user-actions button:active {
   background: #e5e5e5;
   -webkit-box-shadow: inset 0px 0px 5px #c1c1c1;
-     -moz-box-shadow: inset 0px 0px 5px #c1c1c1;
-          box-shadow: inset 0px 0px 5px #c1c1c1;
-   outline: none;
+  -moz-box-shadow: inset 0px 0px 5px #c1c1c1;
+  box-shadow: inset 0px 0px 5px #c1c1c1;
+  outline: none;
 }
 
 .user-actions button:hover {
-  cursor:pointer;
+  cursor: pointer;
 }
 
 .user-availability {
@@ -540,7 +619,7 @@
 }
 
 .user-icon:hover {
-  cursor:pointer;
+  cursor: pointer;
 }
 
 .user-status {
@@ -551,7 +630,7 @@
   cursor: pointer;
 }
 
-.user-status:hover > .status-change-word {
+.user-status:hover>.status-change-word {
   display: inline;
 }
 
@@ -561,8 +640,8 @@
 }
 
 .user-tabs button {
-  border:none;
-  background-color:transparent;
+  border: none;
+  background-color: transparent;
   padding: .5rem;
 }
 
@@ -570,10 +649,10 @@
   cursor: pointer;
 }
 
-.user-tabs button:focus{
- border-top: 2px outset;
- border-right: 2px outset;
- border-left: 2px outset;
+.user-tabs button:focus {
+  border-top: 2px outset;
+  border-right: 2px outset;
+  border-left: 2px outset;
 }
 
 /* FORM STYLES */
@@ -662,8 +741,8 @@
 }
 
 .form-container {
-  display:flex;
-  width:100%;
+  display: flex;
+  width: 100%;
   justify-content: center;
   align-items: center;
 }

@@ -21,15 +21,18 @@ const MessageForm = (props) => {
   //     };
   //   }, []);
 
+  // Handle text form input changes
   const handleChange = (e) => {
     setValue(e.target.value);
     isTyping(props, chatId);
   };
 
+  // Handle upload image materials
   const uploadHandler = (e) => {
     sendMessage(creds, chatId, { files: e.target.files, text: '' });
   };
 
+  // Submit message handler
   const formSubmitHandler = (e) => {
     e.preventDefault();
 
@@ -41,17 +44,37 @@ const MessageForm = (props) => {
 
   return (
     <form className="message-form" onSubmit={formSubmitHandler}>
+
+        {/* RICH TEXTAREA SETTINGS */}
       <div className="message-tab-actions">
+          {/* Font Color Container */}
         <div className="font-color-settings">
-            <button className='font-color'>A</button>
-            <button className='font-highlight-color'>A</button>
-            <span>|</span>
+          <button className="font-color">A</button>
+          <button className="font-highlight-color">A</button>
+          <span>|</span>
         </div>
-        <div className="font-size-settings"></div>
-        <div className="font-weight-settings"></div>
+        {/* Font Size Container */}
+        <div className="font-size-settings">
+          <button className="font-size-decrease">
+            <span>&#8659;</span> A
+          </button>
+          <button className="font-size-normal">A</button>
+          <button className="font-size-increase">
+            <span>&#8657;</span>A
+          </button>
+          <span>|</span>
+        </div>
+        {/* Font Weight Settings */}
+        <div className="font-weight-settings">
+            <button></button>
+            <button></button>
+            <button></button>
+        </div>
         <div className="attachment-settings"></div>
         <div className="unknown-settings"></div>
       </div>
+
+        {/* TEXTAREA */}
       <textarea
         className="message-input"
         rows="12"
@@ -59,6 +82,7 @@ const MessageForm = (props) => {
         onChange={handleChange}
       />
 
+        {/* TEXTAREA SETTINGS */}
       <div className="message-form-actions">
         <label htmlFor="upload-button">
           <span className="image-button">

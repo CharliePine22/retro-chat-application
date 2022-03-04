@@ -1,9 +1,11 @@
+import { useEffect, useRef, useState } from 'react';
 import MessageForm from './MessageForm';
 import MyMessage from './MyMessage';
 import TheirMessage from './TheirMessage';
 
 const ChatFeed = (props) => {
   const { chats, activeChat, userName, messages } = props;
+  const messageEl = useRef(null);
 
   const chat = chats && chats[activeChat];
 
@@ -42,9 +44,6 @@ const ChatFeed = (props) => {
               />
             )}
           </div>
-          {/* <div className="read-receipts" style={{ marginRight: isMyMessage ? '18px' : '0px', marginLeft: isMyMessage ? '0px' : '68px'}}>
-                        {renderReadReceipts(message, isMyMessage)}
-                    </div> */}
         </div>
       );
     });
@@ -54,6 +53,9 @@ const ChatFeed = (props) => {
 
   return (
     <div className="chat-feed">
+        <div className='buddy-name'>Test</div>
+        <div className='user-avatar'><img src={localStorage.getItem('icon')} /></div>
+        <div className='friend-avatar'><img src='https://media.giphy.com/media/0PnVJXUr3I0du1yryL/giphy.gif' /></div>
       <div className="chat-title-container">
         <div className="chat-title">{chat.title}</div>
         <div className="chat-subtitle">

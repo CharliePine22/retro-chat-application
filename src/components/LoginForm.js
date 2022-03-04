@@ -1,5 +1,7 @@
 import { useState } from 'react';
 import axios from 'axios';
+import siteLogo from '../assets/images/site-logo.png';
+import chatPreview from '../assets/images/chat-preview.jpg';
 
 const LoginForm = (params) => {
   const [username, setUsername] = useState('');
@@ -46,7 +48,7 @@ const LoginForm = (params) => {
       };
       try {
         const response = await axios(config);
-        console.log(response);
+
       } catch (error) {
         setError(error);
       }
@@ -64,7 +66,7 @@ const LoginForm = (params) => {
         <div className="jumbo">
           <h1>
             <img
-              src="/assets/images/site-logo.png"
+              src={siteLogo}
               alt="1997.chat, a retro IM app"
               width="519"
             />
@@ -72,7 +74,7 @@ const LoginForm = (params) => {
         </div>
         <div className="form-container">
           <div className="form-img">
-            <img src="/assets/images/chat-preview.jpg" alt="It's back." />
+            <img src={chatPreview} alt="It's back." />
           </div>
           <div className="form">
             <h1 className="title">Chat Application</h1>

@@ -122,9 +122,9 @@ const ChatList = (props) => {
               <span className="user-availability">{`(${currentUserAvailability})`}</span>
             </p>
             <span onClick={setStatusHandler} className="user-status">
-              {savedUserStatus !== '' || savedUserStatus !== null
-                ? localStorage.getItem('status')
-                : 'Set a status message'}{' '}
+              {savedUserStatus === '' || savedUserStatus === undefined
+                ? 'Set a status message'
+                : localStorage.getItem('status')}{' '}
               <span className="status-change-word">Change</span>
             </span>
           </div>
