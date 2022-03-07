@@ -18,9 +18,9 @@
     position: relative;
     padding-left: 0px;
     padding-right: 0px;
-    width: 20%;
+    width: 30vh !important;
     flex: 0 0 25%;
-    max-width: 21% !important;
+    max-width: 30vh !important;
     margin-left: 0%;
     right: auto;
     left: auto;
@@ -114,12 +114,12 @@
   display: flex;
   flex-direction: column;
   height: 58vh;
-  width: 140%;
+  width: 150%;
   border: 3px inset;
   overflow: scroll;
   background-color: white;
-  margin-left: 115px;
-  margin-top: 12%;
+  margin-left: 65px;
+  margin-top: 75px;
 }
 
 .chat-title-container {
@@ -180,6 +180,10 @@
 
 
 /* MESSAGE FORM STYLING */
+.jodit-react-container {
+  height: 25vh !important;
+}
+
 
 .font-color {
   color: blue;
@@ -598,7 +602,7 @@
 }
 
 .user-details {
-  margin-top: 16px;
+  margin-top: 0px;
   margin-left: 5px;
 }
 
@@ -608,7 +612,7 @@
 
 .user-icon {
   margin-top: 30px;
-  margin-right: 25px;
+  margin-right: 5px;
   height: 75px;
   width: 75px;
 }
@@ -670,9 +674,91 @@
   font-weight: bold;
   height: 80px;
   display: flex;
+  justify-content: space-evenly;
+  align-items: center;
+  flex-direction: column;
+}
+
+.login-button {
+  margin-top: 5px;
+  padding: .55rem 2rem;
+  background: transparent;
+  border-radius: 5px;
+  color: white;
+  font-weight:bold;
+  border: 1px solid white;
+}
+
+.login-button:hover {
+  cursor: pointer;
+  background-color: white;
+  color: #369ECC;
+}
+
+.login-form-wrapper {
+  height:100%;
+  background-color: rgb(251 247 226);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.login-form-wrapper hr {
+  background: rgba(0, 0, 0, 0.6);
+  height: 1px;
+  width: 80%;
+  display: block;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.6);
+  margin-bottom: 10px;
+}
+
+.logo-container {
+  height: 50%;
+  margin: 0.5rem;
+  width: 93%;
+  display: flex;
   justify-content: center;
   align-items: center;
 }
+
+.login-container h1 {
+  font-size:1.5rem;
+  margin-bottom: 10px;
+}
+
+.logo-container img {
+  height: 70%;
+  width: 88%;
+}
+
+.form-actions {
+  display:flex;
+  justify-content:center;
+  margin-top: 30px;
+}
+
+.form-actions button {
+  background-color: transparent;
+  border: 2px outset;
+  width: 50%;
+}
+
+.form-actions button:hover {
+  cursor: pointer;
+}
+
+.form-actions button:active {
+  background: #e5e5e5;
+  -webkit-box-shadow: inset 0px 0px 5px #c1c1c1;
+  -moz-box-shadow: inset 0px 0px 5px #c1c1c1;
+  box-shadow: inset 0px 0px 5px #c1c1c1;
+  outline: none;
+}
+
+/* .form-actions button img {
+  height:75px;
+  width:100%;
+} */
 
 .jumbo {
   text-align: center;
@@ -693,23 +779,27 @@
 }
 
 .getBanner {
-  height: 80px;
+  height: 100px;
   background: #369ECC;
   box-shadow: 0 2px 4px 0 rgb(0 0 0 / 75%), 0 2px 40px 0 rgb(0 0 0 / 75%);
   text-align: center;
   position: fixed;
   width: 100vw;
   min-width: 900px;
+  display:flex;
+  justify-content: center;
+  align-items: center;
 }
 
 .getBanner p {
   color: white;
   margin: 0;
   padding: 0;
+  margin-bottom: 3px;
 }
 
 .wrapper {
-  height: 100vh;
+  height: 150vh;
   width: 100%;
   background: #1C132F;
   /* background: linear-gradient(90deg, rgba(117,84,160,1) 7%, rgba(117,84,160,1) 17%, rgba(106,95,168,1) 29%, rgba(99,103,174,1) 44%, rgba(87,116,184,1) 66%, rgba(70,135,198,1) 83%, rgba(44,163,219,1) 96%, rgba(22,188,237,1) 100%, rgba(0,212,255,1) 100%);   */
@@ -720,20 +810,67 @@
   padding-bottom: 50px;
 }
 
-.input {
-  color: #333;
-  font-size: 1.2rem;
-  margin: 0 auto;
-  padding: 1.5rem 2rem;
-  border-radius: 0.2rem;
-  background-color: rgb(255, 255, 255);
-  border: none;
-  width: 90%;
-  display: block;
-  border-bottom: 0.3rem solid transparent;
-  transition: all 0.3s;
+.login-container {
+  display:flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.username-container {
+  display:flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-start;
+  width:100%;
+  margin-bottom: 15px;
+}
+
+.username-container label {
+  color:rgb(46, 45, 109);
+  font-weight:bold;
+}
+
+.username-container label img {
+  background-color: transparent;
+  position: relative;
+  top: 4px;
+  left: 4px;
+  width: 20px;
+}
+
+.username-input {
+  width:300px;
   outline: none;
-  margin-bottom: 25px;
+}
+
+.password-container {
+  display:flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-start;
+  width:100%;
+  margin-bottom: 20px;
+}
+
+.password-container label {
+  font-weight:bold;
+}
+
+.password-input {
+  width:100%;
+  border: 2px inset;
+  outline: none;
+}
+
+.new-user-button {
+  font-size:.65rem;
+  color:blue;
+  text-decoration: underline;
+}
+
+.new-user-button:hover {
+  cursor:pointer;
 }
 
 .form {
@@ -748,11 +885,13 @@
 }
 
 .form-img {
-  width: 50%;
+  width: 75%;
+  height: 80vh;
 }
 
 .form-img img {
   width: 100%;
+  height: 90%;
 }
 
 .title {

@@ -5,7 +5,7 @@ import useSound from 'use-sound';
 import sendSound from './assets/sounds/imsend.wav';
 import ChatFeed from './components/ChatFeed';
 import DirectChatPage from './components/DirectChatPage';
-import LoginForm from './components/LoginForm';
+import WelcomeScreen from './components/WelcomeScreen';
 import ChatList from './components/ChatList';
 
 function App() {
@@ -25,7 +25,7 @@ function App() {
   }
 
   // If login failes return them back to same page
-  if (!localStorage.getItem('username')) return <LoginForm />;
+  if (!localStorage.getItem('username')) return <WelcomeScreen />;
 
   return <>
     <ChatEngine
