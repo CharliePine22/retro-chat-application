@@ -1,6 +1,6 @@
 import './App.css';
 import { ChatEngine, getOrCreateChat  } from 'react-chat-engine';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import useSound from 'use-sound';
 import sendSound from './assets/sounds/imsend.wav';
 import ChatFeed from './components/ChatFeed';
@@ -10,7 +10,8 @@ import ChatList from './components/ChatList';
 
 function App() {
   const [soundVolume, setSoundVolume] = useState(1);
-  const [username, setUsername] = useState('');
+  const [loading, setLoading] = useState(false);
+  const [chatMessages, setChatMessages] = useState([]);
   
   const [play] = useSound(sendSound, {volume: soundVolume});
 
@@ -22,31 +23,28 @@ function App() {
     } else {
       setSoundVolume(0);
     }
-    console.log(volume)
   }
 
-  const createDirectChat = (creds) => {
-    getOrCreateChat(
-			creds,
-			{ is_direct_chat: true, usernames: [username] },
-			() => setUsername('')
-		)
+  const grabMessages = (chatId) => {
+    setLoading(true)
+    var myHeaders = new Headers();
+    myHeaders.append('Project-ID', 'b8a0fde0-1fae-4db8-9870-6bba5beb67c0');
+    myHeaders.append('User-Name', localStorage.getItem('username'));
+    myHeaders.append('User-Secret', localStorage.getItem('password'));
+
+    var requestOptions = {
+      method: 'GET',
+      headers: myHeaders,
+      redirect: 'follow'
+    };
+
+  fetch(`https://api.chatengine.io/chats/${chatId}/messages/`, requestOptions)
+  .then(response => response.json())
+  .then(result => setChatMessages(result))
+  .catch(error => console.log('error', error));
+  setLoading(false);
   }
 
-  const renderChatForm = (creds) => {
-    return (
-			<div className='test-block'>
-				<input 
-					placeholder='Username' 
-					value={username} 
-					onChange={(e) => setUsername(e.target.value)} 
-				/>
-				<button onClick={() => createDirectChat(creds)}>
-					Create
-				</button>
-			</div>
-		)
-  } 
 
   // If login failes return them back to same page
   if (!localStorage.getItem('username')) return <WelcomeScreen />;
@@ -57,12 +55,11 @@ function App() {
       projectID="b8a0fde0-1fae-4db8-9870-6bba5beb67c0"
       userName={localStorage.getItem('username')}
       userSecret={localStorage.getItem('password')}
-      renderChatList={(chatAppProps) => <ChatList {...chatAppProps} changeVolume={changeVolume} />}
-      renderNewChatCard={(creds) => <DirectChatPage changeVolume={changeVolume} {...creds} />} 
+      renderChatList={(chatAppProps) => <ChatList {...chatAppProps} loading={loading} fetchChannelMessages={grabMessages} changeVolume={changeVolume} />}
       onNewMessage={play}
-      renderChatFeed={(chatAppProps) => <ChatFeed {...chatAppProps} />}
+      renderChatFeed={(chatAppProps) => <ChatFeed {...chatAppProps} loading={loading} chatMessages={chatMessages}/>}
       renderChatSettings={(chatAppState) => {}}
-      renderNewChatForm={(creds) => renderChatForm(creds)}
+      // renderNewChatForm={(creds) => renderChatForm(creds)}
     />
   </>;
 }

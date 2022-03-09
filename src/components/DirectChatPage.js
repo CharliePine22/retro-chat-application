@@ -135,13 +135,13 @@ const DirectChatPage = (props, creds) => {
       .catch((error) => console.log('error', error));
   };
 
-  function createDirectChat(creds) {
-    getOrCreateChat(
-      creds,
-      { is_direct_chat: true, usernames: [newFriend] },
-      () => setNewFriend('')
-    );
-  }
+  // function createDirectChat(creds) {
+  //   getOrCreateChat(
+  //     creds,
+  //     { is_direct_chat: true, usernames: [newFriend] },
+  //     () => setNewFriend('')
+  //   );
+  // }
 
   return (
     <>

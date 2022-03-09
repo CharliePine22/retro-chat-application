@@ -92,11 +92,13 @@
 
 /* CUSTOM FEED */
 .buddy-name {
-  position:absolute;
-  font-size: 2.5rem;
+  display:flex;
+  justify-content: center;
+  align-items: center;
+  width:150%;
+  margin-top: 15px;
+  margin-bottom: 15px;
   color: red;
-  top:1%;
-  left: 75%;
 }
 
 .ce-wrapper {
@@ -115,6 +117,7 @@
   list-style: none;
   font-size: .75rem;
   margin-left: 15px;
+  font-weight: bold;
   user-select: none;
 }
 
@@ -127,7 +130,7 @@
   overflow: scroll;
   background-color: white;
   margin-left: 30px;
-  margin-top: 75px;
+  margin-top: 5px;
 }
 
 .chat-title-container {
@@ -148,6 +151,12 @@
   font-size: 12px;
   padding-top: 4px;
   display: none;
+}
+
+.friend-status {
+  font-size: .75rem;
+  margin-left: 15px;
+  color:lightgray;
 }
 
 .their-message {
@@ -254,6 +263,15 @@
 
 .font-size-decrease {
   font-size: 14px;
+}
+
+.jodit-workplace {
+  min-height: 160px !important;
+  height: 160px !important;
+}
+
+.jodit-status-bar {
+  display:none !important;
 }
 
 .message-row {
@@ -459,6 +477,7 @@
 .status-text {
   resize: none;
   border: 2px inset;
+  width: 98.5%;
 }
 
 .status-text:focus {
@@ -555,10 +574,6 @@
   cursor: pointer;
 }
 
-.channel-list-item li {
-  font-weight: 500;
-}
-
 .channel-users {
   font-size: .8rem;
   margin-bottom: 10px;
@@ -632,7 +647,8 @@
   background-color: white;
   height: 80%;
   border: 2px solid black;
-  margin-left: 1px;
+  margin-left: 2px;
+  width: 98%;
 }
 
 .user-details {

@@ -16,7 +16,8 @@ const ChatFeed = (props) => {
 
   useEffect(() => {
     scrollToBottom()
-  }, [messages]);
+    console.log(props.chatMessages)
+  }, [props.chatMessages]);
 
 
   const formatStringToCamelCase = str => {
@@ -51,13 +52,13 @@ const ChatFeed = (props) => {
     }
   }
 
-  const renderMessages = () => {
-    const keys = Object.keys(messages);
+  function renderMessages() {
+    const keys = Object.keys(props.chatMessages);
     if (keys === []) {
-      return <h1>NO MESSAGES</h1>
+      return <div><h1>NO MESSAGES</h1></div>;
     } 
     return keys.map((key, index) => {
-      const message = messages[key];
+      const message = props.chatMessages[key];
       const lastMessageKey = index === 0 ? null : keys[index - 1];
       const isMyMessage = userName === message.sender.username;
       return <>
@@ -78,18 +79,49 @@ const ChatFeed = (props) => {
     });
   };
 
-  if (!chat) return 'Loading...';
 
-  return (
+  if (props.chatMessages === [] || props.loading) return 'Loading...'
+  // const renderChannelMessages = () => {
+  //   const keys = Object.keys(props.chatMessages)
+  //   console.log(keys)
+  //   return props.chatMessages.map((message) => {
+  //     const isMyMessage = userName === message.sender.username;
+  //     const messages = message.text
+  //     return <> 
+  //     <div key={`${message.id}`} style={{ width: '100%' }}>
+  //         <div className="message-block" >
+  //           {isMyMessage ? (
+  //             <MyMessage message={message} messageStyles={messageStyles}/>
+  //           ) : (
+  //             <TheirMessage
+  //               message={message}
+  //               // lastMessage={messages[lastMessageKey]}
+  //             />
+  //           )}
+  //         </div>
+  //       </div>
+  //       <div ref={messagesEndRef} />
+  //     </>
+  //   })
+  // }
+
+  if (!chat || !props.chatMessages) return 'Loading...';
+
+
+  return <>
+    <div className='buddy-name'>
+          <h1>
+            {chat.people[1].person.username == userName ? chat.people[0].person.username : chat.people[1].person.username}
+          </h1>
+    </div>
     <div className="chat-feed">
-        <div className='buddy-name'>{chat.people[1].person.username == userName ? chat.people[0].person.username : chat.people[1].person.username}</div>
       <div className="chat-title-container">
         <div className="chat-title">{chat.title}</div>
         <div className="chat-subtitle">
           {chat.people.map((person) => ` ${person.person.username}`)}
         </div>
       </div>
-      {renderMessages()}
+      {!props.loading ? renderMessages() : 'Loading'}
       <div style={{ height: '100px' }} />
       <div className='message-form-wrapper'>
         <div className="message-form-container">
@@ -97,7 +129,7 @@ const ChatFeed = (props) => {
         </div>
       </div>
     </div>
-  );
+    </>;
 };
 
 export default ChatFeed;

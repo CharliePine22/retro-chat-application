@@ -2,11 +2,11 @@ import React, { useState, useEffect } from 'react';
 import ChatListItem from './ChatListItem';
 import OpenIconWindow from './OpenIconWindow';
 import OpenStatusWindow from './OpenStatusWindow';
-import { getOrCreateChat } from 'react-chat-engine';
+import awayBuddyIcon from '../assets/images/noBuddyIcon.png';
 
 const ChatList = (props) => {
   // TODO: BUDDY LIST, DISABLED GAME ICON, STYLING OF CHAT
-  console.log(props)
+  // console.log(props)
   // Tabs for online chats or requests
   const [currentTab, setCurrentTab] = useState('');
   const [currentChat, setCurrentChat] = useState('');
@@ -34,6 +34,9 @@ const ChatList = (props) => {
 
   // User settings
   const [currentUserStatus, setCurrentUserStatus] = useState('');
+  const [currentUserIcon, setCurrentUserIcon] = useState();
+  const [userSettings, setUserSettings] = useState(false);
+  const [allUsers, setAllUsers] = useState([]);
   const savedUserStatus = localStorage.getItem('status');
   const savedUserIcon = localStorage.getItem('icon');
 
@@ -58,11 +61,33 @@ const ChatList = (props) => {
     };
   }, []);
 
+  // Grab every user
+  useEffect(() => {
+    const getAllUsers = () => {
+      var myHeaders = new Headers();
+      myHeaders.append("PRIVATE-KEY", "e20c09ad-f36b-4f4a-b309-99ae04944996");
+  
+      var requestOptions = {
+        method: 'GET',
+        headers: myHeaders,
+        redirect: 'follow'
+      };
+  
+      fetch("https://api.chatengine.io/users/", requestOptions)
+        .then(response => response.json())
+        .then(result => setAllUsers(result))
+        .catch(error => console.log('error', error));
+        }
+      getAllUsers();
+      // console.log(allUsers)
+  }, [])
+
 
   // FUNCTIONS AND HANDLERS //
   const switchChatChannel = (channelId) => {
     setCurrentChat(channelId)
-    props.setActiveChat(channelId)
+    props.setActiveChat(channelId);
+    props.fetchChannelMessages(channelId);
   }
 
   const getChannelsList = () => {
@@ -71,7 +96,7 @@ const ChatList = (props) => {
     return keys.map((key) => {
       const chat = chatList[key];
       return (
-          <ChatListItem switchChannel={switchChatChannel} chat={chatList[key]} />
+          <ChatListItem switchChannel={switchChatChannel} allUsers={allUsers} chat={chatList[key]} />
       );
     });
   };
@@ -113,22 +138,75 @@ const ChatList = (props) => {
     props.changeVolume(soundVolumes[soundVolume + 1]);
   };
 
+  // Open status window
   const setStatusHandler = () => {
     setOpenStatusWindow(!openStatusWindow);
   };
 
+  // Open icon window
   const setIconHandler = () => {
     setOpenIconWindow(!openIconWindow);
   };
 
+  // Set user status
   const setUserStatus = (status) => {
+    // Update local browser to show status change 
     setCurrentUserStatus(status);
     localStorage.setItem('status', status);
+    const body = {
+      'custom_json' : status
+    }
+
+    // Update user settings to add status
+    var myHeaders = new Headers();
+    myHeaders.append('Project-ID', 'b8a0fde0-1fae-4db8-9870-6bba5beb67c0');
+    myHeaders.append('User-Name', localStorage.getItem('username'));
+    myHeaders.append('User-Secret', localStorage.getItem('password'));
+    myHeaders.append('Content-Type', 'application/json');
+    var requestOptions = {
+      method: 'PATCH',
+      headers: myHeaders,
+      body: JSON.stringify(body),
+      redirect: 'follow'
+    };
+
+  fetch(`https://api.chatengine.io/users/me/`, requestOptions)
+  .then(response => response.text())
+  .then(result => console.log(result))
+  .catch(error => console.log('error', error));
+
+    // Close status window when done
     setOpenStatusWindow(false);
   };
 
+  // Set user avatar 
   const setUserIcon = (url) => {
     localStorage.setItem('icon', url);
+
+  
+    const user = allUsers.find(obj => {
+      return obj.username == localStorage.getItem('username');
+    })
+
+    var myHeaders = new Headers();
+    myHeaders.append('PRIVATE-KEY', 'e20c09ad-f36b-4f4a-b309-99ae04944996')
+    myHeaders.append('Content-Type', 'application/json');
+
+    var requestOptions = {
+      method: 'PATCH',
+      headers: myHeaders,
+      body: JSON.stringify({
+        'avatar' :  currentUserIcon
+      }),
+      redirect: 'follow'
+    };
+
+    fetch(`https://api.chatengine.io/users/${user.id}/`, requestOptions)
+    .then(response => response.text())
+    .then(result => console.log(result))
+    .catch(error => console.log('error', error));
+
+
     setOpenIconWindow(false);
   };
 
@@ -138,13 +216,9 @@ const ChatList = (props) => {
     window.location.reload();
   };
 
-  
-
-  if (!chatList) {
-    return <div />;
+  if (!chatList || props.loading) {
+    return 'Loading...';
 }
-
-  // const listIconStyles = currentChannel ? 'channel-list-active' : 'channel-list';
 
   return (
     <>
@@ -160,7 +234,7 @@ const ChatList = (props) => {
             </p>
 
             <span onClick={setStatusHandler} className="user-status">
-              {savedUserStatus === '' || savedUserStatus === undefined
+              {savedUserStatus === '' || savedUserStatus === null
                 ? 'Set a status message'
                 : localStorage.getItem('status')}{' '}
               <span className="status-change-word">Change</span>
@@ -184,7 +258,7 @@ const ChatList = (props) => {
           <div className="user-icon" onClick={setIconHandler}>
             <img
               src={
-                savedUserIcon === '' ? '/images/noBuddyIcon.png' : savedUserIcon
+                savedUserIcon === '' || savedUserIcon === null ? awayBuddyIcon : savedUserIcon
               }
             />
           </div>
