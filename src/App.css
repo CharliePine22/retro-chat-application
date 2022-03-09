@@ -1,5 +1,5 @@
 * {
-  font-family: Avenir, -apple-system, BlinkMacSystemFont, Segoe UI, Roboto,
+  font-family: 'Times New Roman', Times, serif, -apple-system, BlinkMacSystemFont, Segoe UI, Roboto,
     Helvetica Neue, Arial, Noto Sans, sans-serif, Apple Color Emoji,
     Segoe UI Emoji, Segoe UI Symbol, Noto Color Emoji;
   letter-spacing: 0.5px;
@@ -33,6 +33,7 @@
 
 .ce-chats-container {
   background-color: rgb(240, 240, 240) !important;
+  height:100vh;
 }
 
 .ce-active-chat-card {
@@ -107,7 +108,14 @@
   flex-shrink: 0;
   align-items: normal;
   justify-content: flex-start;
-  background-color: rgb(251 247 226);
+  background-color: rgb(211, 211, 211);
+}
+
+.chat-channel-name {
+  list-style: none;
+  font-size: .75rem;
+  margin-left: 15px;
+  user-select: none;
 }
 
 .chat-feed {
@@ -118,7 +126,7 @@
   border: 3px inset;
   overflow: scroll;
   background-color: white;
-  margin-left: 65px;
+  margin-left: 30px;
   margin-top: 75px;
 }
 
@@ -145,11 +153,13 @@
 .their-message {
   color: red;
   font-weight: bold;
+  margin-right: 3px;
 }
 
 .user-message {
   color: blue;
   font-weight: bold;
+  margin-right: 3px;
 }
 
 .user-avatar {
@@ -177,13 +187,28 @@
   width: 100%;
 }
 
+.buddies-list-name {
+  margin-left: 15px;
+  margin-top: 15px;
+  font-weight:bold;
+  margin-bottom: -8px;
+  user-select: none;
+}
 
+.buddies-list-name:hover {
+  cursor: pointer;
+}
+
+.trash-icon {
+  margin-left: 15px;
+  color:red;
+  font-size: .75rem;
+}
 
 /* MESSAGE FORM STYLING */
 .jodit-react-container {
   height: 25vh !important;
 }
-
 
 .font-color {
   color: blue;
@@ -235,6 +260,7 @@
   float: left;
   width: 100%;
   display: flex;
+  margin-left: 5px;
 }
 
 .message-block {
@@ -257,11 +283,14 @@
   font-size: 22px;
   border-radius: 6px;
   max-width: 60%;
+  display:inherit;
 }
 
 .message-image {
+  border: 3px solid black;
   height: 100px;
   width: 100px;
+  /* margin-left: 5px; */
 }
 
 .read-receipts {
@@ -280,19 +309,23 @@
 }
 
 .message-form-actions {
-  background-color: rgb(251 247 226);
+  background-color: rgb(211, 211, 211);
 }
 
 .message-form-container {
   position: absolute;
   bottom: 22px;
-  width: 139.5%;
-  background-color: rgb(251 247 226);
+  width: 150%;
+  background-color: rgb(211, 211, 211);
 }
 
 .message-form-wrapper {
   width: 97vh;
   max-width: 97vh;
+}
+
+.jodit-wysiwyg {
+  background-color: white;
 }
 
 .message-form {
@@ -314,8 +347,8 @@
 
 .message-tab-actions {
   height: 25px;
-  border: 1px solid grey;
-  background-color: rgb(251 247 226);
+  border: 1px solid white;
+  background-color: rgb(211, 211, 211);
   width: 100%;
   display: flex;
   align-items: center;
@@ -333,14 +366,14 @@
 
 .image-button {
   cursor: pointer;
-  background-color: rgb(251 247 226);
+  background-color: rgb(211, 211, 211);
   padding: 0px 12px;
   height: 100%;
 }
 
 .send-button {
   height: 42px;
-  background-color: rgb(251 247 226);
+  background-color: rgb(211, 211, 211);
   border: none;
   padding: 0px 18px;
   cursor: pointer;
@@ -488,6 +521,7 @@
   background-color: rgb(211, 211, 211);
   border-right: 2px solid black;
 }
+
 
 .channel-list {
   list-style: none;
@@ -679,6 +713,41 @@
   flex-direction: column;
 }
 
+.help-icon-container {
+  display:flex;
+  flex-direction: column;
+  margin-right: 30px;
+}
+
+.help-icon-container:hover {
+  cursor: pointer;
+}
+
+.help-icon {
+  height: 30px; 
+}
+
+.help-icon-text {
+  font-size: .8rem;
+}
+
+.setup-icon-container {
+  display:flex;
+  flex-direction: column;
+}
+
+.setup-icon-container:hover {
+  cursor: pointer;
+}
+
+.setup-icon {
+  height: 30px; 
+}
+
+.setup-icon-text {
+  font-size: .8rem;
+}
+
 .login-button {
   margin-top: 5px;
   padding: .55rem 2rem;
@@ -697,25 +766,26 @@
 
 .login-form-wrapper {
   height:100%;
-  background-color: rgb(251 247 226);
+  background-color: rgb(211, 211, 211);
   display: flex;
   flex-direction: column;
   align-items: center;
 }
 
 .login-form-wrapper hr {
-  background: rgba(0, 0, 0, 0.6);
-  height: 1px;
-  width: 80%;
+  background: rgba(0, 0, 0, 0.0);
+  height: 2px;
+  width: 93%;
   display: block;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.6);
-  margin-bottom: 10px;
+  border-bottom: 1px solid rgb(255, 255, 255, 0.0);
+  margin-bottom: 8px;
 }
 
 .logo-container {
   height: 50%;
   margin: 0.5rem;
-  width: 93%;
+  margin-bottom: 15px;
+  width: 90%;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -727,20 +797,49 @@
 }
 
 .logo-container img {
-  height: 70%;
-  width: 88%;
+  height: 100%;
+  width: 100%;
 }
 
 .form-actions {
-  display:flex;
-  justify-content:center;
+  display: flex;
+  justify-content: space-between;
   margin-top: 30px;
 }
 
-.form-actions button {
+.form-actions-settings {
+  display:flex;
+  justify-content: flex-start;
+  align-items: center;
+}
+
+.sign-in-checks {
+  width:100%;
+  display:flex;
+  align-items: center;
+  justify-content: space-evenly;
+}
+
+.save-password-check {
+  margin-right: 80px;
+}
+
+.sign-in-checks label {
+  font-size: .75rem;
+  font-weight:normal;
+  margin-left: -14px;
+}
+
+.sign-in-button {
   background-color: transparent;
-  border: 2px outset;
-  width: 50%;
+  border: none;
+  width: 20%;
+}
+
+.version-text {
+  text-align:center;
+  font-size: .70rem;
+  padding-bottom: 4px;
 }
 
 .form-actions button:hover {
@@ -844,6 +943,12 @@
   outline: none;
 }
 
+.forgot-password-button {
+  font-size:.70rem;
+  color:blue;
+  text-decoration: underline;
+}
+
 .password-container {
   display:flex;
   flex-direction: column;
@@ -864,7 +969,7 @@
 }
 
 .new-user-button {
-  font-size:.65rem;
+  font-size:.70rem;
   color:blue;
   text-decoration: underline;
 }
@@ -891,7 +996,7 @@
 
 .form-img img {
   width: 100%;
-  height: 90%;
+  height: 100%;
 }
 
 .title {

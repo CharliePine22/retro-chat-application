@@ -1,5 +1,5 @@
 import './App.css';
-import { ChatEngine } from 'react-chat-engine';
+import { ChatEngine, getOrCreateChat  } from 'react-chat-engine';
 import { useState } from 'react';
 import useSound from 'use-sound';
 import sendSound from './assets/sounds/imsend.wav';
@@ -10,6 +10,7 @@ import ChatList from './components/ChatList';
 
 function App() {
   const [soundVolume, setSoundVolume] = useState(1);
+  const [username, setUsername] = useState('');
   
   const [play] = useSound(sendSound, {volume: soundVolume});
 
@@ -24,6 +25,29 @@ function App() {
     console.log(volume)
   }
 
+  const createDirectChat = (creds) => {
+    getOrCreateChat(
+			creds,
+			{ is_direct_chat: true, usernames: [username] },
+			() => setUsername('')
+		)
+  }
+
+  const renderChatForm = (creds) => {
+    return (
+			<div className='test-block'>
+				<input 
+					placeholder='Username' 
+					value={username} 
+					onChange={(e) => setUsername(e.target.value)} 
+				/>
+				<button onClick={() => createDirectChat(creds)}>
+					Create
+				</button>
+			</div>
+		)
+  } 
+
   // If login failes return them back to same page
   if (!localStorage.getItem('username')) return <WelcomeScreen />;
 
@@ -34,11 +58,11 @@ function App() {
       userName={localStorage.getItem('username')}
       userSecret={localStorage.getItem('password')}
       renderChatList={(chatAppProps) => <ChatList {...chatAppProps} changeVolume={changeVolume} />}
-      renderNewChatForm={(creds) => <DirectChatPage {...creds} />}
+      renderNewChatCard={(creds) => <DirectChatPage changeVolume={changeVolume} {...creds} />} 
       onNewMessage={play}
       renderChatFeed={(chatAppProps) => <ChatFeed {...chatAppProps} />}
       renderChatSettings={(chatAppState) => {}}
-      // renderOptionsSettings={(creds, chat) => <ChatSettings creds={creds} chat={chat} />}
+      renderNewChatForm={(creds) => renderChatForm(creds)}
     />
   </>;
 }

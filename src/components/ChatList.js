@@ -2,13 +2,14 @@ import React, { useState, useEffect } from 'react';
 import ChatListItem from './ChatListItem';
 import OpenIconWindow from './OpenIconWindow';
 import OpenStatusWindow from './OpenStatusWindow';
-
+import { getOrCreateChat } from 'react-chat-engine';
 
 const ChatList = (props) => {
   // TODO: BUDDY LIST, DISABLED GAME ICON, STYLING OF CHAT
-
+  console.log(props)
   // Tabs for online chats or requests
   const [currentTab, setCurrentTab] = useState('');
+  const [currentChat, setCurrentChat] = useState('');
 
   // Sound and volume settings
   const [soundVolume, setSoundVolume] = useState(0);
@@ -24,6 +25,8 @@ const ChatList = (props) => {
 
   // The list of chat rooms
   const [chatList, setChatList] = useState([]);
+  const [viewingBuddyList, setViewingBuddyList] = useState(false);
+  const [buddyLength, setBuddyLength] = useState(0);
 
   // User onnline status (online, away, offline)
   const [currentUserAvailability, setCurrentUserAvailability] =
@@ -37,6 +40,8 @@ const ChatList = (props) => {
   // Grab chat rooms on render
   useEffect(() => {
     setChatList(props.chats);
+    // const buddyAmount = Object.keys(chatList).length
+    setBuddyLength(4)
   }, [props.chats]);
 
   // Loop to listen for escape key press to exit out add friend
@@ -55,23 +60,50 @@ const ChatList = (props) => {
 
 
   // FUNCTIONS AND HANDLERS //
+  const switchChatChannel = (channelId) => {
+    setCurrentChat(channelId)
+    props.setActiveChat(channelId)
+  }
+
   const getChannelsList = () => {
     // Loop through chat engine to get users channels
     const keys = Object.keys(chatList);
     return keys.map((key) => {
       const chat = chatList[key];
       return (
-        <div>
-          <ChatListItem chat={chatList[key]} />
-        </div>
+          <ChatListItem switchChannel={switchChatChannel} chat={chatList[key]} />
       );
     });
   };
 
+  const viewBuddyListHandler = () => {
+    setViewingBuddyList(!viewingBuddyList);
+  }
+
+  const createDirectChat = (friend) => {
+    var myHeaders = new Headers();
+    myHeaders.append('Project-ID', 'b8a0fde0-1fae-4db8-9870-6bba5beb67c0');
+    myHeaders.append('User-Name', localStorage.getItem('username'));
+    myHeaders.append('User-Secret', localStorage.getItem('password'));
+    myHeaders.append('Content-Type', 'application/json');
+
+    var requestOptions = {
+      method: 'PUT',
+      headers: myHeaders,
+      body: JSON.stringify({usernames : [friend]}),
+      is_direct_chat: true,
+    };
+
+    fetch('https://api.chatengine.io/chats/', requestOptions)
+      .then((response) => response.json())
+      .then((result) => console.log(result))
+      // .then((result) => setChatList(oldList => [...oldList, result]));
+  }
+
   // Send a friend request
   const addFriendHandler = (e) => {
     e.preventDefault();
-    console.log(newFriend);
+    createDirectChat(newFriend)
     setAddingNewFriend(false);
   };
 
@@ -106,14 +138,19 @@ const ChatList = (props) => {
     window.location.reload();
   };
 
+  
+
   if (!chatList) {
-    return 'Loading...';
-  }
+    return <div />;
+}
+
+  // const listIconStyles = currentChannel ? 'channel-list-active' : 'channel-list';
 
   return (
     <>
       <div className="chat-list-container">
         {/* User Container */}
+
         <div className="user">
           {/* Stats */}
           <div className="user-details">
@@ -121,6 +158,7 @@ const ChatList = (props) => {
               {props.userName}{' '}
               <span className="user-availability">{`(${currentUserAvailability})`}</span>
             </p>
+
             <span onClick={setStatusHandler} className="user-status">
               {savedUserStatus === '' || savedUserStatus === undefined
                 ? 'Set a status message'
@@ -157,7 +195,10 @@ const ChatList = (props) => {
           <button autoFocus>Online</button>
           <button>Requests</button>
         </div>
-        <div className="user-channels">{getChannelsList()}</div>
+        <div className="user-channels">
+          <ul className='buddies-list-name' onClick={viewBuddyListHandler}>Buddies<span> (0/{buddyLength})</span></ul>
+          {viewingBuddyList ? getChannelsList() : ''}
+        </div>
 
         {/* User Options */}
         <div className="user-actions">
