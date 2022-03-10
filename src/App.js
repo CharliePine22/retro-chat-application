@@ -45,6 +45,14 @@ function App() {
   setLoading(false);
   }
 
+  const changeLoadingTrue = () => {
+    setLoading(true)
+  }
+
+  const changeLoadingFalse = () => {
+    setLoading(false)
+  }
+
 
   // If login failes return them back to same page
   if (!localStorage.getItem('username')) return <WelcomeScreen />;
@@ -55,7 +63,7 @@ function App() {
       projectID="b8a0fde0-1fae-4db8-9870-6bba5beb67c0"
       userName={localStorage.getItem('username')}
       userSecret={localStorage.getItem('password')}
-      renderChatList={(chatAppProps) => <ChatList {...chatAppProps} loading={loading} fetchChannelMessages={grabMessages} changeVolume={changeVolume} />}
+      renderChatList={(chatAppProps) => <ChatList {...chatAppProps} loading={loading} changeLoadingTrue={changeLoadingTrue} changeLoadingFalse={changeLoadingFalse} fetchChannelMessages={grabMessages} changeVolume={changeVolume} />}
       onNewMessage={play}
       renderChatFeed={(chatAppProps) => <ChatFeed {...chatAppProps} loading={loading} chatMessages={chatMessages}/>}
       renderChatSettings={(chatAppState) => {}}

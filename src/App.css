@@ -13,18 +13,18 @@
 }
 
 .ce-chat-list-column {
-    box-sizing: border-box;
-    min-height: 1px;
-    position: relative;
-    padding-left: 0px;
-    padding-right: 0px;
-    width: 30vh !important;
-    flex: 0 0 25%;
-    max-width: 30vh !important;
-    margin-left: 0%;
-    right: auto;
-    left: auto;
-    height: 100vh;
+  box-sizing: border-box;
+  min-height: 1px;
+  position: relative;
+  padding-left: 0px;
+  padding-right: 0px;
+  width: 30vh !important;
+  flex: 0 0 25%;
+  max-width: 30vh !important;
+  margin-left: 0%;
+  right: auto;
+  left: auto;
+  height: 100vh;
 }
 
 .ce-chat-list {
@@ -33,7 +33,7 @@
 
 .ce-chats-container {
   background-color: rgb(240, 240, 240) !important;
-  height:100vh;
+  height: 100vh;
 }
 
 .ce-active-chat-card {
@@ -92,10 +92,10 @@
 
 /* CUSTOM FEED */
 .buddy-name {
-  display:flex;
+  display: flex;
   justify-content: center;
   align-items: center;
-  width:150%;
+  width: 150%;
   margin-top: 15px;
   margin-bottom: 15px;
   color: red;
@@ -110,7 +110,8 @@
   flex-shrink: 0;
   align-items: normal;
   justify-content: flex-start;
-  background-color: rgb(211, 211, 211);
+  /* background-color: rgb(211, 211, 211); */
+  background-color: #d6d6ce;
 }
 
 .chat-channel-name {
@@ -156,7 +157,81 @@
 .friend-status {
   font-size: .75rem;
   margin-left: 15px;
-  color:lightgray;
+  color: lightgray;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  position: relative;
+  top: 5px;
+  left: 31px;
+  width: 150%;
+  padding: 0 5px;
+  background: #08216b;
+  background: -webkit-linear-gradient(left, #08216b, #a5c6ef);
+  background: -o-linear-gradient(right, #08216b, #a5c6ef);
+  background: -moz-linear-gradient(right, #08216b, #a5c6ef);
+  background: linear-gradient(to right, #08216b, #a5c6ef);
+  height: 35px;
+  color: #fff;
+}
+
+.header__links {
+  display: flex;
+  list-style: none;
+}
+
+.header__minimize {
+  margin: 0 2px;
+  width: 25px;
+  height: 25px;
+  color: black;
+  font-weight: 700;
+  background: #d6d6ce;
+  font-size: 20px;
+  border-top: 1px solid white;
+  border-left: 1px solid white;
+  border-right: 1px solid #848484;
+  border-bottom: 1px solid #848484;
+  box-shadow: 1px 1px 1px #424242;
+  text-align: center;
+  line-height: 25px;
+}
+
+.header__maximize {
+  margin: 0 2px;
+  width: 25px;
+  height: 25px;
+  color: black;
+  font-weight: 700;
+  background: #d6d6ce;
+  font-size: 20px;
+  border-top: 1px solid white;
+  border-left: 1px solid white;
+  border-right: 1px solid #848484;
+  border-bottom: 1px solid #848484;
+  box-shadow: 1px 1px 1px #424242;
+  text-align: center;
+  line-height: 25px;
+}
+
+.header__close {
+  margin: 0 2px;
+  width: 25px;
+  height: 25px;
+  color: black;
+  font-weight: 700;
+  background: #d6d6ce;
+  font-size: 20px;
+  border-top: 1px solid white;
+  border-left: 1px solid white;
+  border-right: 1px solid #848484;
+  border-bottom: 1px solid #848484;
+  box-shadow: 1px 1px 1px #424242;
+  text-align: center;
+  line-height: 25px;
 }
 
 .their-message {
@@ -174,7 +249,7 @@
 .user-avatar {
   position: absolute;
   left: 1%;
-  bottom:23.25%;
+  bottom: 23.25%;
   height: 70px;
   width: 100px;
 }
@@ -199,8 +274,8 @@
 .buddies-list-name {
   margin-left: 15px;
   margin-top: 15px;
-  font-weight:bold;
-  margin-bottom: -8px;
+  font-weight: bold;
+  margin-bottom: -3px;
   user-select: none;
 }
 
@@ -210,7 +285,7 @@
 
 .trash-icon {
   margin-left: 15px;
-  color:red;
+  color: red;
   font-size: .75rem;
 }
 
@@ -271,7 +346,7 @@
 }
 
 .jodit-status-bar {
-  display:none !important;
+  display: none !important;
 }
 
 .message-row {
@@ -301,7 +376,7 @@
   font-size: 22px;
   border-radius: 6px;
   max-width: 60%;
-  display:inherit;
+  display: inherit;
 }
 
 .message-image {
@@ -328,13 +403,17 @@
 
 .message-form-actions {
   background-color: rgb(211, 211, 211);
+  width: 100%;
 }
 
 .message-form-container {
   position: absolute;
-  bottom: 22px;
-  width: 150%;
-  background-color: rgb(211, 211, 211);
+  bottom: 0%;
+  min-width: 100%;
+  max-width: 150%;
+  width: 150vh;
+  height: 33%;
+  background-color: #d6d6ce;
 }
 
 .message-form-wrapper {
@@ -390,10 +469,15 @@
 }
 
 .send-button {
-  height: 42px;
-  background-color: rgb(211, 211, 211);
-  border: none;
-  padding: 0px 18px;
+  /* width: 65px;
+  height: 65px; */
+  padding: .75rem;
+  float: right;
+  background-color: #ECEAD8;
+  border: 2px outset;
+}
+
+.send-button:hover {
   cursor: pointer;
 }
 
@@ -537,7 +621,7 @@
 /* CHAT LIST STYLES */
 .chat-list-container {
   height: 100vh;
-  background-color: rgb(211, 211, 211);
+  background-color: #d6d6ce;
   border-right: 2px solid black;
 }
 
@@ -567,7 +651,7 @@
 }
 
 .channel-list-item {
-  margin: 20px 20px;
+  margin: 15px 5px 10px 20px;
 }
 
 .channel-list-item:hover {
@@ -597,6 +681,14 @@
 
 .new-friend-form input:focus {
   outline: none;
+}
+
+.no-chat-messages {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 .status-change-word {
@@ -729,8 +821,9 @@
   flex-direction: column;
 }
 
+
 .help-icon-container {
-  display:flex;
+  display: flex;
   flex-direction: column;
   margin-right: 30px;
 }
@@ -740,7 +833,7 @@
 }
 
 .help-icon {
-  height: 30px; 
+  height: 30px;
 }
 
 .help-icon-text {
@@ -748,7 +841,7 @@
 }
 
 .setup-icon-container {
-  display:flex;
+  display: flex;
   flex-direction: column;
 }
 
@@ -757,7 +850,7 @@
 }
 
 .setup-icon {
-  height: 30px; 
+  height: 30px;
 }
 
 .setup-icon-text {
@@ -770,7 +863,7 @@
   background: transparent;
   border-radius: 5px;
   color: white;
-  font-weight:bold;
+  font-weight: bold;
   border: 1px solid white;
 }
 
@@ -781,7 +874,7 @@
 }
 
 .login-form-wrapper {
-  height:100%;
+  height: 100%;
   background-color: rgb(211, 211, 211);
   display: flex;
   flex-direction: column;
@@ -808,7 +901,7 @@
 }
 
 .login-container h1 {
-  font-size:1.5rem;
+  font-size: 1.5rem;
   margin-bottom: 10px;
 }
 
@@ -824,14 +917,14 @@
 }
 
 .form-actions-settings {
-  display:flex;
+  display: flex;
   justify-content: flex-start;
   align-items: center;
 }
 
 .sign-in-checks {
-  width:100%;
-  display:flex;
+  width: 100%;
+  display: flex;
   align-items: center;
   justify-content: space-evenly;
 }
@@ -842,7 +935,7 @@
 
 .sign-in-checks label {
   font-size: .75rem;
-  font-weight:normal;
+  font-weight: normal;
   margin-left: -14px;
 }
 
@@ -853,7 +946,7 @@
 }
 
 .version-text {
-  text-align:center;
+  text-align: center;
   font-size: .70rem;
   padding-bottom: 4px;
 }
@@ -901,7 +994,7 @@
   position: fixed;
   width: 100vw;
   min-width: 900px;
-  display:flex;
+  display: flex;
   justify-content: center;
   align-items: center;
 }
@@ -926,24 +1019,24 @@
 }
 
 .login-container {
-  display:flex;
+  display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
 }
 
 .username-container {
-  display:flex;
+  display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: flex-start;
-  width:100%;
+  width: 100%;
   margin-bottom: 15px;
 }
 
 .username-container label {
-  color:rgb(46, 45, 109);
-  font-weight:bold;
+  color: rgb(46, 45, 109);
+  font-weight: bold;
 }
 
 .username-container label img {
@@ -955,43 +1048,43 @@
 }
 
 .username-input {
-  width:300px;
+  width: 300px;
   outline: none;
 }
 
 .forgot-password-button {
-  font-size:.70rem;
-  color:blue;
+  font-size: .70rem;
+  color: blue;
   text-decoration: underline;
 }
 
 .password-container {
-  display:flex;
+  display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: flex-start;
-  width:100%;
+  width: 100%;
   margin-bottom: 20px;
 }
 
 .password-container label {
-  font-weight:bold;
+  font-weight: bold;
 }
 
 .password-input {
-  width:100%;
+  width: 100%;
   border: 2px inset;
   outline: none;
 }
 
 .new-user-button {
-  font-size:.70rem;
-  color:blue;
+  font-size: .70rem;
+  color: blue;
   text-decoration: underline;
 }
 
 .new-user-button:hover {
-  cursor:pointer;
+  cursor: pointer;
 }
 
 .form {

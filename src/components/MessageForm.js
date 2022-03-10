@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { sendMessage, isTyping } from 'react-chat-engine';
 import { SendOutlined, PictureOutlined } from '@ant-design/icons';
+import sendButtonImage from '../assets/images/send-message-button.png';
 import JoditEditor from 'jodit-react';
 import 'jodit/build/jodit.min.css';
 
@@ -49,24 +50,25 @@ const MessageForm = (props) => {
         onBlur={(newContent) => setValue(newContent)} // preferred to use only this option to update the content for performance reasons
         // onChange={(newContent) => {setContent(newContent)}}
       />
-      <label htmlFor="upload-button">
-        <span className="image-button">
-          <PictureOutlined className="picture-icon" />
-        </span>
-      </label>
-      <input
-        type="file"
-        multiple={false}
-        id="upload-button"
-        style={{ display: 'none' }}
-        onChange={uploadHandler}
-      />
-      <button type="submit" className="send-button">
-        {' '}
-        <SendOutlined className="send-icon" />{' '}
-      </button>
+      <div className='message-form-actions'>
+        <label htmlFor="upload-button">
+          <span className="image-button">
+            <PictureOutlined className="picture-icon" />
+          </span>
+        </label>
+        <input
+          type="file"
+          multiple={false}
+          id="upload-button"
+          style={{ display: 'none' }}
+          onChange={uploadHandler}
+        />
+        <button type="submit" className="send-button">
+          <img src={sendButtonImage}/>
+        </button>
+      </div>
     </form>
-  );
+
 
   // <form className="message-form" onSubmit={formSubmitHandler}>
 
@@ -108,11 +110,25 @@ const MessageForm = (props) => {
   //   />
 
   //     {/* TEXTAREA SETTINGS */}
-  //   <div className="message-form-actions">
-
-  //   </div>
-  // </form>
-  //   );
+  //     <div className='message-form-actions'>
+  //       <label htmlFor="upload-button">
+  //         <span className="image-button">
+  //           <PictureOutlined className="picture-icon" />
+  //         </span>
+  //       </label>
+  //       <input
+  //         type="file"
+  //         multiple={false}
+  //         id="upload-button"
+  //         style={{ display: 'none' }}
+  //         onChange={uploadHandler}
+  //       />
+  //       <button type="submit" className="send-button">
+  //         <img src={sendButtonImage}/>
+  //       </button>
+  //     </div>
+  //   </form>
+    );
 };
 
 export default MessageForm;

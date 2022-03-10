@@ -2,7 +2,6 @@ import { useState, useEffect, useRef } from 'react';
 import MessageForm from './MessageForm';
 import MyMessage from './MyMessage';
 import TheirMessage from './TheirMessage';
-import {getMessages} from 'react-chat-engine';
 
 const ChatFeed = (props) => {
   const { chats, activeChat, userName, messages } = props;
@@ -16,7 +15,7 @@ const ChatFeed = (props) => {
 
   useEffect(() => {
     scrollToBottom()
-    console.log(props.chatMessages)
+    // console.log(props.chatMessages)
   }, [props.chatMessages]);
 
 
@@ -54,8 +53,8 @@ const ChatFeed = (props) => {
 
   function renderMessages() {
     const keys = Object.keys(props.chatMessages);
-    if (keys === []) {
-      return <div><h1>NO MESSAGES</h1></div>;
+    if (keys.length === 0) {
+      return <div className='no-chat-messages'><h1>NO MESSAGES</h1></div>;
     } 
     return keys.map((key, index) => {
       const message = props.chatMessages[key];
@@ -81,38 +80,23 @@ const ChatFeed = (props) => {
 
 
   if (props.chatMessages === [] || props.loading) return 'Loading...'
-  // const renderChannelMessages = () => {
-  //   const keys = Object.keys(props.chatMessages)
-  //   console.log(keys)
-  //   return props.chatMessages.map((message) => {
-  //     const isMyMessage = userName === message.sender.username;
-  //     const messages = message.text
-  //     return <> 
-  //     <div key={`${message.id}`} style={{ width: '100%' }}>
-  //         <div className="message-block" >
-  //           {isMyMessage ? (
-  //             <MyMessage message={message} messageStyles={messageStyles}/>
-  //           ) : (
-  //             <TheirMessage
-  //               message={message}
-  //               // lastMessage={messages[lastMessageKey]}
-  //             />
-  //           )}
-  //         </div>
-  //       </div>
-  //       <div ref={messagesEndRef} />
-  //     </>
-  //   })
-  // }
 
   if (!chat || !props.chatMessages) return 'Loading...';
 
 
   return <>
-    <div className='buddy-name'>
+    {/* <div className='buddy-name'>
           <h1>
             {chat.people[1].person.username == userName ? chat.people[0].person.username : chat.people[1].person.username}
           </h1>
+    </div> */}
+    <div className="header">
+      {chat.people[1].person.username == userName ? chat.people[0].person.username : chat.people[1].person.username} - Instant Message
+      <ul className="header__links">
+        <li className="header__minimize">_</li>
+        <li className="header__maximize">[ ]</li>
+        <li className="header__close">&times;</li>
+      </ul>
     </div>
     <div className="chat-feed">
       <div className="chat-title-container">
