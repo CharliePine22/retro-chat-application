@@ -8,6 +8,7 @@ import { collection, addDoc } from 'firebase/firestore';
 const WelcomeScreen = (params) => {
   const [isLoggingIn, setIsLoggingIn] = useState(false);
   const [error, setError] = useState('');
+  const [loading, setLoading] = useState(false);
 
   const openLoginWindow = () => {
     setIsLoggingIn(!isLoggingIn);
@@ -16,6 +17,7 @@ const WelcomeScreen = (params) => {
   const formSubmitHandler = async (data, method) => {
     //Login
     if (method === 'login') {
+      setLoading(true)
       const authObject = {
         'Project-ID': 'b8a0fde0-1fae-4db8-9870-6bba5beb67c0',
         'User-Name': data.username,
@@ -30,7 +32,7 @@ const WelcomeScreen = (params) => {
         // Authentication successful
         localStorage.setItem('username', data.username);
         localStorage.setItem('password', data.password);
-
+        setLoading(false);
         window.location.reload();
       } catch (error) {
         setError('Oops, incorrect credentials.');
@@ -48,10 +50,6 @@ const WelcomeScreen = (params) => {
         data,
       };
       try {
-        // const userRef = await addDoc(collection(db, "users"), {
-        //   username: data.username,
-        //   password: data.password
-        // });
 
         const response = await axios(config);
         localStorage.setItem('username', data.username);
@@ -74,7 +72,7 @@ const WelcomeScreen = (params) => {
         </div>
       </div>
       <div className="wrapper">
-        {isLoggingIn && <LoginForm formSubmit={formSubmitHandler} />}
+        {isLoggingIn && <LoginForm loading={loading} formSubmit={formSubmitHandler} />}
         <div className="jumbo">
           <h1>
             <img src={siteLogo} alt="1997.chat, a retro IM app" width="519" />

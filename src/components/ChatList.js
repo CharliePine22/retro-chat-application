@@ -6,9 +6,6 @@ import awayBuddyIcon from '../assets/images/noBuddyIcon.png';
 
 const ChatList = (props) => {
   // TODO: BUDDY LIST, DISABLED GAME ICON, STYLING OF CHAT
-
-  const [loading, setLoading] = useState(false);
-
   // Tabs for online chats or requests
   const [currentTab, setCurrentTab] = useState('');
   const [currentChat, setCurrentChat] = useState('');
@@ -26,7 +23,7 @@ const ChatList = (props) => {
   const [newFriend, setNewFriend] = useState('');
 
   // The list of chat rooms
-  const [chatList, setChatList] = useState([]);
+  const [chatList, setChatList] = useState(props.chats);
   const [viewingBuddyList, setViewingBuddyList] = useState(false);
   // const [buddyLength, setBuddyLength] = useState(0);
 
@@ -46,7 +43,23 @@ const ChatList = (props) => {
   // Grab chat rooms on render
   useEffect(() => {
     setChatList(props.chats);
+    const fetchCurrentMessages = () => {
+      if(chatList !== null && chatList.length > 0) {
+      props.fetchChannelMessages(chatList[props.activeChat].id);
+      } else {
+        return 'Fetching....'
+      }
+      
+    }
+    fetchCurrentMessages();
   }, [props.chats]);
+
+  console.log(chatList)
+  // console.log(props)
+  // console.log(props.chats[props.chats.activeChat])
+  // useEffect(() => {
+  //   props.fetchChannelMessages(chatList[chatList.activeChat].id);
+  // }, [chatList[chatList.activeChat]['last_message']])
 
   // Loop to listen for escape key press to exit out add friend
   useEffect(() => {
@@ -65,7 +78,6 @@ const ChatList = (props) => {
   // Grab every user
   useEffect(() => {
     const getAllUsers = () => {
-      setLoading(true)
       var myHeaders = new Headers();
       myHeaders.append('PRIVATE-KEY', 'e20c09ad-f36b-4f4a-b309-99ae04944996');
 
@@ -77,9 +89,8 @@ const ChatList = (props) => {
 
       fetch('https://api.chatengine.io/users/', requestOptions)
         .then((response) => response.json())
-        .then((result) => (setAllUsers(result)))
+        .then((result) => setAllUsers(result))
         .catch((error) => console.log('error', error));
-        setLoading(false);
     };
     getAllUsers();
     return;
@@ -99,6 +110,7 @@ const ChatList = (props) => {
       const chat = chatList[key];
       return (
         <ChatListItem
+          loading={props.loading}
           switchChannel={switchChatChannel}
           allUsers={allUsers}
           chat={chatList[key]}
@@ -221,36 +233,35 @@ const ChatList = (props) => {
   };
 
   const determineBuddyOnlineStatus = () => {
-    let buddyLength = 0
-    if (props.chats == undefined || props.chats == null) return buddyLength
-    if(props.chats) {
-    buddyLength = Object.keys(chatList).length
+    let buddyLength = 0;
+    if (props.chats == undefined || props.chats == null) return buddyLength;
+    if (props.chats) {
+      buddyLength = Object.keys(chatList).length;
     }
-    console.log(buddyLength)
-  }
+    console.log(buddyLength);
+  };
 
-
-  const determineStatus = () => {
-        const user = allUsers.find((obj) => {
-          return obj.username == localStorage.getItem('username');
-        });
-        console.log(user)
-        if(user['custom_json'] !== '{}') {
-          return user['custom_json'];
+  useEffect(() => {
+    if (allUsers.length == 0) return <div />;
+    if (allUsers.length > 0) {
+      const user = allUsers.find((obj) => {
+        setCurrentUserStatus(obj.username == localStorage.getItem('username'));
+      });
+      if (user && user['custom_json'] !== '{}') {
+        setCurrentUserStatus(user['custom_json']);
+      } else {
+        if (savedUserStatus === '' || savedUserStatus === null) {
+          setCurrentUserStatus('Set a status message');
         } else {
-          if (savedUserStatus === '' || savedUserStatus === null) {
-            return 'Set a status message';
-          } else {
-            return localStorage.getItem('status');
-          }
+          setCurrentUserStatus(localStorage.getItem('status'));
         }
+      }
     }
+  }, [allUsers]);
 
   if (!props.chats) {
-    return 'Loading...';
+    return <div />;
   }
-
-
 
   return (
     <>
@@ -267,8 +278,8 @@ const ChatList = (props) => {
 
             {/* Status  */}
             <span onClick={setStatusHandler} className="user-status">
-              {chatList !== null ? determineStatus() : 'Grabbing...'}
-              <span className="status-change-word">Change</span>
+              {chatList !== null && currentUserStatus}
+              <span className="status-change-word"> Change</span>
             </span>
           </div>
 
@@ -302,10 +313,26 @@ const ChatList = (props) => {
           <button>Requests</button>
         </div>
         <div className="user-channels">
-          <ul className="buddies-list-name" onClick={viewBuddyListHandler}>
-            Buddies<span> (0/{chatList !== null && Object.keys(chatList).length})</span>
+          <ul className="buddies-list-name">
+            <span onClick={viewBuddyListHandler}>
+              Buddies{' '}
+              <span>
+                {' '}
+                (0/{chatList !== null && Object.keys(chatList).length})
+              </span>
+            </span>
+
+            <div className="buddy-list">
+              {viewingBuddyList ? getChannelsList() : ''}
+            </div>
           </ul>
-          {viewingBuddyList ? getChannelsList() : ''}
+          <ul className="offline-buddies-list-name">
+            Offline
+            <span>
+              {' '}
+              (0/{chatList !== null && Object.keys(chatList).length})
+            </span>
+          </ul>
         </div>
 
         {/* User Options */}

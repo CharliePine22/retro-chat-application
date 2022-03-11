@@ -4,9 +4,10 @@ import { useState, useEffect } from 'react';
 import useSound from 'use-sound';
 import sendSound from './assets/sounds/imsend.wav';
 import ChatFeed from './components/ChatFeed';
-import DirectChatPage from './components/DirectChatPage';
 import WelcomeScreen from './components/WelcomeScreen';
 import ChatList from './components/ChatList';
+// import "react-loader-spinner/dist/loader/css/react-spinner-loader.css";
+import { Audio } from  'react-loader-spinner'
 
 function App() {
   const [soundVolume, setSoundVolume] = useState(1);
@@ -15,6 +16,7 @@ function App() {
   
   const [play] = useSound(sendSound, {volume: soundVolume});
 
+  // Chaning sound volume settings
   const changeVolume = (volume) => {
     if(volume == 'Full') {
       setSoundVolume(1);
@@ -24,7 +26,8 @@ function App() {
       setSoundVolume(0);
     }
   }
-
+  
+  // Fetch messages based on current chat channel
   const grabMessages = (chatId) => {
     setLoading(true)
     var myHeaders = new Headers();
@@ -45,14 +48,17 @@ function App() {
   setLoading(false);
   }
 
-  const changeLoadingTrue = () => {
-    setLoading(true)
+  const changeLoadingStatus = () => {
+    setLoading(!loading);
   }
 
-  const changeLoadingFalse = () => {
-    setLoading(false)
+  const beginLoading = () => {
+    setLoading(true);
   }
 
+  const endLoading = () => {
+    setLoading(false);
+  }
 
   // If login failes return them back to same page
   if (!localStorage.getItem('username')) return <WelcomeScreen />;
@@ -63,11 +69,10 @@ function App() {
       projectID="b8a0fde0-1fae-4db8-9870-6bba5beb67c0"
       userName={localStorage.getItem('username')}
       userSecret={localStorage.getItem('password')}
-      renderChatList={(chatAppProps) => <ChatList {...chatAppProps} loading={loading} changeLoadingTrue={changeLoadingTrue} changeLoadingFalse={changeLoadingFalse} fetchChannelMessages={grabMessages} changeVolume={changeVolume} />}
+      renderChatList={(chatAppProps) => <ChatList {...chatAppProps} loading={loading} fetchChannelMessages={grabMessages} changeVolume={changeVolume} />}
       onNewMessage={play}
-      renderChatFeed={(chatAppProps) => <ChatFeed {...chatAppProps} loading={loading} chatMessages={chatMessages}/>}
+      renderChatFeed={(chatAppProps) => <ChatFeed {...chatAppProps} loading={loading}  fetchChannelMessages={grabMessages} chatMessages={chatMessages}/>}
       renderChatSettings={(chatAppState) => {}}
-      // renderNewChatForm={(creds) => renderChatForm(creds)}
     />
   </>;
 }

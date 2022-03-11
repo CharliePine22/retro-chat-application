@@ -28,7 +28,7 @@ const MessageForm = (props) => {
     console.log(text);
     props.grabMessageStyles(text);
     if (text.length > 0) sendMessage(creds, chatId, { text });
-
+    props.fetchChannelMessages(chatId);
     setValue('');
   };
 

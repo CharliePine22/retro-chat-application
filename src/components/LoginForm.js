@@ -2,6 +2,7 @@ import { useState } from 'react';
 import NewWindow from 'react-new-window';
 import loginIcon from '../assets/images/login-icon.jpg';
 import signOnGif from '../assets/images/sign-on-gif.gif';
+import connectingGif from '../assets/images/connecting.gif';
 import redKey from '../assets/images/red-key.png';
 import helpIcon from '../assets/images/help.png';
 import setupIcon from '../assets/images/setup-icon.png';
@@ -35,6 +36,7 @@ const LoginForm = (props) => {
         center="parent"
         features={{ width: 325, height: 575 }}
       >
+        <div>{props.loading && <img src={connectingGif}/>}</div>
         <div className="login-form-wrapper">
           <div className="logo-container">
             <img src={loginIcon} />
