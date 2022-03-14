@@ -9,6 +9,7 @@ const ChatList = (props) => {
   // Tabs for online chats or requests
   const [currentTab, setCurrentTab] = useState('');
   const [currentChat, setCurrentChat] = useState('');
+  const myUserName = localStorage.getItem('username');
 
   // Sound and volume settings
   const [soundVolume, setSoundVolume] = useState(0);
@@ -25,7 +26,7 @@ const ChatList = (props) => {
   // The list of chat rooms
   const [chatList, setChatList] = useState(props.chats);
   const [viewingBuddyList, setViewingBuddyList] = useState(false);
-  // const [buddyLength, setBuddyLength] = useState(0);
+  const [viewingOfflineList, setViewingOfflineList] = useState(false);
 
   // User onnline status (online, away, offline)
   const [currentUserAvailability, setCurrentUserAvailability] =
@@ -36,30 +37,38 @@ const ChatList = (props) => {
   const [currentUserStatus, setCurrentUserStatus] = useState('');
   const [currentUserIcon, setCurrentUserIcon] = useState();
   const [userSettings, setUserSettings] = useState(false);
-  const [allUsers, setAllUsers] = useState([]);
   const savedUserStatus = localStorage.getItem('status');
   const savedUserIcon = localStorage.getItem('icon');
 
   // Grab chat rooms on render
+  let [onlineUsers, setOnlineUsers] = useState([]);
+  let [offlineUsers, setOfflineUsers] = useState([]);
+
+  // Grab all the chat rooms available to users
   useEffect(() => {
     setChatList(props.chats);
     const fetchCurrentMessages = () => {
-      if(chatList !== null && chatList.length > 0) {
-      props.fetchChannelMessages(chatList[props.activeChat].id);
+      if (chatList !== null && chatList.length > 0) {
+        props.fetchChannelMessages(chatList[props.activeChat].id);
       } else {
-        return 'Fetching....'
+        return 'Fetching....';
       }
-      
-    }
+    };
     fetchCurrentMessages();
   }, [props.chats]);
 
-  console.log(chatList)
-  // console.log(props)
-  // console.log(props.chats[props.chats.activeChat])
-  // useEffect(() => {
-  //   props.fetchChannelMessages(chatList[chatList.activeChat].id);
-  // }, [chatList[chatList.activeChat]['last_message']])
+  // Set online users list and offline users list
+  useEffect(() => {
+    if (props.allUsers.length === 0) return <div />;
+    const isOnlineList = props.allUsers
+      .filter((user) => user['is_online'] && user.username !== myUserName)
+      .map((user) => user.username);
+    const isOfflineList = props.allUsers
+      .filter((user) => !user['is_online'] && user.username !== myUserName)
+      .map((user) => user.username);
+    setOnlineUsers(isOnlineList);
+    setOfflineUsers(isOfflineList);
+  }, [props.chats]);
 
   // Loop to listen for escape key press to exit out add friend
   useEffect(() => {
@@ -73,27 +82,6 @@ const ChatList = (props) => {
     return () => {
       window.removeEventListener('keydown', handleEsc);
     };
-  }, []);
-
-  // Grab every user
-  useEffect(() => {
-    const getAllUsers = () => {
-      var myHeaders = new Headers();
-      myHeaders.append('PRIVATE-KEY', 'e20c09ad-f36b-4f4a-b309-99ae04944996');
-
-      var requestOptions = {
-        method: 'GET',
-        headers: myHeaders,
-        redirect: 'follow',
-      };
-
-      fetch('https://api.chatengine.io/users/', requestOptions)
-        .then((response) => response.json())
-        .then((result) => setAllUsers(result))
-        .catch((error) => console.log('error', error));
-    };
-    getAllUsers();
-    return;
   }, []);
 
   // FUNCTIONS AND HANDLERS //
@@ -112,8 +100,8 @@ const ChatList = (props) => {
         <ChatListItem
           loading={props.loading}
           switchChannel={switchChatChannel}
-          allUsers={allUsers}
-          chat={chatList[key]}
+          allUsers={props.allUsers}
+          chat={chat}
         />
       );
     });
@@ -121,6 +109,10 @@ const ChatList = (props) => {
 
   const viewBuddyListHandler = () => {
     setViewingBuddyList(!viewingBuddyList);
+  };
+
+  const viewOfflineListHandler = () => {
+    setViewingOfflineList(!viewingOfflineList);
   };
 
   const createDirectChat = (friend) => {
@@ -201,7 +193,7 @@ const ChatList = (props) => {
   const setUserIcon = (url) => {
     localStorage.setItem('icon', url);
 
-    const user = allUsers.find((obj) => {
+    const user = props.allUsers.find((obj) => {
       return obj.username == localStorage.getItem('username');
     });
 
@@ -232,19 +224,10 @@ const ChatList = (props) => {
     window.location.reload();
   };
 
-  const determineBuddyOnlineStatus = () => {
-    let buddyLength = 0;
-    if (props.chats == undefined || props.chats == null) return buddyLength;
-    if (props.chats) {
-      buddyLength = Object.keys(chatList).length;
-    }
-    console.log(buddyLength);
-  };
-
   useEffect(() => {
-    if (allUsers.length == 0) return <div />;
-    if (allUsers.length > 0) {
-      const user = allUsers.find((obj) => {
+    if (props.allUsers.length == 0) return <div />;
+    if (props.allUsers.length > 0) {
+      const user = props.allUsers.find((obj) => {
         setCurrentUserStatus(obj.username == localStorage.getItem('username'));
       });
       if (user && user['custom_json'] !== '{}') {
@@ -257,7 +240,7 @@ const ChatList = (props) => {
         }
       }
     }
-  }, [allUsers]);
+  }, [props.allUsers]);
 
   if (!props.chats) {
     return <div />;
@@ -313,25 +296,31 @@ const ChatList = (props) => {
           <button>Requests</button>
         </div>
         <div className="user-channels">
+          {/* Online users list */}
           <ul className="buddies-list-name">
             <span onClick={viewBuddyListHandler}>
               Buddies{' '}
               <span>
                 {' '}
-                (0/{chatList !== null && Object.keys(chatList).length})
+                ({onlineUsers.length}/{props.allUsers.length > 0 && props.allUsers.length - 1})
               </span>
             </span>
-
             <div className="buddy-list">
               {viewingBuddyList ? getChannelsList() : ''}
             </div>
           </ul>
-          <ul className="offline-buddies-list-name">
+
+          {/* Offline users list */}
+          <ul
+            className="offline-buddies-list-name"
+            onClick={viewOfflineListHandler}
+          >
             Offline
             <span>
               {' '}
-              (0/{chatList !== null && Object.keys(chatList).length})
+              ({offlineUsers.length}/{props.allUsers.length > 0 && props.allUsers.length - 1})
             </span>
+            {viewingOfflineList && offlineUsers.map((user) => <p className='offline-user-name'>{user}</p>)}
           </ul>
         </div>
 

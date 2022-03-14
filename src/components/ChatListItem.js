@@ -5,7 +5,7 @@ const ChatListItem = (props) => {
   // console.log(props.allUsers);
   const [currentChannel, setCurrentChannel] = useState(false);
   const myUserName = localStorage.getItem('username');
-  const channelUsersList = props.chat.people;
+
   const friendChannelName = props.chat.people[0].person.username == myUserName
   ? props.chat.people[1].person.username
   : props.chat.people[0].person.username
@@ -49,8 +49,35 @@ const ChatListItem = (props) => {
       return user['custom_json']
     }
   }
-  
 
+  const grabUserAvailability = () => {
+    const user = props.allUsers.find(obj => {
+      return obj.username == friendChannelName;
+    })
+    if(user['is_online']) {
+      return (
+        <>
+          <div className="channel-list-item">
+            <li
+              className="chat-channel-name"
+              onDoubleClick={openChatHandler}
+              onClick={changeChannelHandler}
+            >
+              {friendChannelName}
+              </li>
+            <span className='friend-status'><em>{grabUserStatus()}</em></span>
+            
+              <span className="trash-icon">
+                <FaTrash onClick={deleteChatHandler} />
+              </span>
+          </div>
+        </>
+      );
+    }
+    return false;
+  }
+
+  
   return (
     <>
       <div className="channel-list-item">
@@ -60,11 +87,12 @@ const ChatListItem = (props) => {
           onClick={changeChannelHandler}
         >
           {friendChannelName}
-          <span className="trash-icon">
-            <FaTrash onClick={deleteChatHandler} />
-          </span>
-        </li>
+          </li>
         <span className='friend-status'><em>{grabUserStatus()}</em></span>
+        
+          {/* <span className="trash-icon">
+            <FaTrash onClick={deleteChatHandler} />
+          </span> */}
       </div>
     </>
   );

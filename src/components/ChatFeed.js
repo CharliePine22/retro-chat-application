@@ -20,14 +20,13 @@ const ChatFeed = (props) => {
   // Automatically scroll to bottom of chat to see new chats
   useEffect(() => {
     scrollToBottom();
-  }, [props.chatMessages]);
+  }, []);
 
   // Set messgaes to state to update accordingly
   useEffect(() => {
+    console.log(messages)
     setCurrentMessagesList(props.chatMessages);
   }, [props.chatMessages.length]);
-
-  console.log(props.chatMessages)
 
   const formatStringToCamelCase = (str) => {
     const splitted = str.split('-');
@@ -62,6 +61,7 @@ const ChatFeed = (props) => {
 
   // Render messages from chat app
   function renderMessages() {
+    // console.log(currentMessagesList)
     const keys = Object.keys(currentMessagesList);
     if (keys.length === 0) {
       return (
@@ -88,6 +88,7 @@ const ChatFeed = (props) => {
                 />
               )}
             </div>
+            
           </div>
           <div ref={messagesEndRef} />
         </>
@@ -119,6 +120,10 @@ const ChatFeed = (props) => {
     width={200}
     ariaLabel="three-circles-rotating"
   /></div>;
+  
+  // if(currentMessagesList.length == 0) {
+  //   return 'Loading..'
+  // }
 
   return (
     <>
@@ -138,6 +143,7 @@ const ChatFeed = (props) => {
         <div className="chat-feed">
           {!loading ? (
             renderMessages()
+            
           ) : (
             <div className='loading-messages'>
               <ThreeCircles

@@ -187,6 +187,7 @@
 
 .header__links {
   display: flex;
+  align-items: center;
   list-style: none;
 }
 
@@ -197,14 +198,14 @@
   color: black;
   font-weight: 700;
   background: #d6d6ce;
-  font-size: 20px;
+  font-size: 33px;
   border-top: 1px solid white;
   border-left: 1px solid white;
   border-right: 1px solid #848484;
   border-bottom: 1px solid #848484;
   box-shadow: 1px 1px 1px #424242;
   text-align: center;
-  line-height: 25px;
+  line-height: 7px;
 }
 
 .header__maximize {
@@ -221,7 +222,7 @@
   border-bottom: 1px solid #848484;
   box-shadow: 1px 1px 1px #424242;
   text-align: center;
-  line-height: 25px;
+  line-height: 19.5px;
 }
 
 .header__close {
@@ -231,7 +232,7 @@
   color: black;
   font-weight: 700;
   background: #d6d6ce;
-  font-size: 20px;
+  font-size: 30px;
   border-top: 1px solid white;
   border-left: 1px solid white;
   border-right: 1px solid #848484;
@@ -308,6 +309,13 @@
 
 .offline-buddies-list-name:hover {
   cursor:pointer;
+}
+
+.offline-user-name {
+  margin-left: 15px;
+  margin-top: 4px;
+  margin-bottom: 8px;
+  font-size:1rem;
 }
 
 .trash-icon {
@@ -717,9 +725,9 @@
 
 .nav__list {
   margin: 0;
-    padding: 5px 0;
-    list-style: none;
-    display: flex;
+  padding: 5px 0;
+  list-style: none;
+  display: flex;
 }
 
 .nav__item {
@@ -811,7 +819,8 @@
 
 .user-details {
   width:75%;
-  margin-top: 0px;
+  height:100%;
+  margin-top: 30px;
   margin-left: 5px;
 }
 
@@ -856,6 +865,8 @@
   border: none;
   background-color: transparent;
   padding: .5rem;
+  padding-top:1rem;
+  padding-bottom:0;
 }
 
 .user-tabs button:hover {
