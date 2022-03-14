@@ -58,6 +58,7 @@ const ChatList = (props) => {
   }, [props.chats]);
 
   // Set online users list and offline users list
+
   // useEffect(() => {
   //   if (props.allUsers.length === 0) return <div />;
   //   const isOnlineList = props.allUsers
@@ -84,7 +85,6 @@ const ChatList = (props) => {
     };
   }, []);
 
-
   // FUNCTIONS AND HANDLERS //
 
   // Switch to selected chat channel
@@ -101,13 +101,14 @@ const ChatList = (props) => {
       const chat = chatList[key];
       // console.log(chat)
       // console.log(offlineUsers)
-      const friendChannelName = chat.people[0].person.username == myUserName
-      ? chat.people[1].person.username
-      : chat.people[0].person.username
+      const friendChannelName =
+        chat.people[0].person.username == myUserName
+          ? chat.people[1].person.username
+          : chat.people[0].person.username;
 
       // console.log(friendChannelName)
-      if(offlineUsers.includes(friendChannelName)) return '' 
-     
+      if (offlineUsers.includes(friendChannelName)) return '';
+
       return (
         <ChatListItem
           loading={props.loading}
@@ -116,7 +117,6 @@ const ChatList = (props) => {
           chat={chat}
         />
       );
-      
     });
   };
 
@@ -166,11 +166,6 @@ const ChatList = (props) => {
     setOpenStatusWindow(!openStatusWindow);
   };
 
-  // Open icon window
-  const setIconHandler = () => {
-    setOpenIconWindow(!openIconWindow);
-  };
-
   // Set user status
   const setUserStatus = (status) => {
     // Update local browser to show status change
@@ -202,29 +197,44 @@ const ChatList = (props) => {
     setOpenStatusWindow(false);
   };
 
+  // Open icon window
+  const setIconHandler = () => {
+    setOpenIconWindow(!openIconWindow);
+  };
+
+
   // Set user avatar
   const setUserIcon = (url) => {
     localStorage.setItem('icon', url);
-
+    const fileName = 'userAvatar.jpg';
     const user = props.allUsers.find((obj) => {
       return obj.username == localStorage.getItem('username');
     });
+    
+    const convertImage = async (url) => {
+      const response = await fetch(url);
+      const contentType = response.headers.get('content-type');
+      const blob = await response.blob();
+      const file = new File([blob], fileName, { contentType })
+
+      return file
+    }
 
     var myHeaders = new Headers();
     myHeaders.append('PRIVATE-KEY', 'e20c09ad-f36b-4f4a-b309-99ae04944996');
-    myHeaders.append('Content-Type', 'application/json');
+    myHeaders.append('Content-Type', 'multipart/form-data; boundary=----WebKitFormBoundary7MA4YWxkTrZu0gW');
 
     var requestOptions = {
       method: 'PATCH',
       headers: myHeaders,
-      body: JSON.stringify({
-        avatar: currentUserIcon,
-      }),
+      body: {
+        avatar: convertImage(),
+      },
       redirect: 'follow',
     };
 
     fetch(`https://api.chatengine.io/users/${user.id}/`, requestOptions)
-      .then((response) => response.text())
+      .then((response) => response.json())
       .then((result) => console.log(result))
       .catch((error) => console.log('error', error));
 
@@ -237,27 +247,29 @@ const ChatList = (props) => {
     window.location.reload();
   };
 
-  //Determine online and offline users 
+  //Determine online and offline users
   useEffect(() => {
     const intervalId = setInterval(() => {
-    if (props.allUsers.length == 0) return <div />;
-    if (props.allUsers.length > 0) {
-      const user = props.allUsers.find((obj) => {
-        setCurrentUserStatus(obj.username == localStorage.getItem('username'));
-      });
-      if (user && user['custom_json'] !== '{}') {
-        setCurrentUserStatus(user['custom_json']);
-      } else {
-        if (savedUserStatus === '' || savedUserStatus === null) {
-          setCurrentUserStatus('Set a status message');
+      if (props.allUsers.length == 0) return <div />;
+      if (props.allUsers.length > 0) {
+        const user = props.allUsers.find((obj) => {
+          setCurrentUserStatus(
+            obj.username == localStorage.getItem('username')
+          );
+        });
+        if (user && user['custom_json'] !== '{}') {
+          setCurrentUserStatus(user['custom_json']);
         } else {
-          setCurrentUserStatus(localStorage.getItem('status'));
+          if (savedUserStatus === '' || savedUserStatus === null) {
+            setCurrentUserStatus('Set a status message');
+          } else {
+            setCurrentUserStatus(localStorage.getItem('status'));
+          }
         }
       }
-    }
-  }, 5000)
+    }, 5000);
 
-  return () => clearInterval(intervalId);
+    return () => clearInterval(intervalId);
   }, [props.allUsers, useState]);
 
   if (!props.chats) {
@@ -320,7 +332,8 @@ const ChatList = (props) => {
               Buddies{' '}
               <span>
                 {' '}
-                ({onlineUsers.length}/{props.allUsers.length > 0 && props.allUsers.length - 1})
+                ({onlineUsers.length}/
+                {props.allUsers.length > 0 && props.allUsers.length - 1})
               </span>
             </span>
             <div className="buddy-list">
@@ -336,9 +349,13 @@ const ChatList = (props) => {
             Offline
             <span>
               {' '}
-              ({offlineUsers.length}/{props.allUsers.length > 0 && props.allUsers.length - 1})
+              ({offlineUsers.length}/
+              {props.allUsers.length > 0 && props.allUsers.length - 1})
             </span>
-            {viewingOfflineList && offlineUsers.map((user) => <p className='offline-user-name'>{user}</p>)}
+            {viewingOfflineList &&
+              offlineUsers.map((user) => (
+                <p className="offline-user-name">{user}</p>
+              ))}
           </ul>
         </div>
 

@@ -10,7 +10,7 @@ const ChatFeed = (props) => {
   const [messageStyles, setMessageStyles] = useState('');
   const [currentMessagesList, setCurrentMessagesList] = useState([]);
   const chat = chats && chats[activeChat];
-  console.log(chats)
+  // console.log(chats)
 
   // console.log(chat.id)
   const messagesEndRef = useRef(null);

@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { FaTrash } from 'react-icons/fa';
+import buddyIcon from '../assets/images/noBuddyIcon.png';
 
 const ChatListItem = (props) => {
   // console.log(props.allUsers);
@@ -49,7 +50,18 @@ const ChatListItem = (props) => {
       return user['custom_json']
     }
   }
-  
+
+  const grabUserImage = () => {
+    const user = props.allUsers.find(obj => {
+      return obj.username == friendChannelName;
+    })
+   if(user.avatar == null) {
+     return <img className='buddy-avatar' src={buddyIcon} />
+   } else {
+     return <img className='buddy-avatar' src={user.avatar} />
+   }
+  }
+
   return (
     <>
       <div className="channel-list-item">
@@ -58,6 +70,7 @@ const ChatListItem = (props) => {
           onDoubleClick={openChatHandler}
           onClick={changeChannelHandler}
         >
+          <span>{grabUserImage()}</span>
           {friendChannelName}
           </li>
         <span className='friend-status'><em>{grabUserStatus()}</em></span>
