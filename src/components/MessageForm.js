@@ -6,7 +6,6 @@ import JoditEditor from 'jodit-react';
 import 'jodit/build/jodit.min.css';
 
 const MessageForm = (props) => {
-
   const { chatId, creds } = props;
   const [value, setValue] = useState('');
 
@@ -25,10 +24,7 @@ const MessageForm = (props) => {
   const formSubmitHandler = (e) => {
     e.preventDefault();
     const text = value.trim();
-    console.log(text);
-    props.grabMessageStyles(text);
     if (text.length > 0) sendMessage(creds, chatId, { text });
-    props.fetchChannelMessages(chatId);
     setValue('');
   };
 

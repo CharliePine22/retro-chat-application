@@ -9,13 +9,14 @@ import ChatList from './components/ChatList';
 // import "react-loader-spinner/dist/loader/css/react-spinner-loader.css";
 
 function App() {
+  // Sound settings 
   const [soundVolume, setSoundVolume] = useState(1);
+  const [play] = useSound(sendSound, { volume: soundVolume });
+
   const [loading, setLoading] = useState(false);
   const [chatMessages, setChatMessages] = useState([]);
   const [currentChatId, setCurrentChatId] = useState();
   const [allUsers, setAllUsers] = useState([]);
-
-  const [play] = useSound(sendSound, { volume: soundVolume });
 
   // Chaning sound volume settings
   const changeVolume = (volume) => {
@@ -30,7 +31,6 @@ function App() {
 
   // Fetch messages based on current chat channel
   const grabMessages = (chatId) => {
-    console.log('CHAT ID ' + chatId)
     setCurrentChatId(chatId);
     setLoading(true);
     var myHeaders = new Headers();
@@ -44,7 +44,6 @@ function App() {
       redirect: 'follow',
     };
     
-
     fetch(`https://api.chatengine.io/chats/${chatId}/messages/`, requestOptions)
       .then((response) => response.json())
       .then((result) => setChatMessages(result))

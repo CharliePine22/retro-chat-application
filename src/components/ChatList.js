@@ -58,17 +58,17 @@ const ChatList = (props) => {
   }, [props.chats]);
 
   // Set online users list and offline users list
-  useEffect(() => {
-    if (props.allUsers.length === 0) return <div />;
-    const isOnlineList = props.allUsers
-      .filter((user) => user['is_online'] && user.username !== myUserName)
-      .map((user) => user.username);
-    const isOfflineList = props.allUsers
-      .filter((user) => !user['is_online'] && user.username !== myUserName)
-      .map((user) => user.username);
-    setOnlineUsers(isOnlineList);
-    setOfflineUsers(isOfflineList);
-  }, [props.chats]);
+  // useEffect(() => {
+  //   if (props.allUsers.length === 0) return <div />;
+  //   const isOnlineList = props.allUsers
+  //     .filter((user) => user['is_online'] && user.username !== myUserName)
+  //     .map((user) => user.username);
+  //   const isOfflineList = props.allUsers
+  //     .filter((user) => !user['is_online'] && user.username !== myUserName)
+  //     .map((user) => user.username);
+  //   setOnlineUsers(isOnlineList);
+  //   setOfflineUsers(isOfflineList);
+  // }, [props.chats]);
 
   // Loop to listen for escape key press to exit out add friend
   useEffect(() => {
@@ -84,18 +84,30 @@ const ChatList = (props) => {
     };
   }, []);
 
+
   // FUNCTIONS AND HANDLERS //
+
+  // Switch to selected chat channel
   const switchChatChannel = (channelId) => {
     setCurrentChat(channelId);
     props.setActiveChat(channelId);
-    props.fetchChannelMessages(channelId);
+    // props.fetchChannelMessages(channelId);
   };
 
+  // Loop through chat engine to get users channels
   const getChannelsList = () => {
-    // Loop through chat engine to get users channels
     const keys = Object.keys(chatList);
     return keys.map((key) => {
       const chat = chatList[key];
+      // console.log(chat)
+      // console.log(offlineUsers)
+      const friendChannelName = chat.people[0].person.username == myUserName
+      ? chat.people[1].person.username
+      : chat.people[0].person.username
+
+      // console.log(friendChannelName)
+      if(offlineUsers.includes(friendChannelName)) return '' 
+     
       return (
         <ChatListItem
           loading={props.loading}
@@ -104,6 +116,7 @@ const ChatList = (props) => {
           chat={chat}
         />
       );
+      
     });
   };
 
@@ -224,7 +237,9 @@ const ChatList = (props) => {
     window.location.reload();
   };
 
+  //Determine online and offline users 
   useEffect(() => {
+    const intervalId = setInterval(() => {
     if (props.allUsers.length == 0) return <div />;
     if (props.allUsers.length > 0) {
       const user = props.allUsers.find((obj) => {
@@ -240,7 +255,10 @@ const ChatList = (props) => {
         }
       }
     }
-  }, [props.allUsers]);
+  }, 5000)
+
+  return () => clearInterval(intervalId);
+  }, [props.allUsers, useState]);
 
   if (!props.chats) {
     return <div />;
