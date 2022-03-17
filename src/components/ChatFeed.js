@@ -7,12 +7,9 @@ import { ThreeCircles } from 'react-loader-spinner';
 
 const ChatFeed = (props) => {
   const { chats, activeChat, userName, messages } = props;
-  const [messageStyles, setMessageStyles] = useState('');
   const [currentMessagesList, setCurrentMessagesList] = useState([]);
   const chat = chats && chats[activeChat];
-  // console.log(chats)
 
-  // console.log(chat.id)
   const messagesEndRef = useRef(null);
   const [loading, setLoading] = useState(false);
 
@@ -73,7 +70,7 @@ const ChatFeed = (props) => {
           <div key={`msg_${index}`} style={{ width: '100%' }}>
             <div className="message-block">
               {isMyMessage ? (
-                <MyMessage message={message} messageStyles={messageStyles} />
+                <MyMessage message={message} />
               ) : (
                 <TheirMessage
                   message={message}
@@ -108,17 +105,13 @@ const ChatFeed = (props) => {
     height={200}
     width={200}
     ariaLabel="three-circles-rotating"
-  /></div>;
-  
-  // if(currentMessagesList.length == 0) {
-  //   return 'Loading..'
-  // }
+  /></div>;  
 
   return (
     <>
       <div className="chat-feed-container">
         <div className="header">
-          {chat.people[1].person.username == userName
+          {chat && chat.people[1].person.username == userName
             ? chat.people[0].person.username
             : chat.people[1].person.username}{' '}
           - Instant Message

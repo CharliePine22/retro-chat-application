@@ -1,7 +1,8 @@
 * {
-  font-family: 'Times New Roman', Times, serif, -apple-system, BlinkMacSystemFont, Segoe UI, Roboto,
-    Helvetica Neue, Arial, Noto Sans, sans-serif, Apple Color Emoji,
-    Segoe UI Emoji, Segoe UI Symbol, Noto Color Emoji;
+  font-family: "Times New Roman", Times, serif, -apple-system,
+    BlinkMacSystemFont, Segoe UI, Roboto, Helvetica Neue, Arial, Noto Sans,
+    sans-serif, Apple Color Emoji, Segoe UI Emoji, Segoe UI Symbol,
+    Noto Color Emoji;
   letter-spacing: 0.5px;
 }
 
@@ -120,7 +121,7 @@
 
 .chat-channel-name {
   list-style: none;
-  font-size: .85rem;
+  font-size: 0.85rem;
   margin-left: 25px;
   font-weight: bold;
   user-select: none;
@@ -160,8 +161,8 @@
 }
 
 .friend-status {
-  width: 100%;
-  font-size: .75rem;
+  width: 75%;
+  font-size: 0.75rem;
   margin-left: 25px;
   color: rgb(179, 179, 179);
   font-weight: bolder;
@@ -276,10 +277,10 @@
 }
 
 .buddy-avatar {
-  height:25px;
-  width:25px;
-  position:absolute;
-  left:25px;
+  height: 25px;
+  width: 25px;
+  position: absolute;
+  left: 25px;
 }
 
 .buddies-list-name {
@@ -294,29 +295,14 @@
   cursor: pointer;
 }
 
-.offline-buddies-list-name {
-  margin-left: 10px;
-  margin-top: 10px;
-  font-weight: bold;
+.user-offline-name {
   color: grey;
-  user-select: none;
-}
-
-.offline-buddies-list-name:hover {
-  cursor: pointer;
-}
-
-.offline-user-name {
-  margin-left: 15px;
-  margin-top: 4px;
-  margin-bottom: 8px;
-  font-size: 1rem;
 }
 
 .trash-icon {
   margin-left: 15px;
   color: red;
-  font-size: .75rem;
+  font-size: 0.75rem;
 }
 
 /* MESSAGE FORM STYLING */
@@ -503,8 +489,8 @@
 }
 
 .send-button {
-  padding: .75rem;
-  background-color: #ECEAD8;
+  padding: 0.75rem;
+  background-color: #ecead8;
   border: 2px outset;
 }
 
@@ -529,7 +515,6 @@
   font-size: 14px;
 }
 
-
 /* ICON WINDOW STYLES */
 .icon-change-form {
   display: flex;
@@ -552,7 +537,7 @@
 .icon-change-form button {
   border: 2px outset;
   background-color: transparent;
-  padding: .25rem;
+  padding: 0.25rem;
   margin-top: 1rem;
 }
 
@@ -583,7 +568,7 @@
 }
 
 .character-count {
-  font-size: .7rem;
+  font-size: 0.7rem;
   position: absolute;
   top: 12px;
   right: 9px;
@@ -633,7 +618,7 @@
 .status-options button {
   border: 2px outset;
   background-color: transparent;
-  padding: .25rem;
+  padding: 0.25rem;
 }
 
 .status-options button:hover {
@@ -650,11 +635,11 @@
 
 .status-change-form label {
   font-weight: bold;
-  font-size: .9rem;
+  font-size: 0.9rem;
 }
 
 .status-options label {
-  font-size: .9rem;
+  font-size: 0.9rem;
   font-weight: normal;
 }
 
@@ -664,7 +649,6 @@
   background-color: #d6d6ce;
   border-right: 2px solid black;
 }
-
 
 .channel-list {
   list-style: none;
@@ -677,15 +661,15 @@
 }
 
 .channel-list li::before {
-  content: '⮞';
-  font-size: .8rem;
+  content: "⮞";
+  font-size: 0.8rem;
   position: absolute;
   left: -18px;
 }
 
 .channel-list-active::before {
-  content: '⮟';
-  font-size: .8rem;
+  content: "⮟";
+  font-size: 0.8rem;
   position: absolute;
   left: -18px;
 }
@@ -701,7 +685,7 @@
 }
 
 .channel-users {
-  font-size: .8rem;
+  font-size: 0.8rem;
   margin-bottom: 10px;
 }
 
@@ -766,7 +750,7 @@
 }
 
 .user {
-  font-size: .85rem;
+  font-size: 0.85rem;
   height: 9%;
   display: flex;
   justify-content: space-between;
@@ -815,7 +799,7 @@
 }
 
 .user-details {
-  width: 75%;
+  width: 60%;
   height: 100%;
   margin-top: 30px;
   margin-left: 5px;
@@ -828,8 +812,8 @@
 .user-icon {
   margin-top: 30px;
   margin-right: 5px;
-  height: 75px;
-  width: 75px;
+  height: 100%;
+  width: 30%;
 }
 
 .user-icon img {
@@ -841,28 +825,78 @@
   cursor: pointer;
 }
 
+.user-settings-header {
+  text-align: center;
+  margin-bottom: 25px;
+  margin-top: 10px;
+}
+
 .user-status {
-  font-size: .75rem;
+  font-size: 0.75rem;
+  word-break: break-all;
+}
+
+.dots-status-loader {
+  margin-left:50px;
 }
 
 .user-status:hover {
   cursor: pointer;
 }
 
-.user-status:hover>.status-change-word {
+.user-status:hover > .status-change-word {
   display: inline;
+}
+
+.user-settings-actions {
+  user-select: none;
+  display: flex;
+  flex-direction: column;
+  height: 70%;
+  font-size: 1.25rem;
+  justify-content: space-evenly;
+}
+
+.user-settings-actions button:hover {
+  cursor: pointer;
+}
+
+.user-settings-username {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.user-settings-password {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 30px;
+}
+
+.hide-password-icon {
+  font-size: 1rem;
+}
+
+.hide-password-icon:hover {
+  cursor: pointer;
+  color: blue;
+}
+
+.user-settings-container h3 {
+  margin-bottom: 25px;
 }
 
 .user-tabs {
   margin-left: 1px;
-  margin-bottom: 5px
+  margin-bottom: 5px;
 }
 
 .user-tabs button {
   border: none;
   background-color: transparent;
-  padding: .5rem;
-  padding-top: 1rem;
+  padding: 0.5rem;
+  padding-top: 0.7rem;
   padding-bottom: 0;
 }
 
@@ -896,7 +930,6 @@
   flex-direction: column;
 }
 
-
 .help-icon-container {
   display: flex;
   flex-direction: column;
@@ -912,7 +945,7 @@
 }
 
 .help-icon-text {
-  font-size: .8rem;
+  font-size: 0.8rem;
 }
 
 .setup-icon-container {
@@ -929,12 +962,12 @@
 }
 
 .setup-icon-text {
-  font-size: .8rem;
+  font-size: 0.8rem;
 }
 
 .login-button {
   margin-top: 5px;
-  padding: .55rem 2rem;
+  padding: 0.55rem 2rem;
   background: transparent;
   border-radius: 5px;
   color: white;
@@ -945,7 +978,7 @@
 .login-button:hover {
   cursor: pointer;
   background-color: white;
-  color: #369ECC;
+  color: #369ecc;
 }
 
 .login-form-wrapper {
@@ -957,11 +990,11 @@
 }
 
 .login-form-wrapper hr {
-  background: rgba(0, 0, 0, 0.0);
+  background: rgba(0, 0, 0, 0);
   height: 2px;
   width: 93%;
   display: block;
-  border-bottom: 1px solid rgb(255, 255, 255, 0.0);
+  border-bottom: 1px solid rgb(255, 255, 255, 0);
   margin-bottom: 8px;
 }
 
@@ -1009,7 +1042,7 @@
 }
 
 .sign-in-checks label {
-  font-size: .75rem;
+  font-size: 0.75rem;
   font-weight: normal;
   margin-left: -14px;
 }
@@ -1022,7 +1055,7 @@
 
 .version-text {
   text-align: center;
-  font-size: .70rem;
+  font-size: 0.7rem;
   padding-bottom: 4px;
 }
 
@@ -1063,7 +1096,7 @@
 
 .getBanner {
   height: 100px;
-  background: #369ECC;
+  background: #369ecc;
   box-shadow: 0 2px 4px 0 rgb(0 0 0 / 75%), 0 2px 40px 0 rgb(0 0 0 / 75%);
   text-align: center;
   position: fixed;
@@ -1084,7 +1117,7 @@
 .wrapper {
   height: 150vh;
   width: 100%;
-  background: #1C132F;
+  background: #1c132f;
   /* background: linear-gradient(90deg, rgba(117,84,160,1) 7%, rgba(117,84,160,1) 17%, rgba(106,95,168,1) 29%, rgba(99,103,174,1) 44%, rgba(87,116,184,1) 66%, rgba(70,135,198,1) 83%, rgba(44,163,219,1) 96%, rgba(22,188,237,1) 100%, rgba(0,212,255,1) 100%);   */
   display: flex;
   flex-direction: column;
@@ -1128,7 +1161,7 @@
 }
 
 .forgot-password-button {
-  font-size: .70rem;
+  font-size: 0.7rem;
   color: blue;
   text-decoration: underline;
 }
@@ -1153,7 +1186,7 @@
 }
 
 .new-user-button {
-  font-size: .70rem;
+  font-size: 0.7rem;
   color: blue;
   text-decoration: underline;
 }
@@ -1189,7 +1222,6 @@
   margin-bottom: 30px;
   width: 100%;
   font-size: 2.3em;
-  ;
 }
 
 .button {
@@ -1216,7 +1248,7 @@
 }
 
 .button span:after {
-  content: '\00bb';
+  content: "\00bb";
   position: absolute;
   opacity: 0;
   top: 0;

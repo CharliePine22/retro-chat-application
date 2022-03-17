@@ -47,7 +47,7 @@ const MessageForm = (props) => {
         // onChange={(newContent) => {setContent(newContent)}}
       />
       <div className='message-form-actions'>
-        <label htmlFor="upload-button">
+        {/* <label htmlFor="upload-button">
           <span className="image-button">
             <PictureOutlined className="picture-icon" />
           </span>
@@ -58,7 +58,7 @@ const MessageForm = (props) => {
           id="upload-button"
           style={{ display: 'none' }}
           onChange={uploadHandler}
-        />
+        /> */}
         <button type="submit" className="send-button">
           <img src={sendButtonImage}/>
         </button>

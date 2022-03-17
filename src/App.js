@@ -72,16 +72,6 @@ function App() {
     getAllUsers();
   }, []);
 
-  // console.log(currentChatId)
-
-  // useEffect(() => {
-  //   currentChatId && grabMessages(currentChatId)
-  // }, [currentChatId])
-
-  const changeLoadingStatus = () => {
-    setLoading(!loading);
-  };
-
 
   // If login failes return them back to same page
   if (!localStorage.getItem('username')) return <WelcomeScreen />;

@@ -14,51 +14,74 @@ const WelcomeScreen = (params) => {
     setIsLoggingIn(!isLoggingIn);
   };
 
-  const formSubmitHandler = async (data, method) => {
-    //Login
-    if (method === 'login') {
-      setLoading(true)
-      const authObject = {
-        'Project-ID': 'b8a0fde0-1fae-4db8-9870-6bba5beb67c0',
-        'User-Name': data.username,
-        'User-Secret': data.password,
-      };
-      try {
-        // Grab user authentication
-        await axios.get('https://api.chatengine.io/chats', {
-          headers: authObject,
-        });
+  // If the user is signing up
+  const signupFormSubmitHandler = (data) => {
+    var myHeaders = new Headers();
+    myHeaders.append('PRIVATE-KEY', 'e20c09ad-f36b-4f4a-b309-99ae04944996');
+    myHeaders.append('Content-Type', 'application/json');
+    var requestOptions = {
+      method: 'POST',
+      headers: myHeaders,
+      body: JSON.stringify({
+        username: data.username,
+        secret: data.password
+      }),
+    };
 
-        // Authentication successful
-        localStorage.setItem('username', data.username);
-        localStorage.setItem('password', data.password);
-        setLoading(false);
-        window.location.reload();
-      } catch (error) {
-        setError('Oops, incorrect credentials.');
-      }
+    fetch('https://api.chatengine.io/users/', requestOptions)
+      .then((response) => response.json())
+      .then((result) => console.log(result))
+      .catch((error) => console.log('error', error));
 
-      setIsLoggingIn(false);
-    } else {
-      // New User
-      const config = {
-        method: 'POST',
-        url: 'https://api.chatengine.io/users/',
-        headers: {
-          'PRIVATE-KEY': 'e20c09ad-f36b-4f4a-b309-99ae04944996',
-        },
-        data,
-      };
-      try {
+    localStorage.setItem('username', data.username);
+    localStorage.setItem('password', data.password);
+    formSubmitHandler(data, true);
+  };
 
-        const response = await axios(config);
-        localStorage.setItem('username', data.username);
-        localStorage.setItem('password', data.password);
-        window.location.reload();
-      } catch (error) {
-        setError(error);
-      }
+  const formSubmitHandler = async (data, newUser) => {
+    // If the user is logging in
+    setLoading(true);
+    if (!newUser) {
+    const authObject = {
+      'Project-ID': 'b8a0fde0-1fae-4db8-9870-6bba5beb67c0',
+      'User-Name': data.username,
+      'User-Secret': data.password,
+    };
+    try {
+      // Grab user authentication
+      await axios.get('https://api.chatengine.io/chats', {
+        headers: authObject,
+      });
+
+      // Authentication successful
+      localStorage.setItem('newUser', false)
+      localStorage.setItem('username', data.username);
+      localStorage.setItem('password', data.password);
+      setLoading(false);
+      window.location.reload();
+    } catch (error) {
+      setError('Oops, incorrect credentials.');
     }
+  } else {
+    const authObject = {
+      'Project-ID': 'b8a0fde0-1fae-4db8-9870-6bba5beb67c0',
+      'User-Name': localStorage.getItem('username'),
+      'User-Secret': localStorage.getItem('password'),
+    };
+    try {
+      // Grab user authentication
+      await axios.get('https://api.chatengine.io/chats', {
+        headers: authObject,
+      });
+      // Authentication successful
+      localStorage.setItem('newUser', true)
+      setLoading(false);
+      window.location.reload();
+    } catch (error) {
+      setError('Oops, incorrect credentials.');
+    }
+  }
+    setIsLoggingIn(false);
   };
 
   return (
@@ -72,7 +95,14 @@ const WelcomeScreen = (params) => {
         </div>
       </div>
       <div className="wrapper">
-        {isLoggingIn && <LoginForm loading={loading} formSubmit={formSubmitHandler} />}
+        {isLoggingIn && (
+          <LoginForm
+            loading={loading}
+            formSubmit={formSubmitHandler}
+            signupFormSubmit={signupFormSubmitHandler}
+            error={error}
+          />
+        )}
         <div className="jumbo">
           <h1>
             <img src={siteLogo} alt="1997.chat, a retro IM app" width="519" />
