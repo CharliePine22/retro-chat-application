@@ -3,6 +3,7 @@ import MessageForm from './MessageForm';
 import MyMessage from './MyMessage';
 import TheirMessage from './TheirMessage';
 import sayHello from '../assets/images/say-hello.gif';
+import NewUserWelcome from './NewUserWelcome';
 import { ThreeCircles } from 'react-loader-spinner';
 
 const ChatFeed = (props) => {
@@ -99,13 +100,18 @@ const ChatFeed = (props) => {
     );
   };
 
-  if (!chat || !props.chatMessages || !chats)
+  if (localStorage.getItem('newUser') === 'true') {
+    return <NewUserWelcome nav={Navbar}/>
+  }
+
+  if (localStorage.getItem('newUser') == 'false' && (!chat || !props.chatMessages || !chats))
     return <div className="loading-messages"><ThreeCircles
     color="blue"
     height={200}
     width={200}
     ariaLabel="three-circles-rotating"
-  /></div>;  
+  /></div> 
+
 
   return (
     <>

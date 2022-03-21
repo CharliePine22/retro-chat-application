@@ -63,27 +63,6 @@ const ChatListItem = (props) => {
    }
   }
 
-  const changeUsernameHandler = (username) => {
-    var myHeaders = new Headers();
-    myHeaders.append("Project-ID", "b8a0fde0-1fae-4db8-9870-6bba5beb67c0");
-    myHeaders.append("User-Name", localStorage.getItem("username"));
-    myHeaders.append("User-Secret", localStorage.getItem("password"));
-    myHeaders.append("Content-Type", "application/json");
-    var requestOptions = {
-      method: "PATCH",
-      headers: myHeaders,
-      body: JSON.stringify(username),
-      redirect: "follow",
-    };
-
-    fetch(`https://api.chatengine.io/users/me/`, requestOptions)
-      .then((response) => response.json())
-      .then((result) => console.log(result))
-      .catch((error) => console.log("error", error));
-
-      localStorage.setItem('username', )
-  }
-
 
   if(!props.chat || props.chat == undefined || props.allUsers.length == 0) {
     console.log('Loading...')
@@ -101,9 +80,6 @@ const ChatListItem = (props) => {
           </li>
         <span className='friend-status'><em>{friendStatus}</em></span>
         
-          {/* <span className="trash-icon">
-            <FaTrash onClick={deleteChatHandler} />
-          </span> */}
       </div>
     </>
   );

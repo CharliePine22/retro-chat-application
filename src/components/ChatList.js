@@ -67,6 +67,7 @@ const ChatList = (props) => {
       if (event.keyCode === 27) {
         setAddingNewFriend(false);
         setChangingPassword(false);
+        setChangingUserName(false);
       }
     };
     window.addEventListener("keydown", handleEsc);
@@ -79,17 +80,20 @@ const ChatList = (props) => {
   //////////////////////////////////// ! FUNCTIONS AND HANDLERS ! ///////////////////////////////
   // Switch to selected chat channel
   const switchChatChannel = (channelId) => {
+    localStorage.setItem('chatId', channelId);
     setCurrentChat(channelId);
     props.setActiveChat(channelId);
   };
 
   // Loop through chat engine to get users channels
   const getChannelsList = () => {
+    // CHECK TO SAEE IF THERE ARE 2 USERS IN PEOPEL ARRAY
     const keys = Object.keys(chatList);
     return keys.map((key) => {
       const chat = chatList[key];
+      if(chat.people.length < 2) return <div /> // Prevents chats that didnt properly delete with users from showing
       const friendChannelName =
-        chat && chat.people[0].person.username == myUserName
+        chatList && chat && chat.people[0].person.username == myUserName
           ? chat.people[1].person.username
           : chat.people[0].person.username;
 
@@ -108,10 +112,14 @@ const ChatList = (props) => {
     });
   };
 
+
+  // Open and close your buddy list
   const viewBuddyListHandler = () => {
+    // bool set to toggle
     setViewingBuddyList(!viewingBuddyList);
   };
 
+  // Creates new chat object with friend
   const createDirectChat = (friend) => {
     var myHeaders = new Headers();
     myHeaders.append("Project-ID", "b8a0fde0-1fae-4db8-9870-6bba5beb67c0");
@@ -135,6 +143,7 @@ const ChatList = (props) => {
   const addFriendHandler = (e) => {
     e.preventDefault();
     createDirectChat(newFriend);
+    localStorage.setItem('newUser', false);
     setAddingNewFriend(false);
   };
 
@@ -145,7 +154,7 @@ const ChatList = (props) => {
   };
 
   // Change user password
-  const usernameChangeHandler = (e) => {
+  const userNameChangeHandler = (e) => {
     e.preventDefault();
 
     var myHeaders = new Headers();
@@ -153,10 +162,11 @@ const ChatList = (props) => {
     myHeaders.append("User-Name", localStorage.getItem("username"));
     myHeaders.append("User-Secret", localStorage.getItem("password"));
     myHeaders.append("Content-Type", "application/json");
+
     var requestOptions = {
       method: "PATCH",
       headers: myHeaders,
-      body: JSON.stringify({'username' : props}),
+      body: JSON.stringify({'username' : newUserName}),
     };
 
     fetch(`https://api.chatengine.io/users/me/`, requestOptions)
@@ -164,8 +174,8 @@ const ChatList = (props) => {
       .then((result) => console.log(result))
       .catch((error) => console.log("error", error));
 
-    localStorage.setItem('password', userPassword)
-    setChangingPassword(false);
+    localStorage.setItem('username', newUserName)
+    window.location.reload();
   }
 
   // Change user password
@@ -180,7 +190,10 @@ const ChatList = (props) => {
     var requestOptions = {
       method: "PATCH",
       headers: myHeaders,
-      body: JSON.stringify({'secret' : userPassword}),
+      body: JSON.stringify(
+        {
+          'secret' : userPassword
+        }),
     };
 
     fetch(`https://api.chatengine.io/users/me/`, requestOptions)
@@ -189,7 +202,7 @@ const ChatList = (props) => {
       .catch((error) => console.log("error", error));
 
     localStorage.setItem('password', userPassword)
-    setChangingPassword(false);
+    window.location.reload();
   }
 
   // Open status window
@@ -234,6 +247,7 @@ const ChatList = (props) => {
     setOpenIconWindow(!openIconWindow);
   };
 
+
   // Set user avatar
   const setUserIcon = (url) => {
     localStorage.setItem("icon", url);
@@ -268,7 +282,7 @@ const ChatList = (props) => {
       method: "PATCH",
       headers: myHeaders,
       body: {
-        avatar: convertImage(url),
+        'avatar': imageFile,
       },
       redirect: "follow",
     };
@@ -298,13 +312,11 @@ const ChatList = (props) => {
         });
         if (user && user["custom_json"] !== "{}") {
           setCurrentUserStatus(user["custom_json"]);
-          console.log('FETCHED')
         } else {
           if (savedUserStatus === "" || savedUserStatus === null) {
             setCurrentUserStatus("Set a status message");
           } else {
             setCurrentUserStatus(localStorage.getItem("status"));
-            console.log('STORAGE')
           }
         }
       }
@@ -317,6 +329,10 @@ const ChatList = (props) => {
     return <div />;
   }
 
+  if(props.activeChat == 0) {
+    console.log('new user')
+  }
+
   return (
     <>
       <div className="chat-list-container">
@@ -326,7 +342,7 @@ const ChatList = (props) => {
           <div className="user-details">
             <p className="user-name">
               {props.userName}{" "}
-              <span className="user-availability">{`(${currentUserAvailability})`}</span>
+              {/* <span className="user-availability">{`(${currentUserAvailability})`}</span> */}
             </p>
 
             {/* Status  */}
@@ -395,8 +411,10 @@ const ChatList = (props) => {
               </div>
               <div className="user-settings-actions">
                 <div className="user-settings-username">
-                  <p>ScreenName: {props.userName}</p>
-                  <button>Change ScreenName</button>
+                  {!changingUserName ? <p>ScreenName: {props.userName}</p> : <form onSubmit={userNameChangeHandler}> 
+                  <input type='text' value={newUserName}  onChange={(e) => setNewUserName(e.target.value)} placeholder='New username'/>
+                  </form>}
+                  <button onClick={() => setChangingUserName(true)}>Change ScreenName</button>
                 </div>
                 <div className="user-settings-password">
                   {!changingPassword ? <p>
@@ -409,7 +427,7 @@ const ChatList = (props) => {
                       className="hide-password-icon"
                     />
                   </p> : <form onSubmit={passwordChangeHandler}> 
-                  <input type='text' value={userPassword}  onChange={(e) => setUserPassword(e.target.value)} placeholder='New pasword'/>
+                  <input type='text' value={userPassword}  onChange={(e) => setUserPassword(e.target.value)} placeholder='New password'/>
                   </form>
                   }
                   <button onClick={() => setChangingPassword(true)}>{!changingPassword ? 'Change Password' : '' }</button>

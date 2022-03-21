@@ -1,5 +1,5 @@
 import './App.css';
-import { ChatEngine, getOrCreateChat } from 'react-chat-engine';
+import { ChatEngine } from 'react-chat-engine';
 import { useState, useEffect } from 'react';
 import useSound from 'use-sound';
 import sendSound from './assets/sounds/imsend.wav';
@@ -28,6 +28,18 @@ function App() {
       setSoundVolume(0);
     }
   };
+
+  // Use to  auto log user out and potentially set online status to offline
+  useEffect(() => {
+    const unloadCallback = (event) => {
+      event.preventDefault();
+      event.returnValue = "";
+      return "";
+    };
+  
+    window.addEventListener("beforeunload", unloadCallback);
+    return () => window.removeEventListener("beforeunload", unloadCallback);
+  }, []);
 
   // Fetch messages based on current chat channel
   const grabMessages = (chatId) => {

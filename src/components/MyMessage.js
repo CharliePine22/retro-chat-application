@@ -1,7 +1,6 @@
 import parse from 'html-react-parser';
 
-const MyMessage = ({ message, messageStyles }) => {
-  const msgText = `<p style={${messageStyles}}>${message.text}</p>`;
+const MyMessage = ({ message }) => {
   return (
     <div className="message-row">
       {message?.attachments?.length > 0 ? (
