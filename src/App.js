@@ -3,6 +3,7 @@ import { ChatEngine } from 'react-chat-engine';
 import { useState, useEffect } from 'react';
 import useSound from 'use-sound';
 import sendSound from './assets/sounds/imsend.wav';
+import receivedSound from './assets/sounds/imreceive.mp3';
 import ChatFeed from './components/ChatFeed';
 import WelcomeScreen from './components/WelcomeScreen';
 import ChatList from './components/ChatList';
@@ -11,7 +12,8 @@ import ChatList from './components/ChatList';
 function App() {
   // Sound settings 
   const [soundVolume, setSoundVolume] = useState(1);
-  const [play] = useSound(sendSound, { volume: soundVolume });
+  const [playSend] = useSound(sendSound, { volume: soundVolume });
+  const [playReceived] = useSound(receivedSound, { volume: soundVolume });
 
   const [loading, setLoading] = useState(false);
   const [chatMessages, setChatMessages] = useState([]);
@@ -104,7 +106,8 @@ function App() {
             changeVolume={changeVolume}
           />
         )}
-        onNewMessage={play}
+        onNewMessage={playSend}
+        onGetMessages={playReceived}
         renderChatFeed={(chatAppProps) => (
           <ChatFeed
             {...chatAppProps}
