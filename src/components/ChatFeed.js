@@ -120,7 +120,6 @@ const ChatFeed = (props) => {
           {chat && chat.people[1].person.username == userName
             ? chat.people[0].person.username
             : chat.people[1].person.username}{' '}
-          - Instant Message
           <ul className="header__links">
             <li className="header__minimize">_</li>
             <li className="header__maximize">[ ]</li>

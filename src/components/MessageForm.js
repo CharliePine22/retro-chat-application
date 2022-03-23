@@ -5,6 +5,7 @@ import sendButtonImage from "../assets/images/send-message-button.png";
 import colorPalette from "../assets/images/color-palette.png";
 import warnIcon from "../assets/images/warn.png";
 import blockIcon from "../assets/images/block.png";
+import redDice from "../assets/images/red-dice.png";
 import Picker from "emoji-picker-react";
 import { FaEnvelopeOpenText } from "react-icons/fa";
 
@@ -172,7 +173,7 @@ const MessageForm = (props) => {
         {/* Warning and Blocking */}
         <div className='user-warnings-container'>
               <div className='warning'>
-                <img src={warnIcon}/>
+                <img src={warnIcon}/> 
               </div>
 
               <div className='block'>
@@ -184,6 +185,10 @@ const MessageForm = (props) => {
             <div className="message-expressions">
               <img src={colorPalette} />
               <span>Expressions</span>
+            </div>
+            <div className='message-games'>
+              <img src={redDice} />
+              <span>Games</span>
             </div>
           </div>
 

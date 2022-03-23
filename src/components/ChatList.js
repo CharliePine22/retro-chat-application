@@ -7,10 +7,9 @@ import { FaEye } from "react-icons/fa";
 import { ThreeDots } from 'react-loader-spinner';
 
 const ChatList = (props) => {
-  // TODO: BUDDY LIST, DISABLED GAME ICON, STYLING OF CHAT
   // Tabs for online chats or requests
   const [currentTab, setCurrentTab] = useState("buddies");
-  const [currentChat, setCurrentChat] = useState("");
+  const [currentChat, setCurrentChat] = useState(0);
 
   // Sound and volume settings
   const [soundVolume, setSoundVolume] = useState(0);
@@ -24,9 +23,12 @@ const ChatList = (props) => {
   const [addingNewFriend, setAddingNewFriend] = useState(false);
   const [newFriend, setNewFriend] = useState("");
 
-  // The list of chat rooms
+  // The list of chat rooms and the handler to view
   const [chatList, setChatList] = useState([]);
   const [viewingBuddyList, setViewingBuddyList] = useState(false);
+
+  const [error, setError] = useState('');
+  const [hasError, setHasError] = useState(false);
 
   // User online status (online, away, offline)
   const [currentUserAvailability, setCurrentUserAvailability] =
@@ -36,11 +38,13 @@ const ChatList = (props) => {
   const myUserName = localStorage.getItem("username");
   const [newUserName, setNewUserName] = useState('');
   const [changingUserName, setChangingUserName] = useState(false);
+
   // Password settings
   const [userPassword, setUserPassword] = useState("");
   const [changingPassword, setChangingPassword] = useState(false);
   const [hideUserPassword, setHideUserPassword] = useState(true);
 
+  // User status and icon settings
   const [currentUserStatus, setCurrentUserStatus] = useState("");
   const savedUserStatus = localStorage.getItem("status");
   const savedUserIcon = localStorage.getItem("icon");
@@ -87,7 +91,6 @@ const ChatList = (props) => {
 
   // Loop through chat engine to get users channels
   const getChannelsList = () => {
-    // CHECK TO SAEE IF THERE ARE 2 USERS IN PEOPEL ARRAY
     const keys = Object.keys(chatList);
     return keys.map((key) => {
       const chat = chatList[key];
@@ -131,12 +134,19 @@ const ChatList = (props) => {
       method: "PUT",
       headers: myHeaders,
       body: JSON.stringify({ usernames: [friend] }),
-      is_direct_chat: true,
+      is_direct_chat: true, // ensures that its a direct message chat object
     };
 
     fetch("https://api.chatengine.io/chats/", requestOptions)
       .then((response) => response.json())
-      .then((result) => console.log(result));
+      .then((result) => {
+        if(result.message == 'At least one username is not a user') {
+          setError("That username does not exist, please check your spelling and try again.")
+        } else {
+          console.log('Added!')
+        }
+      })
+      setAddingNewFriend(false);
   };
 
   // Send a friend request
@@ -144,7 +154,6 @@ const ChatList = (props) => {
     e.preventDefault();
     createDirectChat(newFriend);
     localStorage.setItem('newUser', false);
-    setAddingNewFriend(false);
   };
 
   // Adjust sound volume
@@ -384,6 +393,7 @@ const ChatList = (props) => {
           <button onClick={() => setCurrentTab("settings")}>Settings</button>
         </div>
         <div className="user-channels">
+
           {/* Users list */}
           {currentTab == "buddies" && (
             <ul className="buddies-list-name">
@@ -403,6 +413,7 @@ const ChatList = (props) => {
               </div>
             </ul>
           )}
+
           {/* User Settings */}
           {currentTab == "settings" && (
             <>
@@ -432,7 +443,7 @@ const ChatList = (props) => {
                   }
                   <button onClick={() => setChangingPassword(true)}>{!changingPassword ? 'Change Password' : '' }</button>
                 </div>
-                <div className="user-settings-deleteBuddy">
+                <div className="user-settings-delete">
                   <button>Delete Buddy</button>
                 </div>
               </div>
@@ -465,6 +476,7 @@ const ChatList = (props) => {
           {!addingNewFriend && (
             <button onClick={logoutHandler}>Sign Out</button>
           )}
+          {hasError && <span className='error'>{error}</span>}
         </div>
       </div>
     </>
