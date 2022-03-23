@@ -27,8 +27,10 @@ const ChatList = (props) => {
   const [chatList, setChatList] = useState([]);
   const [viewingBuddyList, setViewingBuddyList] = useState(false);
 
+  // Error and Loading States
   const [error, setError] = useState('');
   const [hasError, setHasError] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   // User online status (online, away, offline)
   const [currentUserAvailability, setCurrentUserAvailability] =
@@ -65,11 +67,16 @@ const ChatList = (props) => {
     fetchCurrentMessages();
   }, [props.chats]);
 
-  // Loop to listen for escape key press to exit out add friend
+  // Loop to listen for escape key press
   useEffect(() => {
     const handleEsc = (event) => {
       if (event.keyCode === 27) {
+        // Close add new friend, remove error, and reset field
         setAddingNewFriend(false);
+        setNewFriend('');
+        setHasError(false);
+
+        // Cancel username/password change
         setChangingPassword(false);
         setChangingUserName(false);
       }
@@ -80,6 +87,30 @@ const ChatList = (props) => {
       window.removeEventListener("keydown", handleEsc);
     };
   }, []);
+
+  //Determine user status
+  useEffect(() => {
+    // const intervalId = setInterval(() => {
+      if (props.allUsers.length == 0) return <div />;
+      if (props.allUsers.length > 0) {
+        const user = props.allUsers.find((obj) => {
+          return obj.username == localStorage.getItem("username");
+        });
+        if (user && user["custom_json"] !== "{}") {
+          setCurrentUserStatus(user["custom_json"]);
+        } else {
+          if (savedUserStatus === "" || savedUserStatus === null) {
+            setCurrentUserStatus("Set a status message");
+          } else {
+            setCurrentUserStatus(localStorage.getItem("status"));
+          }
+        }
+      }
+    // }, 5000);
+
+    // return () => clearInterval(intervalId);
+  }, [props.allUsers, useState]);
+
 
   //////////////////////////////////// ! FUNCTIONS AND HANDLERS ! ///////////////////////////////
   // Switch to selected chat channel
@@ -142,18 +173,22 @@ const ChatList = (props) => {
       .then((result) => {
         if(result.message == 'At least one username is not a user') {
           setError("That username does not exist, please check your spelling and try again.")
+          setHasError(true);
         } else {
-          console.log('Added!')
+          setAddingNewFriend(false);
         }
+        setLoading(false);
       })
-      setAddingNewFriend(false);
+      
   };
 
   // Send a friend request
   const addFriendHandler = (e) => {
+    setLoading(true);
     e.preventDefault();
     createDirectChat(newFriend);
     localStorage.setItem('newUser', false);
+    
   };
 
   // Adjust sound volume
@@ -259,6 +294,10 @@ const ChatList = (props) => {
 
   // Set user avatar
   const setUserIcon = (url) => {
+    if(url.match(/\.(jpeg|jpg|gif|png)$/) == null) {
+      setError('Invalid format, image must be a JPG, GIF, or PNG!');
+      return;
+    }
     localStorage.setItem("icon", url);
     const fileName = "userAvatar.jpg";
     const user = props.allUsers.find((obj) => {
@@ -302,6 +341,7 @@ const ChatList = (props) => {
       .catch((error) => console.log("error", error));
 
     setOpenIconWindow(false);
+    setError('')
   };
 
   const logoutHandler = () => {
@@ -310,36 +350,13 @@ const ChatList = (props) => {
     window.location.reload();
   };
 
-  //Determine user status
-  useEffect(() => {
-
-    // const intervalId = setInterval(() => {
-      if (props.allUsers.length == 0) return <div />;
-      if (props.allUsers.length > 0) {
-        const user = props.allUsers.find((obj) => {
-          return obj.username == localStorage.getItem("username");
-        });
-        if (user && user["custom_json"] !== "{}") {
-          setCurrentUserStatus(user["custom_json"]);
-        } else {
-          if (savedUserStatus === "" || savedUserStatus === null) {
-            setCurrentUserStatus("Set a status message");
-          } else {
-            setCurrentUserStatus(localStorage.getItem("status"));
-          }
-        }
-      }
-    // }, 5000);
-
-    // return () => clearInterval(intervalId);
-  }, [props.allUsers, useState]);
 
   if (!props.chats || props.allUsers.length == 0) {
     return <div />;
   }
 
-  if(props.activeChat == 0) {
-    console.log('new user')
+  if(loading) {
+    console.log('Loading')
   }
 
   return (
@@ -363,7 +380,7 @@ const ChatList = (props) => {
 
           {/* Icon change window */}
           <div>
-            {openIconWindow && <OpenIconWindow changeIcon={setUserIcon} />}
+            {openIconWindow && <OpenIconWindow changeIcon={setUserIcon} error={error}/>}
           </div>
 
           {/* Status change window */}
@@ -397,7 +414,7 @@ const ChatList = (props) => {
           {/* Users list */}
           {currentTab == "buddies" && (
             <ul className="buddies-list-name">
-              <span onClick={viewBuddyListHandler}>
+              <span className='buddies' onClick={viewBuddyListHandler}>
                 Buddies{" "}
                 <span>
                   {" "}
@@ -476,7 +493,8 @@ const ChatList = (props) => {
           {!addingNewFriend && (
             <button onClick={logoutHandler}>Sign Out</button>
           )}
-          {hasError && <span className='error'>{error}</span>}
+          {loading && <div><ThreeDots /></div>}
+          {addingNewFriend && hasError && !loading && <span className='error'>{error}</span>}
         </div>
       </div>
     </>

@@ -88,7 +88,7 @@ function App() {
 
 
   // If login failes return them back to same page
-  if (!localStorage.getItem('username')) return <WelcomeScreen />;
+  if (!localStorage.getItem('username')) return <WelcomeScreen allUsers={allUsers}/>;
 
   return (
     <>

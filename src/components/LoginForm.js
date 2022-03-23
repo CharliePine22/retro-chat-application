@@ -6,12 +6,12 @@ import connectingGif from "../assets/images/connecting.gif";
 import redKey from "../assets/images/red-key.png";
 import helpIcon from "../assets/images/help.png";
 import setupIcon from "../assets/images/setup-icon.png";
+import { BallTriangle } from 'react-loader-spinner';
 
 const LoginForm = (props) => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [newUser, setNewUser] = useState(false);
-  const [error, setError] = useState(false);
 
   const changeAuthenticationHandler = () => {
     setNewUser(!newUser);
@@ -28,6 +28,7 @@ const LoginForm = (props) => {
     }
   };
 
+
   return (
     <>
       <NewWindow
@@ -42,8 +43,15 @@ const LoginForm = (props) => {
             <img src={loginIcon} />
           </div>
           <hr />
-          <div className="login-container">
+          {props.loading && <BallTriangle />}
+          {!props.loading && <div className="login-container">
             <form onSubmit={formSubmitHandler}>
+              {props.error && (
+                <div className="auth-error-container">
+                  {" "}
+                  <span className="error">{props.error}</span>
+                </div>
+              )}
               <div className="username-container">
                 <label htmlFor="username">
                   <em>ScreenName</em>
@@ -90,7 +98,6 @@ const LoginForm = (props) => {
                 <input type="checkbox" id="auto-login" />
                 <label htmlFor="auto-login">Auto-login</label>
               </div>
-              {error && <p>{error}</p>}
               <div className="form-actions">
                 <div className="form-actions-settings">
                   <div className="help-icon-container">
@@ -110,10 +117,9 @@ const LoginForm = (props) => {
                   <img src={signOnGif} />
                 </button>
               </div>
-              <h2 className="error">{error}</h2>
               <p className="version-text">Version: 3.1.2022</p>
             </form>
-          </div>
+          </div>}
         </div>
       </NewWindow>
     </>

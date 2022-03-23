@@ -40,13 +40,13 @@ const MessageForm = (props) => {
     setShowEmoji(false);
   };
 
-  const config = {
-    readonly: false, // all options from https://xdsoft.net/jodit/doc/
-    beautifyHTML: true,
-    buttons: "bold,italic,underline,fontsize,brush,image,file,link",
-  };
+  // const config = {
+  //   readonly: false, // all options from https://xdsoft.net/jodit/doc/
+  //   beautifyHTML: true,
+  //   buttons: "bold,italic,underline,fontsize,brush,image,file,link",
+  // };
 
-  const editor = useRef(null);
+  // const editor = useRef(null);
 
   // JODIT RICH TEXT AREA SETTINGS
   // import JoditEditor from 'jodit-react';

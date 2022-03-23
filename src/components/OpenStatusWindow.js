@@ -1,5 +1,5 @@
 import NewWindow from 'react-new-window';
-import { useState } from 'react';
+import { useState, useCallback } from 'react';
 
 const OpenStatusWindow = (props) => {
   const [statusText, setStatusText] = useState('');
@@ -11,9 +11,20 @@ const OpenStatusWindow = (props) => {
   };
 
   const statusChangeHandler = (e) => {
+    if(characterCount < 80) {
     setStatusText(e.target.value)
     setCharacterCount(e.target.value.length);
+    } else {
+      console.log('none')
+    }
   }
+
+  // const setFormattedContent = useCallback(
+  //   text => {
+  //     setFormattedContent(text.slice(0, 80))
+  //   },
+  //   [setContent]
+  // )
 
   return (
     <>
@@ -35,7 +46,6 @@ const OpenStatusWindow = (props) => {
               className="status-text"
               type="textbox"
               id="status-text"
-              max-length="80"
               cols="75"
             />
             <div className="status-options">
