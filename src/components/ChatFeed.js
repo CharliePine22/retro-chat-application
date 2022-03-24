@@ -4,16 +4,18 @@ import MyMessage from './MyMessage';
 import TheirMessage from './TheirMessage';
 import sayHello from '../assets/images/say-hello.gif';
 import NewUserWelcome from './NewUserWelcome';
-import { ThreeCircles } from 'react-loader-spinner';
+import { ThreeCircles, InfinitySpin } from 'react-loader-spinner';
 
 const ChatFeed = (props) => {
+  // Grab all the props from the Chat Engine to produce messages
   const { chats, activeChat, userName, messages } = props;
   const [currentMessagesList, setCurrentMessagesList] = useState([]);
   const chat = chats && chats[activeChat];
-
+  // Ref used for auto scrolling to bottom of chat
   const messagesEndRef = useRef(null);
   const [loading, setLoading] = useState(false);
 
+  // scroll to bottom of chat
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   };
@@ -26,8 +28,8 @@ const ChatFeed = (props) => {
   // Set messages to state to update accordingly
   useEffect(() => {
     const grabMessages = () => {
-      if(chat && chat.id) {
       setLoading(true);
+      if(chat && chat.id) {
       var myHeaders = new Headers();
       myHeaders.append('Project-ID', 'b8a0fde0-1fae-4db8-9870-6bba5beb67c0');
       myHeaders.append('User-Name', localStorage.getItem('username'));
@@ -52,7 +54,7 @@ const ChatFeed = (props) => {
 
   // Render messages from chat app
   function renderMessages() {
-    // console.log(currentMessagesList)
+    // setLoading(true)
     const keys = Object.keys(currentMessagesList);
     if (keys.length === 0) {
       return (
@@ -62,6 +64,7 @@ const ChatFeed = (props) => {
         </div>
       );
     }
+    // setLoading(false);
     return keys.map((key, index) => {
       const message = currentMessagesList[key];
       const lastMessageKey = index === 0 ? null : keys[index - 1];
@@ -105,12 +108,8 @@ const ChatFeed = (props) => {
   }
 
   if (localStorage.getItem('newUser') == 'false' && (!chat || !props.chatMessages || !chats))
-    return <div className="loading-messages"><ThreeCircles
-    color="blue"
-    height={200}
-    width={200}
-    ariaLabel="three-circles-rotating"
-  /></div> 
+    return <div className="loading-messages"><InfinitySpin color="#00FFFF" />
+  </div> 
 
 
   return (
@@ -134,8 +133,8 @@ const ChatFeed = (props) => {
             </div>
           : (
             <div className='loading-messages'>
-              <ThreeCircles
-                color="blue"
+              <InfinitySpin
+                color="#00FFEE"
                 height={200}
                 width={200}
                 ariaLabel="three-circles-rotating"

@@ -4,7 +4,7 @@ import OpenIconWindow from "./OpenIconWindow";
 import OpenStatusWindow from "./OpenStatusWindow";
 import awayBuddyIcon from "../assets/images/noBuddyIcon.png";
 import { FaEye } from "react-icons/fa";
-import { ThreeDots } from 'react-loader-spinner';
+import { ThreeDots, BallTriangle } from 'react-loader-spinner';
 
 const ChatList = (props) => {
   // Tabs for online chats or requests
@@ -155,6 +155,22 @@ const ChatList = (props) => {
 
   // Creates new chat object with friend
   const createDirectChat = (friend) => {
+    // Loop through channels to grab all friends' usernames
+    const keys = Object.keys(chatList);
+    const currentFriends = keys.map((key) => {
+      const chat = chatList[key];
+      const friendUserNames = chat.people[0].person.username == myUserName
+          ? chat.people[1].person.username
+          : chat.people[0].person.username;
+          return friendUserNames
+    })
+
+    // If the requested username is already in users friends list
+    if(currentFriends.includes(friend)) {
+      setHasError(true);
+      setError(`${friend} is already in your buddies list!`);
+    }
+
     var myHeaders = new Headers();
     myHeaders.append("Project-ID", "b8a0fde0-1fae-4db8-9870-6bba5beb67c0");
     myHeaders.append("User-Name", localStorage.getItem("username"));
@@ -171,12 +187,14 @@ const ChatList = (props) => {
     fetch("https://api.chatengine.io/chats/", requestOptions)
       .then((response) => response.json())
       .then((result) => {
+        // If the user requested does not exist
         if(result.message == 'At least one username is not a user') {
           setError("That username does not exist, please check your spelling and try again.")
           setHasError(true);
-        } else {
+        } else if(!hasError) {
           setAddingNewFriend(false);
         }
+        setAddingNewFriend(true);
         setLoading(false);
       })
       
@@ -188,7 +206,6 @@ const ChatList = (props) => {
     e.preventDefault();
     createDirectChat(newFriend);
     localStorage.setItem('newUser', false);
-    
   };
 
   // Adjust sound volume
@@ -355,10 +372,6 @@ const ChatList = (props) => {
     return <div />;
   }
 
-  if(loading) {
-    console.log('Loading')
-  }
-
   return (
     <>
       <div className="chat-list-container">
@@ -475,7 +488,7 @@ const ChatList = (props) => {
               Add a Buddy
             </button>
           )}
-          {addingNewFriend && (
+          {addingNewFriend && !loading && (
             <form onSubmit={addFriendHandler} className="new-friend-form">
               <input
                 value={newFriend}
@@ -493,7 +506,7 @@ const ChatList = (props) => {
           {!addingNewFriend && (
             <button onClick={logoutHandler}>Sign Out</button>
           )}
-          {loading && <div><ThreeDots /></div>}
+          {loading && <div><BallTriangle height='70' color="blue"/></div>}
           {addingNewFriend && hasError && !loading && <span className='error'>{error}</span>}
         </div>
       </div>

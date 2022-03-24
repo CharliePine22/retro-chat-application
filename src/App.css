@@ -799,8 +799,8 @@
   position: relative;
 }
 
-.channel-list li::before {
-  content: "⮞";
+.buddies::before {
+  content: "↠";
   font-size: 0.8rem;
   position: absolute;
   left: -18px;
@@ -1563,5 +1563,20 @@
   }
   100% {
     opacity: 0;
+  }
+}
+
+/* Media queries */
+@media (max-width:1440px) {
+  .new-friend-form input {
+    height:30px;
+  }
+  .user-actions {
+    margin-top:0;
+    margin-bottom: 10px;
+  }
+
+  .user-channels {
+    height: 71%;
   }
 }
