@@ -16,10 +16,12 @@ const WelcomeScreen = (props) => {
   };
 
   const allUserNames = props.allUsers.map((user) => user.username)
+
   // If the user is signing up
   const signupFormSubmitHandler = (data) => {
     if(allUserNames.includes(data.username)) {
-      setError('Username already exists, please try a different username!')
+      setError('Username already exists, please try a different username!');
+      return;
     }
 
     var myHeaders = new Headers();
@@ -41,7 +43,8 @@ const WelcomeScreen = (props) => {
 
     localStorage.setItem("username", data.username);
     localStorage.setItem("password", data.password);
-    formSubmitHandler(data, true);
+    window.location.reload();
+    // formSubmitHandler(data, true);
   };
 
   const formSubmitHandler = async (data) => {

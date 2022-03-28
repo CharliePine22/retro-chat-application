@@ -10,26 +10,7 @@ const ChatListItem = (props) => {
   
   const user = props.allUsers.find(obj => {
     return obj.username == friendChannelName;
-  })
-    
-  const deleteChatHandler = () => {
-    var myHeaders = new Headers();
-    myHeaders.append('Project-ID', 'b8a0fde0-1fae-4db8-9870-6bba5beb67c0');
-    myHeaders.append('User-Name', localStorage.getItem('username'));
-    myHeaders.append('User-Secret', localStorage.getItem('password'));
-
-    var requestOptions = {
-      method: 'DELETE',
-      headers: myHeaders
-    };
-
-    fetch(`https://api.chatengine.io/chats/${props.chat.id}/`, requestOptions)
-      .then((response) => response.text())
-      .then((result) => console.log(result))
-      .catch((error) => console.log('error', error));
-
-      window.location.reload();
-  };
+  });
 
   const changeChannelHandler = () => {
     setCurrentChannel(!currentChannel);

@@ -1,9 +1,9 @@
 import { useState } from 'react';
 const NewUserWelcome = (props) => { 
-    const [colorsList, setColorsList] = useState(['rgb(201, 175, 147)', 'rgb(57, 246, 193)', 'rgb(181, 239, 126)', 'rgb(57, 238, 165)', 'rgb(186, 50, 125)', 'rgb(28, 172, 81)', 'rgb(87, 255, 53)', 'rgb(211, 159, 207)', 'rgb(23, 231, 233)'])
+    const [colorsList, setColorsList] = useState(['rgba(3,152,65,255)', 'rgba(240,123,10,255)', 'rgba(242,8,112,255)', 'rgba(3,158,212,255)', 'rgba(3,152,65,255)', 'rgba(240,123,10,255)', 'rgba(242,8,112,255)', 'rgb(23, 231, 233)', 'rgba(3,152,65,255)', 'rgba(3,158,212,255)'])
 
     const colorifyHeading = () => {
-      const header = 'Astrochat';
+      const header = 'Astrochat!';
       const colorHeader =[]
       for(let i=0; i<=header.length; i++) {
           colorHeader.push(<span style={{'color' : colorsList[i]}}>{header[i]}</span>)
@@ -25,10 +25,11 @@ const NewUserWelcome = (props) => {
           </ul>
         </div>
         <div className='new-user-body'>
-           <h1>Welcome to <span>{colorifyHeading()}</span>!</h1>
-           <p>To start, click the <button>Add a Buddy</button> located at the bottom of your Buddies list and type in the name of the friend you'd like to chat with!</p>
-           <p>If you don't have any other screennames yet, go ahead and add ChattyCathy to get started!</p>
-
+           <h1>Welcome to <span>{colorifyHeading()}</span></h1>
+           <p>To start, click the <button>Add a Buddy</button> located at the bottom of your Buddies list and type in the name of the friend you'd like to chat with!
+           <p>Feel free to add <strong>ChattyCathy</strong> to get started!</p>
+           </p>
+           
         </div>
       </div>
       )

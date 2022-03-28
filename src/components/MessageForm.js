@@ -1,25 +1,41 @@
-import { useState, useRef } from "react";
+import { useState } from "react";
+// Send message function
 import { sendMessage, isTyping } from "react-chat-engine";
+// Upload image picture
 import { PictureOutlined } from "@ant-design/icons";
+// Message form images
 import sendButtonImage from "../assets/images/send-message-button.png";
 import colorPalette from "../assets/images/color-palette.png";
 import warnIcon from "../assets/images/warn.png";
 import blockIcon from "../assets/images/block.png";
 import redDice from "../assets/images/red-dice.png";
+import addGroupIcon from "../assets/images/add-group.png";
+// Message form emojis
 import Picker from "emoji-picker-react";
 import { FaEnvelopeOpenText } from "react-icons/fa";
+// Message form color picker
+import { GithubPicker } from 'react-color';
 
 const MessageForm = (props) => {
   const { chatId, creds } = props;
   const [value, setValue] = useState("");
+  // Emoji State settings
   const [showEmoji, setShowEmoji] = useState(false);
   const [chosenEmoji, setChosenEmoji] = useState(null);
+  // Color State settings
+  const [showColors, setShowColors] = useState(false);
+  const [chosenColor, setChosenColor] = useState(null);
 
   // Handle text form input changes
   const handleChange = (e) => {
     setValue(e.target.value);
     // isTyping(props, chatId);
   };
+
+  const handleColorChange = (color, event) => {
+    setChosenColor(color.hex);
+    console.log(color.hex);
+  }
 
   const onEmojiClick = (event, emojiObject) => {
     setChosenEmoji(emojiObject);
@@ -40,62 +56,24 @@ const MessageForm = (props) => {
     setShowEmoji(false);
   };
 
-  // const config = {
-  //   readonly: false, // all options from https://xdsoft.net/jodit/doc/
-  //   beautifyHTML: true,
-  //   buttons: "bold,italic,underline,fontsize,brush,image,file,link",
-  // };
-
-  // const editor = useRef(null);
-
-  // JODIT RICH TEXT AREA SETTINGS
-  // import JoditEditor from 'jodit-react';
-  // import 'jodit/build/jodit.min.css';
-  // return (
-  // <form onSubmit={formSubmitHandler}>
-  //   <JoditEditor
-  //     ref={editor}
-  //     value={value}
-  //     config={config}
-  //     tabIndex={1} // tabIndex of textarea
-  //     onBlur={(newContent) => setValue(newContent)} // preferred to use only this option to update the content for performance reasons
-  //     // onChange={(newContent) => {setContent(newContent)}}
-  //   />
-  // <div className='message-form-actions'>
-  {
-    /* <label htmlFor="upload-button">
-          <span className="image-button">
-            <PictureOutlined className="picture-icon" />
-          </span>
-        </label>
-        <input
-          type="file"
-          multiple={false}
-          id="upload-button"
-          style={{ display: 'none' }}
-          onChange={uploadHandler}
-        /> */
-  }
-  //     <button type="submit" className="send-button">
-  //       <img src={sendButtonImage}/>
-  //     </button>
-  //   </div>
-  // </form>
 
   return (
     <form className="message-form" onSubmit={formSubmitHandler}>
       {/* RICH TEXTAREA SETTINGS */}
       <div className="message-tab-actions">
+
         {/* Font Color Container */}
         <div className="font-color-settings">
-          <button type="button" className="font-color">
+          <button type="button" className="font-color" onClick={() => setShowColors(!showColors)}>
             A
           </button>
+          {showColors && <div className='message-form-color-picker'><GithubPicker  onChangeComplete={handleColorChange}/></div>}
           <button type="button" className="font-highlight-color">
             A
           </button>
           <span>|</span>
         </div>
+
         {/* Font Size Container */}
         <div className="font-size-settings">
           <button type="button" className="font-size-decrease">
@@ -109,9 +87,10 @@ const MessageForm = (props) => {
           </button>
           <span>|</span>
         </div>
+
         {/* Font Weight Settings */}
         <div className="font-weight-settings">
-          <button type="button">B</button>
+          <button type="button" className='bold'>B</button>
           <button type="button">
             <em>I</em>
           </button>
@@ -120,6 +99,7 @@ const MessageForm = (props) => {
           </button>
           <span>|</span>
         </div>
+        {/* Message Form Attachment Settings */}
         <div className="attachment-settings">
           {/* Link */}
           <button type="button" className="attachment-settings-link">
@@ -180,6 +160,7 @@ const MessageForm = (props) => {
                 <img src={blockIcon} />
               </div>
         </div>
+        <hr className='message-border' />
           <div className="message-events-container">
             {/* Expressions */}
             <div className="message-expressions">
@@ -190,7 +171,13 @@ const MessageForm = (props) => {
               <img src={redDice} />
               <span>Games</span>
             </div>
+            <div className='add-group'>
+              <img src={addGroupIcon} />
+              <span>Add Group</span>
+            </div>
           </div>
+            <hr className='message-border' />
+  
 
           {/* Send Message */}
           <div className="send-block-container">

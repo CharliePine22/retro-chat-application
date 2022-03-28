@@ -29,6 +29,7 @@ const ChatFeed = (props) => {
   useEffect(() => {
     const grabMessages = () => {
       setLoading(true);
+      // If theres a chat object
       if(chat && chat.id) {
       var myHeaders = new Headers();
       myHeaders.append('Project-ID', 'b8a0fde0-1fae-4db8-9870-6bba5beb67c0');
@@ -54,8 +55,8 @@ const ChatFeed = (props) => {
 
   // Render messages from chat app
   function renderMessages() {
-    // setLoading(true)
     const keys = Object.keys(currentMessagesList);
+    // If there are no available messages, show ice breaker
     if (keys.length === 0) {
       return (
         <div className="no-chat-messages">
@@ -64,7 +65,6 @@ const ChatFeed = (props) => {
         </div>
       );
     }
-    // setLoading(false);
     return keys.map((key, index) => {
       const message = currentMessagesList[key];
       const lastMessageKey = index === 0 ? null : keys[index - 1];
@@ -103,12 +103,17 @@ const ChatFeed = (props) => {
     );
   };
 
-  if (localStorage.getItem('newUser') === 'true') {
+  if (props.activeChat == 0) {
     return <NewUserWelcome nav={Navbar}/>
   }
 
   if (localStorage.getItem('newUser') == 'false' && (!chat || !props.chatMessages || !chats))
-    return <div className="loading-messages"><InfinitySpin color="#00FFFF" />
+    return <div className="loading-messages"> <ThreeCircles
+    color="#00FFEE"
+    height={200}
+    width={250}
+    ariaLabel="three-circles-rotating"
+  />
   </div> 
 
 
@@ -133,10 +138,10 @@ const ChatFeed = (props) => {
             </div>
           : (
             <div className='loading-messages'>
-              <InfinitySpin
+              <ThreeCircles
                 color="#00FFEE"
                 height={200}
-                width={200}
+                width={250}
                 ariaLabel="three-circles-rotating"
               />
             </div>

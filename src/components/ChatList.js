@@ -7,6 +7,7 @@ import { FaEye } from "react-icons/fa";
 import { ThreeDots, BallTriangle } from 'react-loader-spinner';
 
 const ChatList = (props) => {
+                                  //////// ! State Settings ! ////////
   // Tabs for online chats or requests
   const [currentTab, setCurrentTab] = useState("buddies");
   const [currentChat, setCurrentChat] = useState(0);
@@ -45,6 +46,9 @@ const ChatList = (props) => {
   const [userPassword, setUserPassword] = useState("");
   const [changingPassword, setChangingPassword] = useState(false);
   const [hideUserPassword, setHideUserPassword] = useState(true);
+
+  // Opens and closes the deleting buddy form
+  const [deletingBuddy, setDeletingBuddy] = useState(false);
 
   // User status and icon settings
   const [currentUserStatus, setCurrentUserStatus] = useState("");
@@ -125,11 +129,13 @@ const ChatList = (props) => {
     const keys = Object.keys(chatList);
     return keys.map((key) => {
       const chat = chatList[key];
+      console.log(chat);
       if(chat.people.length < 2) return <div /> // Prevents chats that didnt properly delete with users from showing
       const friendChannelName =
         chatList && chat && chat.people[0].person.username == myUserName
           ? chat.people[1].person.username
           : chat.people[0].person.username;
+
 
       return (
         chat &&
@@ -145,7 +151,6 @@ const ChatList = (props) => {
       );
     });
   };
-
 
   // Open and close your buddy list
   const viewBuddyListHandler = () => {
@@ -165,7 +170,7 @@ const ChatList = (props) => {
           return friendUserNames
     })
 
-    // If the requested username is already in users friends list
+    // If the requested username is already in users friends list throw error
     if(currentFriends.includes(friend)) {
       setHasError(true);
       setError(`${friend} is already in your buddies list!`);
@@ -192,8 +197,11 @@ const ChatList = (props) => {
           setError("That username does not exist, please check your spelling and try again.")
           setHasError(true);
         } else if(!hasError) {
+          // If theres no error, close the add buddy input form
           setAddingNewFriend(false);
+          setNewFriend('');
         }
+        // If there is still an error or issue, keep the form open
         setAddingNewFriend(true);
         setLoading(false);
       })
@@ -266,6 +274,28 @@ const ChatList = (props) => {
     window.location.reload();
   }
 
+  // Delete buddy handler
+  const deleteUserFormHandler = (e) => {
+    e.preventDefault()
+    var myHeaders = new Headers();
+    myHeaders.append('Project-ID', 'b8a0fde0-1fae-4db8-9870-6bba5beb67c0');
+    myHeaders.append('User-Name', localStorage.getItem('username'));
+    myHeaders.append('User-Secret', localStorage.getItem('password'));
+
+    var requestOptions = {
+      method: 'DELETE',
+      headers: myHeaders
+    };
+
+    // deletes user based off of the chat id
+    fetch(`https://api.chatengine.io/chats/${props.chat.id}/`, requestOptions)
+      .then((response) => response.text())
+      .then((result) => console.log(result))
+      .catch((error) => console.log('error', error));
+
+      window.location.reload();
+  };
+
   // Open status window
   const setStatusHandler = () => {
     setOpenStatusWindow(!openStatusWindow);
@@ -308,9 +338,9 @@ const ChatList = (props) => {
     setOpenIconWindow(!openIconWindow);
   };
 
-
   // Set user avatar
   const setUserIcon = (url) => {
+    // If the url isnt an image format, return error message
     if(url.match(/\.(jpeg|jpg|gif|png)$/) == null) {
       setError('Invalid format, image must be a JPG, GIF, or PNG!');
       return;
@@ -433,7 +463,7 @@ const ChatList = (props) => {
                   {" "}
                   ({onlineUsers.length}/
                   {chatList &&
-                    Object.keys(chatList).length > 0 &&
+                    Object.keys(chatList) && Object.keys(chatList).length >= 0 &&
                     Object.keys(chatList).length}
                   )
                 </span>
@@ -451,12 +481,16 @@ const ChatList = (props) => {
                 <h3>User Settings</h3>
               </div>
               <div className="user-settings-actions">
+
+                {/* Username Settings */}
                 <div className="user-settings-username">
                   {!changingUserName ? <p>ScreenName: {props.userName}</p> : <form onSubmit={userNameChangeHandler}> 
                   <input type='text' value={newUserName}  onChange={(e) => setNewUserName(e.target.value)} placeholder='New username'/>
                   </form>}
                   <button onClick={() => setChangingUserName(true)}>Change ScreenName</button>
                 </div>
+
+                {/* Password settings */}
                 <div className="user-settings-password">
                   {!changingPassword ? <p>
                     Password:{" "}
@@ -473,8 +507,13 @@ const ChatList = (props) => {
                   }
                   <button onClick={() => setChangingPassword(true)}>{!changingPassword ? 'Change Password' : '' }</button>
                 </div>
+
+                {/* Delete settings */}
                 <div className="user-settings-delete">
-                  <button>Delete Buddy</button>
+                  <button onClick={() => setDeletingBuddy(true)}>Delete Buddy</button>
+                  <form onSubmit={deleteUserFormHandler}>
+                    <input type='text' placeholder='Username'/>
+                  </form>
                 </div>
               </div>
             </>
