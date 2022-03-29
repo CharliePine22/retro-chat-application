@@ -2,6 +2,7 @@ import { useState } from "react";
 import axios from "axios";
 import siteLogo from "../assets/images/site-logo.png";
 import chatPreview from "../assets/images/chat-preview.jpg";
+import rjctChatPreview from "../assets/images/rjct-chat-preview.png";
 import LoginForm from "./LoginForm";
 
 const WelcomeScreen = (props) => {
@@ -15,12 +16,28 @@ const WelcomeScreen = (props) => {
     setError(false);
   };
 
-  const allUserNames = props.allUsers.map((user) => user.username)
+  const allUserNames = props.allUsers.map((user) => user.username);
+
+  const addUserDetails = async (user) => {
+    let url = `https://retro-chat-app22-default-rtdb.firebaseio.com/users/${user}.json`;
+    const response = await fetch(url, {
+      method: "PUT",
+      headers: { 
+        "Content-Type": "application/json",
+        "Access-Control-Allow-Origin" : "*",
+        "Access-Control-Allow-Methods" : "DELETE, POST, GET, OPTIONS, PUT",
+        "Access-Control-Allow-Headers": "Content-Type, Authorization, X-Requested-With"
+       },
+      body: JSON.stringify({status: 'User has no status..'}),
+    });
+    const result = await response.json();
+  };
 
   // If the user is signing up
-  const signupFormSubmitHandler = (data) => {
-    if(allUserNames.includes(data.username)) {
-      setError('Username already exists, please try a different username!');
+  const signupFormSubmitHandler = async (data) => {
+    // If the username exists already, throw error
+    if (allUserNames.includes(data.username)) {
+      setError("Username already exists, please try a different username!");
       return;
     }
 
@@ -40,11 +57,12 @@ const WelcomeScreen = (props) => {
       .then((response) => response.json())
       .then((result) => console.log(result))
       .catch((error) => console.log("error", error));
+    addUserDetails(data.username);
 
     localStorage.setItem("username", data.username);
     localStorage.setItem("password", data.password);
+    setIsLoggingIn(false);
     window.location.reload();
-    // formSubmitHandler(data, true);
   };
 
   const formSubmitHandler = async (data) => {
@@ -58,23 +76,24 @@ const WelcomeScreen = (props) => {
 
     try {
       // Grab user authentication
-      await axios.get("https://api.chatengine.io/chats", {
+      const response = await axios.get("https://api.chatengine.io/chats", {
         headers: authObject,
       });
 
       // Authentication successful
-      localStorage.setItem("newUser", false);
       localStorage.setItem("username", data.username);
       localStorage.setItem("password", data.password);
       setIsLoggingIn(false);
       window.location.reload();
     } catch (error) {
-      if(allUserNames.includes(data.username)) {
-        setError('Incorrect password, please try again!')
-        return;
+      // If the username exists, asssume the password is incorrect
+      if (allUserNames.includes(data.username)) {
+        setError("Incorrect password, please try again!");
+        console.log("Incorrect");
+      } else {
+        // If the username doesn't exist
+        setError("Screenname does not exist, try again or create a new one!");
       }
-      console.log(error)
-      setError("Screenname does not exist, try again or create a new one!");
     }
     setLoading(false);
   };

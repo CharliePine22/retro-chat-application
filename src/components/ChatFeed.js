@@ -61,7 +61,7 @@ const ChatFeed = (props) => {
       return (
         <div className="no-chat-messages">
           <img src={sayHello} />
-          <h2>No messages here yet...</h2>
+          <h2>No messages here yet, say Hello to get started!</h2>
         </div>
       );
     }

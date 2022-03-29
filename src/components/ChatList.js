@@ -94,27 +94,41 @@ const ChatList = (props) => {
 
   //Determine user status
   useEffect(() => {
-    // const intervalId = setInterval(() => {
+    // If theres no users or it hasn't finished fetching yet
       if (props.allUsers.length == 0) return <div />;
+
       if (props.allUsers.length > 0) {
+        // Find current user and grab their status 
         const user = props.allUsers.find((obj) => {
           return obj.username == localStorage.getItem("username");
         });
+        // If the user has a status that isn't empty, display that status
         if (user && user["custom_json"] !== "{}") {
           setCurrentUserStatus(user["custom_json"]);
         } else {
+          // If the user doesn't have an online status message or local storage 
           if (savedUserStatus === "" || savedUserStatus === null) {
             setCurrentUserStatus("Set a status message");
           } else {
+            // If the user does have a status but the network didn't update it, grab the local storage status
             setCurrentUserStatus(localStorage.getItem("status"));
           }
         }
       }
-    // }, 5000);
 
-    // return () => clearInterval(intervalId);
+      // Grab all the users that are online
+      const currentUsers = props.allUsers.filter(obj => {
+        // Don't include current user in count
+        if(obj.username == myUserName) return '';
+        
+        // Set online users list
+        else {
+        return obj['is_online'] == true;
+        }
+      })
+      setOnlineUsers(currentUsers)
+
   }, [props.allUsers, useState]);
-
 
   //////////////////////////////////// ! FUNCTIONS AND HANDLERS ! ///////////////////////////////
   // Switch to selected chat channel
@@ -129,7 +143,6 @@ const ChatList = (props) => {
     const keys = Object.keys(chatList);
     return keys.map((key) => {
       const chat = chatList[key];
-      console.log(chat);
       if(chat.people.length < 2) return <div /> // Prevents chats that didnt properly delete with users from showing
       const friendChannelName =
         chatList && chat && chat.people[0].person.username == myUserName
@@ -145,6 +158,7 @@ const ChatList = (props) => {
             loading={props.loading}
             switchChannel={switchChatChannel}
             allUsers={props.allUsers}
+            firebaseUsersList={props.firebaseUsersList}
             chat={chat}
           />
         )
@@ -154,7 +168,7 @@ const ChatList = (props) => {
 
   // Open and close your buddy list
   const viewBuddyListHandler = () => {
-    // bool set to toggle
+    // bool set to toggle off/on
     setViewingBuddyList(!viewingBuddyList);
   };
 
@@ -302,30 +316,21 @@ const ChatList = (props) => {
   };
 
   // Set user status
-  const setUserStatus = (status) => {
+  const setUserStatus = async (status) => {
     // Update local browser to show status change
-    const body = {
-      custom_json: status,
-    };
-
-    // Update user settings to add status
-    var myHeaders = new Headers();
-    myHeaders.append("Project-ID", "b8a0fde0-1fae-4db8-9870-6bba5beb67c0");
-    myHeaders.append("User-Name", localStorage.getItem("username"));
-    myHeaders.append("User-Secret", localStorage.getItem("password"));
-    myHeaders.append("Content-Type", "application/json");
-    var requestOptions = {
+    let url = `https://retro-chat-app22-default-rtdb.firebaseio.com/users/${myUserName}.json`;
+    const response = await fetch(url, {
       method: "PATCH",
-      headers: myHeaders,
-      body: JSON.stringify(body),
-      redirect: "follow",
-    };
-
-    fetch(`https://api.chatengine.io/users/me/`, requestOptions)
-      .then((response) => response.json())
-      .then((result) => console.log(result))
-      .catch((error) => console.log("error", error));
-
+      headers: { 
+        "Content-Type": "application/json",
+        "Access-Control-Allow-Origin" : "*",
+        "Access-Control-Allow-Methods" : "DELETE, POST, GET, OPTIONS, PUT",
+        "Access-Control-Allow-Headers": "Content-Type, Authorization, X-Requested-With"
+       },
+      body: JSON.stringify({status: status}),
+    });
+    const result = await response.json();
+    console.log(result)
     setCurrentUserStatus(status);
     localStorage.setItem("status", status);
 
@@ -339,58 +344,34 @@ const ChatList = (props) => {
   };
 
   // Set user avatar
-  const setUserIcon = (url) => {
+  const setUserIcon = async (imageUrl) => {
     // If the url isnt an image format, return error message
-    if(url.match(/\.(jpeg|jpg|gif|png)$/) == null) {
+    if(imageUrl.match(/\.(jpeg|jpg|gif|png)$/) == null) {
       setError('Invalid format, image must be a JPG, GIF, or PNG!');
       return;
     }
-    localStorage.setItem("icon", url);
-    const fileName = "userAvatar.jpg";
-    const user = props.allUsers.find((obj) => {
-      return obj.username == localStorage.getItem("username");
-    });
-
-    // Convert url image to JS file
-    const convertImage = async (url) => {
-      const response = await fetch(url);
-      const contentType = response.headers.get("content-type");
-      const blob = await response.blob();
-      const file = new File([blob], fileName, { contentType });
-
-      return file;
-    };
-
-    const imageFile = convertImage(url)
 
     // Update user avatar with file
-    var myHeaders = new Headers();
-    myHeaders.append("Project-ID", "b8a0fde0-1fae-4db8-9870-6bba5beb67c0");
-    myHeaders.append("User-Name", localStorage.getItem("username"));
-    myHeaders.append("User-Secret", localStorage.getItem("password"));
-    myHeaders.append(
-      "Content-Type",
-      "multipart/form-data; boundary=----WebKitFormBoundary7MA4YWxkTrZu0gW"
-    );
-
-    var requestOptions = {
+    let url = `https://retro-chat-app22-default-rtdb.firebaseio.com/users/${myUserName}.json`;
+    const response = await fetch(url, {
       method: "PATCH",
-      headers: myHeaders,
-      body: {
-        'avatar': imageFile,
-      },
-      redirect: "follow",
-    };
-
-    fetch(`https://api.chatengine.io/users/me/`, requestOptions)
-      .then((response) => response.json())
-      .then((result) => console.log(result))
-      .catch((error) => console.log("error", error));
+      headers: { 
+        "Content-Type": "application/json",
+        "Access-Control-Allow-Origin" : "*",
+        "Access-Control-Allow-Methods" : "DELETE, POST, GET, OPTIONS, PUT",
+        "Access-Control-Allow-Headers": "Content-Type, Authorization, X-Requested-With"
+       },
+      body: JSON.stringify({avatar: imageUrl}),
+    });
+    const result = await response.json();
+    console.log(result)
 
     setOpenIconWindow(false);
     setError('')
   };
 
+  // Removes user info from local storage, refreshes and logs them out
+  // Returns them to the Welcome Screen
   const logoutHandler = () => {
     localStorage.removeItem("username");
     localStorage.removeItem("password");
