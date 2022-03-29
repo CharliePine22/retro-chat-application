@@ -103,12 +103,14 @@ const ChatFeed = (props) => {
     );
   };
 
+  // If the user has no chats available (usually for new users)
+  // Show Welcome screen
   if (props.activeChat == 0) {
     return <NewUserWelcome nav={Navbar}/>
   }
 
-  if (localStorage.getItem('newUser') == 'false' && (!chat || !props.chatMessages || !chats))
-    return <div className="loading-messages"> <ThreeCircles
+  // If the chats haven't finsihed loading yet, show loading screen
+  if (!chat || !props.chatMessages || !chats) return <div className="loading-messages"> <ThreeCircles
     color="#00FFEE"
     height={200}
     width={250}
@@ -138,7 +140,7 @@ const ChatFeed = (props) => {
             </div>
           : (
             <div className='loading-messages'>
-              <ThreeCircles
+              <InfinitySpin
                 color="#00FFEE"
                 height={200}
                 width={250}

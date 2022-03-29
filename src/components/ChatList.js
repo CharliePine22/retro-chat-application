@@ -4,10 +4,10 @@ import OpenIconWindow from "./OpenIconWindow";
 import OpenStatusWindow from "./OpenStatusWindow";
 import awayBuddyIcon from "../assets/images/noBuddyIcon.png";
 import { FaEye } from "react-icons/fa";
-import { ThreeDots, BallTriangle } from 'react-loader-spinner';
+import { ThreeDots, BallTriangle } from "react-loader-spinner";
 
 const ChatList = (props) => {
-                                  //////// ! State Settings ! ////////
+  ////////////////////////////////////// ! State Settings ! ////////////////////////////////////
   // Tabs for online chats or requests
   const [currentTab, setCurrentTab] = useState("buddies");
   const [currentChat, setCurrentChat] = useState(0);
@@ -29,7 +29,7 @@ const ChatList = (props) => {
   const [viewingBuddyList, setViewingBuddyList] = useState(false);
 
   // Error and Loading States
-  const [error, setError] = useState('');
+  const [error, setError] = useState("");
   const [hasError, setHasError] = useState(false);
   const [loading, setLoading] = useState(false);
 
@@ -39,7 +39,7 @@ const ChatList = (props) => {
 
   // Username settings
   const myUserName = localStorage.getItem("username");
-  const [newUserName, setNewUserName] = useState('');
+  const [newUserName, setNewUserName] = useState("");
   const [changingUserName, setChangingUserName] = useState(false);
 
   // Password settings
@@ -49,14 +49,18 @@ const ChatList = (props) => {
 
   // Opens and closes the deleting buddy form
   const [deletingBuddy, setDeletingBuddy] = useState(false);
+  const [deleteBuddyName, setDeleteBuddyName] = useState("");
 
   // User status and icon settings
   const [currentUserStatus, setCurrentUserStatus] = useState("");
+  const [currentUserAvatar, setCurrentUserAvatar] = useState("");
   const savedUserStatus = localStorage.getItem("status");
   const savedUserIcon = localStorage.getItem("icon");
 
   // Grab chat rooms on render
   let [onlineUsers, setOnlineUsers] = useState([]);
+
+  //////////////////////////////////// ! USE EFFECTS ! //////////////////////////////////////
 
   // Grab all the chat rooms available to users
   useEffect(() => {
@@ -69,6 +73,14 @@ const ChatList = (props) => {
       }
     };
     fetchCurrentMessages();
+    // If firebase fetching isn't done yet return and wait
+    if (props.firebaseUsersList.length == 0) {
+      return <div />;
+    } else {
+      // If it is done, set the current users avatar to their saved avatar and status
+      setCurrentUserAvatar(props.firebaseUsersList[myUserName].avatar);
+      setCurrentUserStatus(props.firebaseUsersList[myUserName].status)
+    }
   }, [props.chats]);
 
   // Loop to listen for escape key press
@@ -77,7 +89,7 @@ const ChatList = (props) => {
       if (event.keyCode === 27) {
         // Close add new friend, remove error, and reset field
         setAddingNewFriend(false);
-        setNewFriend('');
+        setNewFriend("");
         setHasError(false);
 
         // Cancel username/password change
@@ -95,45 +107,24 @@ const ChatList = (props) => {
   //Determine user status
   useEffect(() => {
     // If theres no users or it hasn't finished fetching yet
-      if (props.allUsers.length == 0) return <div />;
-
-      if (props.allUsers.length > 0) {
-        // Find current user and grab their status 
-        const user = props.allUsers.find((obj) => {
-          return obj.username == localStorage.getItem("username");
-        });
-        // If the user has a status that isn't empty, display that status
-        if (user && user["custom_json"] !== "{}") {
-          setCurrentUserStatus(user["custom_json"]);
-        } else {
-          // If the user doesn't have an online status message or local storage 
-          if (savedUserStatus === "" || savedUserStatus === null) {
-            setCurrentUserStatus("Set a status message");
-          } else {
-            // If the user does have a status but the network didn't update it, grab the local storage status
-            setCurrentUserStatus(localStorage.getItem("status"));
-          }
-        }
+    if (props.allUsers.length == 0) return <div />;
+    
+    // Grab all the users that are online
+    const currentUsers = props.allUsers.filter((obj) => {
+      // Don't include current user in count
+      if (obj.username == myUserName) return "";
+      // Set online users list
+      else {
+        return obj["is_online"] == true;
       }
-
-      // Grab all the users that are online
-      const currentUsers = props.allUsers.filter(obj => {
-        // Don't include current user in count
-        if(obj.username == myUserName) return '';
-        
-        // Set online users list
-        else {
-        return obj['is_online'] == true;
-        }
-      })
-      setOnlineUsers(currentUsers)
-
+    });
+    setOnlineUsers(currentUsers);
   }, [props.allUsers, useState]);
 
   //////////////////////////////////// ! FUNCTIONS AND HANDLERS ! ///////////////////////////////
   // Switch to selected chat channel
   const switchChatChannel = (channelId) => {
-    localStorage.setItem('chatId', channelId);
+    localStorage.setItem("chatId", channelId);
     setCurrentChat(channelId);
     props.setActiveChat(channelId);
   };
@@ -143,12 +134,11 @@ const ChatList = (props) => {
     const keys = Object.keys(chatList);
     return keys.map((key) => {
       const chat = chatList[key];
-      if(chat.people.length < 2) return <div /> // Prevents chats that didnt properly delete with users from showing
+      if (chat.people.length < 2) return <div />; // Prevents chats that didnt properly delete with users from showing
       const friendChannelName =
         chatList && chat && chat.people[0].person.username == myUserName
           ? chat.people[1].person.username
           : chat.people[0].person.username;
-
 
       return (
         chat &&
@@ -178,14 +168,15 @@ const ChatList = (props) => {
     const keys = Object.keys(chatList);
     const currentFriends = keys.map((key) => {
       const chat = chatList[key];
-      const friendUserNames = chat.people[0].person.username == myUserName
+      const friendUserNames =
+        chat.people[0].person.username == myUserName
           ? chat.people[1].person.username
           : chat.people[0].person.username;
-          return friendUserNames
-    })
+      return friendUserNames;
+    });
 
     // If the requested username is already in users friends list throw error
-    if(currentFriends.includes(friend)) {
+    if (currentFriends.includes(friend)) {
       setHasError(true);
       setError(`${friend} is already in your buddies list!`);
     }
@@ -207,19 +198,20 @@ const ChatList = (props) => {
       .then((response) => response.json())
       .then((result) => {
         // If the user requested does not exist
-        if(result.message == 'At least one username is not a user') {
-          setError("That username does not exist, please check your spelling and try again.")
+        if (result.message == "At least one username is not a user") {
+          setError(
+            "That username does not exist, please check your spelling and try again."
+          );
           setHasError(true);
-        } else if(!hasError) {
+        } else if (!hasError) {
           // If theres no error, close the add buddy input form
           setAddingNewFriend(false);
-          setNewFriend('');
+          setNewFriend("");
         }
         // If there is still an error or issue, keep the form open
         setAddingNewFriend(true);
         setLoading(false);
-      })
-      
+      });
   };
 
   // Send a friend request
@@ -227,7 +219,7 @@ const ChatList = (props) => {
     setLoading(true);
     e.preventDefault();
     createDirectChat(newFriend);
-    localStorage.setItem('newUser', false);
+    localStorage.setItem("newUser", false);
   };
 
   // Adjust sound volume
@@ -249,7 +241,7 @@ const ChatList = (props) => {
     var requestOptions = {
       method: "PATCH",
       headers: myHeaders,
-      body: JSON.stringify({'username' : newUserName}),
+      body: JSON.stringify({ username: newUserName }),
     };
 
     fetch(`https://api.chatengine.io/users/me/`, requestOptions)
@@ -257,9 +249,9 @@ const ChatList = (props) => {
       .then((result) => console.log(result))
       .catch((error) => console.log("error", error));
 
-    localStorage.setItem('username', newUserName)
+    localStorage.setItem("username", newUserName);
     window.location.reload();
-  }
+  };
 
   // Change user password
   const passwordChangeHandler = (e) => {
@@ -273,10 +265,9 @@ const ChatList = (props) => {
     var requestOptions = {
       method: "PATCH",
       headers: myHeaders,
-      body: JSON.stringify(
-        {
-          'secret' : userPassword
-        }),
+      body: JSON.stringify({
+        secret: userPassword,
+      }),
     };
 
     fetch(`https://api.chatengine.io/users/me/`, requestOptions)
@@ -284,30 +275,30 @@ const ChatList = (props) => {
       .then((result) => console.log(result))
       .catch((error) => console.log("error", error));
 
-    localStorage.setItem('password', userPassword)
+    localStorage.setItem("password", userPassword);
     window.location.reload();
-  }
+  };
 
   // Delete buddy handler
   const deleteUserFormHandler = (e) => {
-    e.preventDefault()
+    e.preventDefault();
     var myHeaders = new Headers();
-    myHeaders.append('Project-ID', 'b8a0fde0-1fae-4db8-9870-6bba5beb67c0');
-    myHeaders.append('User-Name', localStorage.getItem('username'));
-    myHeaders.append('User-Secret', localStorage.getItem('password'));
+    myHeaders.append("Project-ID", "b8a0fde0-1fae-4db8-9870-6bba5beb67c0");
+    myHeaders.append("User-Name", localStorage.getItem("username"));
+    myHeaders.append("User-Secret", localStorage.getItem("password"));
 
     var requestOptions = {
-      method: 'DELETE',
-      headers: myHeaders
+      method: "DELETE",
+      headers: myHeaders,
     };
 
     // deletes user based off of the chat id
     fetch(`https://api.chatengine.io/chats/${props.chat.id}/`, requestOptions)
       .then((response) => response.text())
       .then((result) => console.log(result))
-      .catch((error) => console.log('error', error));
+      .catch((error) => console.log("error", error));
 
-      window.location.reload();
+    window.location.reload();
   };
 
   // Open status window
@@ -321,16 +312,17 @@ const ChatList = (props) => {
     let url = `https://retro-chat-app22-default-rtdb.firebaseio.com/users/${myUserName}.json`;
     const response = await fetch(url, {
       method: "PATCH",
-      headers: { 
+      headers: {
         "Content-Type": "application/json",
-        "Access-Control-Allow-Origin" : "*",
-        "Access-Control-Allow-Methods" : "DELETE, POST, GET, OPTIONS, PUT",
-        "Access-Control-Allow-Headers": "Content-Type, Authorization, X-Requested-With"
-       },
-      body: JSON.stringify({status: status}),
+        "Access-Control-Allow-Origin": "*",
+        "Access-Control-Allow-Methods": "DELETE, POST, GET, OPTIONS, PUT",
+        "Access-Control-Allow-Headers":
+          "Content-Type, Authorization, X-Requested-With",
+      },
+      body: JSON.stringify({ status: status }),
     });
     const result = await response.json();
-    console.log(result)
+    console.log(result);
     setCurrentUserStatus(status);
     localStorage.setItem("status", status);
 
@@ -346,8 +338,8 @@ const ChatList = (props) => {
   // Set user avatar
   const setUserIcon = async (imageUrl) => {
     // If the url isnt an image format, return error message
-    if(imageUrl.match(/\.(jpeg|jpg|gif|png)$/) == null) {
-      setError('Invalid format, image must be a JPG, GIF, or PNG!');
+    if (imageUrl.match(/\.(jpeg|jpg|gif|png)$/) == null) {
+      setError("Invalid format, image must be a JPG, GIF, or PNG!");
       return;
     }
 
@@ -355,19 +347,20 @@ const ChatList = (props) => {
     let url = `https://retro-chat-app22-default-rtdb.firebaseio.com/users/${myUserName}.json`;
     const response = await fetch(url, {
       method: "PATCH",
-      headers: { 
+      headers: {
         "Content-Type": "application/json",
-        "Access-Control-Allow-Origin" : "*",
-        "Access-Control-Allow-Methods" : "DELETE, POST, GET, OPTIONS, PUT",
-        "Access-Control-Allow-Headers": "Content-Type, Authorization, X-Requested-With"
-       },
-      body: JSON.stringify({avatar: imageUrl}),
+        "Access-Control-Allow-Origin": "*",
+        "Access-Control-Allow-Methods": "DELETE, POST, GET, OPTIONS, PUT",
+        "Access-Control-Allow-Headers":
+          "Content-Type, Authorization, X-Requested-With",
+      },
+      body: JSON.stringify({ avatar: imageUrl }),
     });
     const result = await response.json();
-    console.log(result)
+    setCurrentUserAvatar(imageUrl);
 
     setOpenIconWindow(false);
-    setError('')
+    setError("");
   };
 
   // Removes user info from local storage, refreshes and logs them out
@@ -378,9 +371,9 @@ const ChatList = (props) => {
     window.location.reload();
   };
 
-
+  // If chat rooms or userdata hasn't loaded yet, return and wait for load to complete
   if (!props.chats || props.allUsers.length == 0) {
-    return <div />;
+    return <div/>;
   }
 
   return (
@@ -397,14 +390,22 @@ const ChatList = (props) => {
 
             {/* Status  */}
             <span onClick={setStatusHandler} className="user-status">
-              {chatList !== null && currentUserStatus !== '' ? currentUserStatus : <div className='dots-status-loader'><ThreeDots color='blue' height={50} width={50}/></div>}
+              {chatList !== null && currentUserStatus !== "" ? (
+                currentUserStatus
+              ) : (
+                <div className="dots-status-loader">
+                  <ThreeDots color="blue" height={50} width={50} />
+                </div>
+              )}
               <span className="status-change-word"> Change</span>
             </span>
           </div>
 
           {/* Icon change window */}
           <div>
-            {openIconWindow && <OpenIconWindow changeIcon={setUserIcon} error={error}/>}
+            {openIconWindow && (
+              <OpenIconWindow changeIcon={setUserIcon} error={error} />
+            )}
           </div>
 
           {/* Status change window */}
@@ -417,11 +418,7 @@ const ChatList = (props) => {
           {/* Icon */}
           <div className="user-icon" onClick={setIconHandler}>
             <img
-              src={
-                savedUserIcon === "" || savedUserIcon === null
-                  ? awayBuddyIcon
-                  : savedUserIcon
-              }
+              src={currentUserAvatar !== "" ? currentUserAvatar : awayBuddyIcon}
             />
           </div>
         </div>
@@ -434,17 +431,17 @@ const ChatList = (props) => {
           <button onClick={() => setCurrentTab("settings")}>Settings</button>
         </div>
         <div className="user-channels">
-
           {/* Users list */}
           {currentTab == "buddies" && (
             <ul className="buddies-list-name">
-              <span className='buddies' onClick={viewBuddyListHandler}>
+              <span className="buddies" onClick={viewBuddyListHandler}>
                 Buddies{" "}
                 <span>
                   {" "}
                   ({onlineUsers.length}/
                   {chatList &&
-                    Object.keys(chatList) && Object.keys(chatList).length >= 0 &&
+                    Object.keys(chatList) &&
+                    Object.keys(chatList).length >= 0 &&
                     Object.keys(chatList).length}
                   )
                 </span>
@@ -462,38 +459,60 @@ const ChatList = (props) => {
                 <h3>User Settings</h3>
               </div>
               <div className="user-settings-actions">
-
                 {/* Username Settings */}
                 <div className="user-settings-username">
-                  {!changingUserName ? <p>ScreenName: {props.userName}</p> : <form onSubmit={userNameChangeHandler}> 
-                  <input type='text' value={newUserName}  onChange={(e) => setNewUserName(e.target.value)} placeholder='New username'/>
-                  </form>}
-                  <button onClick={() => setChangingUserName(true)}>Change ScreenName</button>
+                  {!changingUserName ? (
+                    <p>ScreenName: {props.userName}</p>
+                  ) : (
+                    <form onSubmit={userNameChangeHandler}>
+                      <input
+                        type="text"
+                        value={newUserName}
+                        onChange={(e) => setNewUserName(e.target.value)}
+                        placeholder="New username"
+                      />
+                    </form>
+                  )}
+                  <button onClick={() => setChangingUserName(true)}>
+                    Change ScreenName
+                  </button>
                 </div>
 
                 {/* Password settings */}
                 <div className="user-settings-password">
-                  {!changingPassword ? <p>
-                    Password:{" "}
-                    {hideUserPassword
-                      ? props.creds.userSecret.replace(/./g, "*")
-                      : props.creds.userSecret}{" "}
-                    <FaEye
-                      onClick={() => setHideUserPassword(!hideUserPassword)}
-                      className="hide-password-icon"
-                    />
-                  </p> : <form onSubmit={passwordChangeHandler}> 
-                  <input type='text' value={userPassword}  onChange={(e) => setUserPassword(e.target.value)} placeholder='New password'/>
-                  </form>
-                  }
-                  <button onClick={() => setChangingPassword(true)}>{!changingPassword ? 'Change Password' : '' }</button>
+                  {!changingPassword ? (
+                    <p>
+                      Password:{" "}
+                      {hideUserPassword
+                        ? props.creds.userSecret.replace(/./g, "*")
+                        : props.creds.userSecret}{" "}
+                      <FaEye
+                        onClick={() => setHideUserPassword(!hideUserPassword)}
+                        className="hide-password-icon"
+                      />
+                    </p>
+                  ) : (
+                    <form onSubmit={passwordChangeHandler}>
+                      <input
+                        type="text"
+                        value={userPassword}
+                        onChange={(e) => setUserPassword(e.target.value)}
+                        placeholder="New password"
+                      />
+                    </form>
+                  )}
+                  <button onClick={() => setChangingPassword(true)}>
+                    {!changingPassword ? "Change Password" : ""}
+                  </button>
                 </div>
 
                 {/* Delete settings */}
                 <div className="user-settings-delete">
-                  <button onClick={() => setDeletingBuddy(true)}>Delete Buddy</button>
+                  <button onClick={() => setDeletingBuddy(true)}>
+                    Delete Buddy
+                  </button>
                   <form onSubmit={deleteUserFormHandler}>
-                    <input type='text' placeholder='Username'/>
+                    <input type="text" placeholder="Username" />
                   </form>
                 </div>
               </div>
@@ -526,8 +545,14 @@ const ChatList = (props) => {
           {!addingNewFriend && (
             <button onClick={logoutHandler}>Sign Out</button>
           )}
-          {loading && <div><BallTriangle height='70' color="blue"/></div>}
-          {addingNewFriend && hasError && !loading && <span className='error'>{error}</span>}
+          {loading && (
+            <div>
+              <BallTriangle height="70" color="blue" />
+            </div>
+          )}
+          {addingNewFriend && hasError && !loading && (
+            <span className="error">{error}</span>
+          )}
         </div>
       </div>
     </>

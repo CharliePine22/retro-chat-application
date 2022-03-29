@@ -28,7 +28,9 @@ const WelcomeScreen = (props) => {
         "Access-Control-Allow-Methods" : "DELETE, POST, GET, OPTIONS, PUT",
         "Access-Control-Allow-Headers": "Content-Type, Authorization, X-Requested-With"
        },
-      body: JSON.stringify({status: 'User has no status..'}),
+      body: JSON.stringify({
+        status: 'User has no status..'
+      }),
     });
     const result = await response.json();
   };
