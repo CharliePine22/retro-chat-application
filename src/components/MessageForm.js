@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useRef } from "react";
 // Send message function
 import { sendMessage, isTyping } from "react-chat-engine";
 // Upload image picture
@@ -18,6 +18,7 @@ import { GithubPicker } from 'react-color';
 
 const MessageForm = (props) => {
   const { chatId, creds } = props;
+  // Value for message form
   const [value, setValue] = useState("");
   // Emoji State settings
   const [showEmoji, setShowEmoji] = useState(false);
@@ -26,17 +27,21 @@ const MessageForm = (props) => {
   const [showColors, setShowColors] = useState(false);
   const [chosenColor, setChosenColor] = useState(null);
 
+  const messageFormRef = useRef();
+
   // Handle text form input changes
   const handleChange = (e) => {
     setValue(e.target.value);
     // isTyping(props, chatId);
   };
 
+  // Set the chosen color to the user's pick
   const handleColorChange = (color, event) => {
     setChosenColor(color.hex);
     console.log(color.hex);
   }
 
+  // On emoji click, add that emoji to current user message
   const onEmojiClick = (event, emojiObject) => {
     setChosenEmoji(emojiObject);
     setValue(() => value + "" + emojiObject.emoji);
@@ -46,6 +51,17 @@ const MessageForm = (props) => {
   const uploadHandler = (e) => {
     sendMessage(creds, chatId, { files: e.target.files, text: "" });
   };
+
+  // Allows users to submit messages by pressing the enter key
+  const onEnterPress = (e) => {
+    if(e.keyCode == 13 && e.shiftKey == false) {
+      e.preventDefault();
+      const text = value.trim();
+      if (text.length > 0) sendMessage(creds, chatId, { text });
+      setValue("");
+      setShowEmoji(false);
+    }
+  }
 
   // Submit message handler
   const formSubmitHandler = (e) => {
@@ -99,6 +115,7 @@ const MessageForm = (props) => {
           </button>
           <span>|</span>
         </div>
+
         {/* Message Form Attachment Settings */}
         <div className="attachment-settings">
           {/* Link */}
@@ -137,6 +154,7 @@ const MessageForm = (props) => {
             )}
           </div>
         </div>
+
         <div className="unknown-settings"></div>
       </div>
 
@@ -146,6 +164,7 @@ const MessageForm = (props) => {
         rows="12"
         value={value}
         onChange={handleChange}
+        onKeyDown={onEnterPress}
       />
 
       {/* TEXTAREA SETTINGS */}

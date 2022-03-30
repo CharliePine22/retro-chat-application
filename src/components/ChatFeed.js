@@ -110,7 +110,7 @@ const ChatFeed = (props) => {
   }
 
   // If the chats haven't finsihed loading yet, show loading screen
-  if (!chat || !props.chatMessages || !chats) return <div className="loading-messages"> <ThreeCircles
+  if (!chat || !props.chatMessages || !chats || chat == null) return <div className="loading-messages"> <ThreeCircles
     color="#00FFEE"
     height={200}
     width={250}

@@ -7,7 +7,7 @@ import { FaEye } from "react-icons/fa";
 import { ThreeDots, BallTriangle } from "react-loader-spinner";
 
 const ChatList = (props) => {
-  ////////////////////////////////////// ! State Settings ! ////////////////////////////////////
+          ////////////////////////////////////// ! State Settings ! ////////////////////////////////////
   // Tabs for online chats or requests
   const [currentTab, setCurrentTab] = useState("buddies");
   const [currentChat, setCurrentChat] = useState(0);
@@ -54,8 +54,6 @@ const ChatList = (props) => {
   // User status and icon settings
   const [currentUserStatus, setCurrentUserStatus] = useState("");
   const [currentUserAvatar, setCurrentUserAvatar] = useState("");
-  const savedUserStatus = localStorage.getItem("status");
-  const savedUserIcon = localStorage.getItem("icon");
 
   // Grab chat rooms on render
   let [onlineUsers, setOnlineUsers] = useState([]);
@@ -104,18 +102,23 @@ const ChatList = (props) => {
     };
   }, []);
 
-  //Determine user status
+  //Determine user online/availability status
   useEffect(() => {
     // If theres no users or it hasn't finished fetching yet
     if (props.allUsers.length == 0) return <div />;
-    
+
     // Grab all the users that are online
+    const usersChats = Object.keys(chatList);
     const currentUsers = props.allUsers.filter((obj) => {
       // Don't include current user in count
       if (obj.username == myUserName) return "";
       // Set online users list
       else {
+        if(usersChats.includes(obj.id.toString())) {
+          console.log(obj)
+        // RETURNS ALL USERS ONLINE
         return obj["is_online"] == true;
+        }
       }
     });
     setOnlineUsers(currentUsers);
@@ -132,14 +135,16 @@ const ChatList = (props) => {
   // Loop through chat engine to get users channels
   const getChannelsList = () => {
     const keys = Object.keys(chatList);
+    console.log(keys)
     return keys.map((key) => {
       const chat = chatList[key];
+      console.log(chat)
       if (chat.people.length < 2) return <div />; // Prevents chats that didnt properly delete with users from showing
       const friendChannelName =
         chatList && chat && chat.people[0].person.username == myUserName
           ? chat.people[1].person.username
           : chat.people[0].person.username;
-
+      // console.log(friendChannelName)
       return (
         chat &&
         chat.people && (
@@ -324,7 +329,6 @@ const ChatList = (props) => {
     const result = await response.json();
     console.log(result);
     setCurrentUserStatus(status);
-    localStorage.setItem("status", status);
 
     // Close status window when done
     setOpenStatusWindow(false);
@@ -375,6 +379,8 @@ const ChatList = (props) => {
   if (!props.chats || props.allUsers.length == 0) {
     return <div/>;
   }
+  
+  const buddyListStyles = viewingBuddyList ? 'buddies-list-name-active' : 'buddies-list-name'
 
   return (
     <>
@@ -433,7 +439,7 @@ const ChatList = (props) => {
         <div className="user-channels">
           {/* Users list */}
           {currentTab == "buddies" && (
-            <ul className="buddies-list-name">
+            <ul className={buddyListStyles}>
               <span className="buddies" onClick={viewBuddyListHandler}>
                 Buddies{" "}
                 <span>
