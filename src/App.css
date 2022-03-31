@@ -319,12 +319,11 @@
 }
 
 .buddies-list-name-active::before {
-  content: "⮟";
+  content: "▼";
   font-size: 1rem;
   position: relative;
   left: -5px;
 }
-
 
 .buddies {
   font-family: "MS Sans Serif", Arial, Helvetica, sans-serif;
@@ -1663,6 +1662,10 @@
 
 /* Large monitors/screens */
 @media (max-width:1440px) {
+  .ce-chat-list-column {
+    max-width: 32vh !important;
+  }
+
   .new-friend-form input {
     height:30px;
   }
@@ -1678,6 +1681,10 @@
   }
 
   .user-channels {
-    height: 71%;
+    height: 70%;
+  }
+
+  .user-tabs {
+    margin-top: 20px;
   }
 }

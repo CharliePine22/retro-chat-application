@@ -55,8 +55,8 @@ const ChatList = (props) => {
   const [currentUserStatus, setCurrentUserStatus] = useState("");
   const [currentUserAvatar, setCurrentUserAvatar] = useState("");
 
-  // Grab chat rooms on render
-  let [onlineUsers, setOnlineUsers] = useState([]);
+  // Current online/active users
+  const [onlineUsers, setOnlineUsers] = useState(0);
 
   //////////////////////////////////// ! USE EFFECTS ! //////////////////////////////////////
 
@@ -107,22 +107,21 @@ const ChatList = (props) => {
     // If theres no users or it hasn't finished fetching yet
     if (props.allUsers.length == 0) return <div />;
 
-    // Grab all the users that are online
-    const usersChats = Object.keys(chatList);
-    const currentUsers = props.allUsers.filter((obj) => {
-      // Don't include current user in count
-      if (obj.username == myUserName) return "";
-      // Set online users list
-      else {
-        if(usersChats.includes(obj.id.toString())) {
-          console.log(obj)
-        // RETURNS ALL USERS ONLINE
-        return obj["is_online"] == true;
-        }
-      }
-    });
-    setOnlineUsers(currentUsers);
-  }, [props.allUsers, useState]);
+    if (chatList !== null) {
+      // Loop through users chat list and grab every user
+      // Show the online status of every user and return bool
+    const currentOnlineUsers = Object.keys(chatList).map(key => {
+      const allFriends = chatList[key].people[0].person.username == myUserName
+      ? chatList[key].people[1].person['is_online']
+      : chatList[key].people[0].person['is_online']
+      return allFriends
+    })
+
+    // Set length to how many trues/online users 
+    setOnlineUsers(currentOnlineUsers.filter(Boolean).length)
+  }
+    // setOnlineUsers(currentUsers);
+  }, [chatList, onlineUsers]);
 
   //////////////////////////////////// ! FUNCTIONS AND HANDLERS ! ///////////////////////////////
   // Switch to selected chat channel
@@ -134,11 +133,10 @@ const ChatList = (props) => {
 
   // Loop through chat engine to get users channels
   const getChannelsList = () => {
+    console.log(chatList)
     const keys = Object.keys(chatList);
-    console.log(keys)
     return keys.map((key) => {
       const chat = chatList[key];
-      console.log(chat)
       if (chat.people.length < 2) return <div />; // Prevents chats that didnt properly delete with users from showing
       const friendChannelName =
         chatList && chat && chat.people[0].person.username == myUserName
@@ -224,7 +222,6 @@ const ChatList = (props) => {
     setLoading(true);
     e.preventDefault();
     createDirectChat(newFriend);
-    localStorage.setItem("newUser", false);
   };
 
   // Adjust sound volume
@@ -380,6 +377,8 @@ const ChatList = (props) => {
     return <div/>;
   }
   
+  // Dynamic list styling for the buddy list arrow
+  // Show down arrow if buddy list is open, show right arrow if 
   const buddyListStyles = viewingBuddyList ? 'buddies-list-name-active' : 'buddies-list-name'
 
   return (
@@ -437,6 +436,7 @@ const ChatList = (props) => {
           <button onClick={() => setCurrentTab("settings")}>Settings</button>
         </div>
         <div className="user-channels">
+
           {/* Users list */}
           {currentTab == "buddies" && (
             <ul className={buddyListStyles}>
@@ -444,7 +444,7 @@ const ChatList = (props) => {
                 Buddies{" "}
                 <span>
                   {" "}
-                  ({onlineUsers.length}/
+                  ({onlineUsers}/
                   {chatList &&
                     Object.keys(chatList) &&
                     Object.keys(chatList).length >= 0 &&
