@@ -1,8 +1,13 @@
+// React hooks and components
 import { useState, useRef } from "react";
+import OpenGroupWindow from "./OpenGroupWindow";
+
 // Send message function
 import { sendMessage, isTyping } from "react-chat-engine";
+
 // Upload image picture
 import { PictureOutlined } from "@ant-design/icons";
+
 // Message form images
 import sendButtonImage from "../assets/images/send-message-button.png";
 import colorPalette from "../assets/images/color-palette.png";
@@ -10,9 +15,11 @@ import warnIcon from "../assets/images/warn.png";
 import blockIcon from "../assets/images/block.png";
 import redDice from "../assets/images/red-dice.png";
 import addGroupIcon from "../assets/images/add-group.png";
+
 // Message form emojis
 import Picker from "emoji-picker-react";
 import { FaEnvelopeOpenText } from "react-icons/fa";
+
 // Message form color picker
 import { GithubPicker } from 'react-color';
 
@@ -20,6 +27,8 @@ const MessageForm = (props) => {
   const { chatId, creds } = props;
   // Value for message form
   const [value, setValue] = useState("");
+  // Group State settings
+  const [viewingBuddyWindow, setViewingBuddyWindow] = useState(false);
   // Emoji State settings
   const [showEmoji, setShowEmoji] = useState(false);
   const [chosenEmoji, setChosenEmoji] = useState(null);
@@ -51,6 +60,11 @@ const MessageForm = (props) => {
   const uploadHandler = (e) => {
     sendMessage(creds, chatId, { files: e.target.files, text: "" });
   };
+
+  // Determines if group window is open or closed 
+  const handleGroupWindow = () => {
+    setViewingBuddyWindow(!viewingBuddyWindow)
+  }
 
   // Allows users to submit messages by pressing the enter key
   const onEnterPress = (e) => {
@@ -179,30 +193,40 @@ const MessageForm = (props) => {
                 <img src={blockIcon} />
               </div>
         </div>
+
         <hr className='message-border' />
+
+        {/* Events */}
           <div className="message-events-container">
             {/* Expressions */}
             <div className="message-expressions">
               <img src={colorPalette} />
               <span>Expressions</span>
             </div>
+
+            {/* Games */}
             <div className='message-games'>
               <img src={redDice} />
               <span>Games</span>
             </div>
-            <div className='add-group'>
+
+            {/* Add Group */}
+            <div className='add-group' onClick={handleGroupWindow}>
               <img src={addGroupIcon} />
               <span>Add Group</span>
             </div>
+
+            {viewingBuddyWindow && <OpenGroupWindow chatId={chatId} /> }
+
           </div>
             <hr className='message-border' />
   
-
           {/* Send Message */}
           <div className="send-block-container">
             <button type="submit" className="send-button">
               <img src={sendButtonImage} />
-              {/* add colors */}
+  
+              {/* Color bar below send image*/}
               <div className='send-message-bar'>
                 <span className='message-bar-red'></span>
                 <span className='message-bar-red'></span>

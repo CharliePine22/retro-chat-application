@@ -7,7 +7,7 @@ import { FaEye } from "react-icons/fa";
 import { ThreeDots, BallTriangle } from "react-loader-spinner";
 
 const ChatList = (props) => {
-          ////////////////////////////////////// ! State Settings ! ////////////////////////////////////
+  ////////////////////////////////////// ! State Settings ! ////////////////////////////////////
   // Tabs for online chats or requests
   const [currentTab, setCurrentTab] = useState("buddies");
   const [currentChat, setCurrentChat] = useState(0);
@@ -54,16 +54,19 @@ const ChatList = (props) => {
   // User status and icon settings
   const [currentUserStatus, setCurrentUserStatus] = useState("");
   const [currentUserAvatar, setCurrentUserAvatar] = useState("");
+  const [currentUserGroups, setCurrentUserGroups] = useState([]);
 
-  // Current online/active users
-  const [onlineUsers, setOnlineUsers] = useState(0);
+  // Grab chat rooms on render
+  let [onlineUsers, setOnlineUsers] = useState([]);
 
   //////////////////////////////////// ! USE EFFECTS ! //////////////////////////////////////
 
   // Grab all the chat rooms available to users
   useEffect(() => {
     setChatList(props.chats);
+    // Populate chat feed with current chatRoom messages
     const fetchCurrentMessages = () => {
+      // If data is fetched and available display it
       if (chatList !== null && props.chats && chatList.length > 0) {
         props.fetchChannelMessages(chatList[props.activeChat].id);
       } else {
@@ -71,13 +74,15 @@ const ChatList = (props) => {
       }
     };
     fetchCurrentMessages();
+
     // If firebase fetching isn't done yet return and wait
     if (props.firebaseUsersList.length == 0) {
       return <div />;
     } else {
       // If it is done, set the current users avatar to their saved avatar and status
       setCurrentUserAvatar(props.firebaseUsersList[myUserName].avatar);
-      setCurrentUserStatus(props.firebaseUsersList[myUserName].status)
+      setCurrentUserStatus(props.firebaseUsersList[myUserName].status);
+      setCurrentUserGroups(props.firebaseUsersList[myUserName].groups);
     }
   }, [props.chats]);
 
@@ -105,23 +110,24 @@ const ChatList = (props) => {
   //Determine user online/availability status
   useEffect(() => {
     // If theres no users or it hasn't finished fetching yet
-    if (props.allUsers.length == 0) return <div />;
+    if (props.allUsers.length == 0 || chatList == null) return <div />;
 
-    if (chatList !== null) {
-      // Loop through users chat list and grab every user
-      // Show the online status of every user and return bool
-    const currentOnlineUsers = Object.keys(chatList).map(key => {
-      const allFriends = chatList[key].people[0].person.username == myUserName
-      ? chatList[key].people[1].person['is_online']
-      : chatList[key].people[0].person['is_online']
-      return allFriends
-    })
-
-    // Set length to how many trues/online users 
-    setOnlineUsers(currentOnlineUsers.filter(Boolean).length)
-  }
-    // setOnlineUsers(currentUsers);
-  }, [chatList, onlineUsers]);
+    // Grab all the users that are online
+    const usersChats = Object.keys(chatList);
+    const currentUsers = props.allUsers.filter((obj) => {
+      // Don't include current user in count
+      if (obj.username == myUserName) return "";
+      // Set online users list
+      else {
+        if (usersChats.includes(obj.id.toString())) {
+          console.log(obj);
+          // RETURNS ALL USERS ONLINE
+          return obj["is_online"] == true;
+        }
+      }
+    });
+    setOnlineUsers(currentUsers);
+  }, [props.allUsers, useState]);
 
   //////////////////////////////////// ! FUNCTIONS AND HANDLERS ! ///////////////////////////////
   // Switch to selected chat channel
@@ -131,12 +137,30 @@ const ChatList = (props) => {
     props.setActiveChat(channelId);
   };
 
+  // Sort chat list object alphabetically
+  const generateSortedObj = () => {
+    let sortedObj = {};
+    let buddyNames = [];
+
+    const keys = Object.keys(chatList);
+    for (let chat in chatList) {
+      buddyNames.push([
+        chat,
+        chatList[chat].people[0].person.username == myUserName
+          ? chatList[chat].people[1].person.username
+          : chatList[chat].people[0].person.username,
+      ]);
+    }
+    console.log(buddyNames);
+    // buddyNames.sort((a, b) => a.localeCompare(b, undefined, {sensitivity: 'base'}))
+  };
+
   // Loop through chat engine to get users channels
   const getChannelsList = () => {
-    console.log(chatList)
     const keys = Object.keys(chatList);
     return keys.map((key) => {
       const chat = chatList[key];
+
       if (chat.people.length < 2) return <div />; // Prevents chats that didnt properly delete with users from showing
       const friendChannelName =
         chatList && chat && chat.people[0].person.username == myUserName
@@ -184,6 +208,7 @@ const ChatList = (props) => {
       setError(`${friend} is already in your buddies list!`);
     }
 
+    // API Creds
     var myHeaders = new Headers();
     myHeaders.append("Project-ID", "b8a0fde0-1fae-4db8-9870-6bba5beb67c0");
     myHeaders.append("User-Name", localStorage.getItem("username"));
@@ -222,6 +247,7 @@ const ChatList = (props) => {
     setLoading(true);
     e.preventDefault();
     createDirectChat(newFriend);
+    localStorage.setItem("newUser", false);
   };
 
   // Adjust sound volume
@@ -374,13 +400,21 @@ const ChatList = (props) => {
 
   // If chat rooms or userdata hasn't loaded yet, return and wait for load to complete
   if (!props.chats || props.allUsers.length == 0) {
-    return <div/>;
+    return <div />;
   }
-  
-  // Dynamic list styling for the buddy list arrow
-  // Show down arrow if buddy list is open, show right arrow if 
-  const buddyListStyles = viewingBuddyList ? 'buddies-list-name-active' : 'buddies-list-name'
 
+  // List arrow that changes based on the buddy list being viewed
+  const buddyListStyles = viewingBuddyList
+    ? "buddies-list-name-active"
+    : "buddies-list-name";
+
+  // Tab button style settings
+  const onlineTabStyles =
+    currentTab == "buddies" ? "active-tab" : "inactive-tab";
+  const settingsTabStyles =
+    currentTab == "buddies" ? "inactive-tab" : "active-tab";
+
+  //////////////////////////////////////// ! RENDER HTML ! //////////////////////////////////////////////////////
   return (
     <>
       <div className="chat-list-container">
@@ -388,10 +422,7 @@ const ChatList = (props) => {
         <div className="user">
           {/* Username */}
           <div className="user-details">
-            <p className="user-name">
-              {props.userName}{" "}
-              {/* <span className="user-availability">{`(${currentUserAvailability})`}</span> */}
-            </p>
+            <p className="user-name">{props.userName}</p>
 
             {/* Status  */}
             <span onClick={setStatusHandler} className="user-status">
@@ -429,101 +460,114 @@ const ChatList = (props) => {
         </div>
 
         {/* Chat Channels */}
-        <div className="user-tabs">
-          <button autoFocus onClick={() => setCurrentTab("buddies")}>
-            Online
-          </button>
-          <button onClick={() => setCurrentTab("settings")}>Settings</button>
-        </div>
-        <div className="user-channels">
-
-          {/* Users list */}
-          {currentTab == "buddies" && (
-            <ul className={buddyListStyles}>
-              <span className="buddies" onClick={viewBuddyListHandler}>
-                Buddies{" "}
-                <span>
-                  {" "}
-                  ({onlineUsers}/
-                  {chatList &&
-                    Object.keys(chatList) &&
-                    Object.keys(chatList).length >= 0 &&
-                    Object.keys(chatList).length}
-                  )
+        <ul className="user-tabs">
+          <li className="buddies-tab">
+            <button
+              className={onlineTabStyles}
+              onClick={() => setCurrentTab("buddies")}
+            >
+              Online
+            </button>
+          </li>
+          <li className="settings-tab">
+            <button
+              className={settingsTabStyles}
+              onClick={() => setCurrentTab("settings")}
+            >
+              Settings
+            </button>
+          </li>
+        </ul>
+        <div className="user-channels-outer">
+          <div className="user-channels">
+            {/* Users list */}
+            {currentTab == "buddies" && (
+              <ul className={buddyListStyles}>
+                <span className="buddies" onClick={viewBuddyListHandler}>
+                  Buddies{" "}
+                  <span>
+                    {" "}
+                    ({onlineUsers.length}/
+                    {chatList &&
+                      Object.keys(chatList) &&
+                      Object.keys(chatList).length >= 0 &&
+                      Object.keys(chatList).length}
+                    )
+                  </span>
                 </span>
-              </span>
-              <div className="buddy-list">
-                {viewingBuddyList && chatList ? getChannelsList() : ""}
-              </div>
-            </ul>
-          )}
+                <div className="buddy-list">
+                  {viewingBuddyList && chatList ? getChannelsList() : ""}
+                </div>
+              </ul>
+            )}
 
-          {/* User Settings */}
-          {currentTab == "settings" && (
-            <>
-              <div className="user-settings-header">
-                <h3>User Settings</h3>
-              </div>
-              <div className="user-settings-actions">
-                {/* Username Settings */}
-                <div className="user-settings-username">
-                  {!changingUserName ? (
-                    <p>ScreenName: {props.userName}</p>
-                  ) : (
-                    <form onSubmit={userNameChangeHandler}>
-                      <input
-                        type="text"
-                        value={newUserName}
-                        onChange={(e) => setNewUserName(e.target.value)}
-                        placeholder="New username"
-                      />
+            {/* User Settings */}
+            {currentTab == "settings" && (
+              <>
+                <div className="user-settings-header">
+                  <h3>User Settings</h3>
+                </div>
+                <div className="user-settings-actions">
+                  {/* Username Settings */}
+                  <div className="user-settings-username">
+                    {!changingUserName ? (
+                      <p>ScreenName: {props.userName}</p>
+                    ) : (
+                      <form onSubmit={userNameChangeHandler}>
+                        <input
+                          type="text"
+                          value={newUserName}
+                          onChange={(e) => setNewUserName(e.target.value)}
+                          placeholder="New username"
+                        />
+                      </form>
+                    )}
+                    <button onClick={() => setChangingUserName(true)}>
+                      Change ScreenName
+                    </button>
+                  </div>
+
+                  {/* Password settings */}
+                  <div className="user-settings-password">
+                    {!changingPassword ? (
+                      <p>
+                        Password:{" "}
+                        {hideUserPassword
+                          ? props.creds.userSecret.replace(/./g, "*")
+                          : props.creds.userSecret}{" "}
+                        <FaEye
+                          onClick={() => setHideUserPassword(!hideUserPassword)}
+                          className="hide-password-icon"
+                        />
+                      </p>
+                    ) : (
+                      <form onSubmit={passwordChangeHandler}>
+                        <input
+                          type="text"
+                          value={userPassword}
+                          onChange={(e) => setUserPassword(e.target.value)}
+                          placeholder="New password"
+                        />
+                      </form>
+                    )}
+                    <button onClick={() => setChangingPassword(true)}>
+                      {!changingPassword ? "Change Password" : ""}
+                    </button>
+                  </div>
+
+                  {/* Delete settings */}
+                  <div className="user-settings-delete">
+                    <button onClick={() => setDeletingBuddy(true)}>
+                      Delete Buddy
+                    </button>
+                    <form onSubmit={deleteUserFormHandler}>
+                      <input type="text" placeholder="Username" />
                     </form>
-                  )}
-                  <button onClick={() => setChangingUserName(true)}>
-                    Change ScreenName
-                  </button>
+                  </div>
                 </div>
-
-                {/* Password settings */}
-                <div className="user-settings-password">
-                  {!changingPassword ? (
-                    <p>
-                      Password:{" "}
-                      {hideUserPassword
-                        ? props.creds.userSecret.replace(/./g, "*")
-                        : props.creds.userSecret}{" "}
-                      <FaEye
-                        onClick={() => setHideUserPassword(!hideUserPassword)}
-                        className="hide-password-icon"
-                      />
-                    </p>
-                  ) : (
-                    <form onSubmit={passwordChangeHandler}>
-                      <input
-                        type="text"
-                        value={userPassword}
-                        onChange={(e) => setUserPassword(e.target.value)}
-                        placeholder="New password"
-                      />
-                    </form>
-                  )}
-                  <button onClick={() => setChangingPassword(true)}>
-                    {!changingPassword ? "Change Password" : ""}
-                  </button>
-                </div>
-
-                {/* Delete settings */}
-                <div className="user-settings-delete">
-                  <button onClick={() => setDeletingBuddy(true)}>
-                    Delete Buddy
-                  </button>
-                  <form onSubmit={deleteUserFormHandler}>
-                    <input type="text" placeholder="Username" />
-                  </form>
-                </div>
-              </div>
-            </>
-          )}
+              </>
+            )}
+          </div>
         </div>
 
         {/* User Options */}
