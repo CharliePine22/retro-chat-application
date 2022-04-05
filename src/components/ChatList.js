@@ -98,6 +98,9 @@ const ChatList = (props) => {
         // Cancel username/password change
         setChangingPassword(false);
         setChangingUserName(false);
+
+        // Cancel delete buddy form
+        setDeletingBuddy(false);
       }
     };
     window.addEventListener("keydown", handleEsc);
@@ -137,24 +140,6 @@ const ChatList = (props) => {
     props.setActiveChat(channelId);
   };
 
-  // Sort chat list object alphabetically
-  const generateSortedObj = () => {
-    let sortedObj = {};
-    let buddyNames = [];
-
-    const keys = Object.keys(chatList);
-    for (let chat in chatList) {
-      buddyNames.push([
-        chat,
-        chatList[chat].people[0].person.username == myUserName
-          ? chatList[chat].people[1].person.username
-          : chatList[chat].people[0].person.username,
-      ]);
-    }
-    console.log(buddyNames);
-    // buddyNames.sort((a, b) => a.localeCompare(b, undefined, {sensitivity: 'base'}))
-  };
-
   // Loop through chat engine to get users channels
   const getChannelsList = () => {
     const keys = Object.keys(chatList);
@@ -166,7 +151,7 @@ const ChatList = (props) => {
         chatList && chat && chat.people[0].person.username == myUserName
           ? chat.people[1].person.username
           : chat.people[0].person.username;
-      // console.log(friendChannelName)
+
       return (
         chat &&
         chat.people && (
@@ -557,12 +542,12 @@ const ChatList = (props) => {
 
                   {/* Delete settings */}
                   <div className="user-settings-delete">
-                    <button onClick={() => setDeletingBuddy(true)}>
+                   {!deletingBuddy && <button onClick={() => setDeletingBuddy(true)}>
                       Delete Buddy
-                    </button>
-                    <form onSubmit={deleteUserFormHandler}>
+                    </button>}
+                    {deletingBuddy && <form onSubmit={deleteUserFormHandler}>
                       <input type="text" placeholder="Username" />
-                    </form>
+                    </form>}
                   </div>
                 </div>
               </>

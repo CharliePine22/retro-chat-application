@@ -132,17 +132,6 @@ function App() {
     };
   }, []);
 
-  // useEffect(() => {
-  //   let mounted = true;
-  //   if (firstChatEngineUpdate.current) {
-  //     firstChatEngineUpdate.current = false;
-  //     if (mounted) {
-  //       getAllUsers();
-  //     }
-  //   }
-
-  //   fetchFirebaseInfo();
-  // }, []);
 
   // If login failes return them back to same page
   if (!localStorage.getItem("username"))
@@ -173,6 +162,7 @@ function App() {
             loading={loading}
             fetchChannelMessages={grabMessages}
             chatMessages={chatMessages}
+            firebaseUsersList={firebaseUsersList}
           />
         )}
         renderChatSettings={(chatAppState) => {}}

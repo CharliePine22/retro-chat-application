@@ -10,10 +10,16 @@ const ChatFeed = (props) => {
   // Grab all the props from the Chat Engine to produce messages
   const { chats, activeChat, userName, messages } = props;
   const [currentMessagesList, setCurrentMessagesList] = useState([]);
+  const [firebaseGroups, setFirebaseGroups] = useState('');
   const chat = chats && chats[activeChat];
   // Ref used for auto scrolling to bottom of chat
   const messagesEndRef = useRef(null);
+  // Loading state
   const [loading, setLoading] = useState(false);
+  // Grab buddy name to pass down to Message form component for Add Group use
+  const buddyName = (chat ? chat.people[1].person.username == userName
+  ? chat.people[0].person.username
+  : chat.people[1].person.username : "");
 
   // scroll to bottom of chat
   const scrollToBottom = () => {
@@ -24,6 +30,17 @@ const ChatFeed = (props) => {
   useEffect(() => {
       scrollToBottom();
   }, [currentMessagesList]);
+
+  // Set firebase list to fetched data when available
+  useEffect(() => {
+    // If firebase fetching isn't done yet return and wait
+    if (props.firebaseUsersList.length == 0) {
+      return <div />;
+    } else {
+    // Set groups to firebase fetched data to pass down to message form and group component
+    setFirebaseGroups(props.firebaseUsersList && props.firebaseUsersList[userName].groups)
+    }
+  }, [props.firebaseUsersList]);
 
   // Set messages to state to update accordingly
   useEffect(() => {
@@ -51,6 +68,7 @@ const ChatFeed = (props) => {
   }
     grabMessages()
   }, [chat]);
+
 
 
   // Render messages from chat app
@@ -110,7 +128,7 @@ const ChatFeed = (props) => {
   }
 
   // If the chats haven't finsihed loading yet, show loading screen
-  if (!chat || !props.chatMessages || !chats || chat == null) return <div className="loading-messages"> <ThreeCircles
+  if (!chat || !props.chatMessages || !chats || !props.firebaseUsersList) return <div className="loading-messages"> <ThreeCircles
     color="#00FFEE"
     height={200}
     width={250}
@@ -154,6 +172,8 @@ const ChatFeed = (props) => {
               <MessageForm
                 {...props}
                 chatId={activeChat}
+                buddyName={buddyName}
+                firebaseGroups={firebaseGroups}
               />
             </div>
           </div>

@@ -38,6 +38,7 @@ const MessageForm = (props) => {
 
   const messageFormRef = useRef();
 
+
   // Handle text form input changes
   const handleChange = (e) => {
     setValue(e.target.value);
@@ -81,6 +82,7 @@ const MessageForm = (props) => {
   const formSubmitHandler = (e) => {
     e.preventDefault();
     const text = value.trim();
+    // If there are more than one characters that aren't spaces, send message
     if (text.length > 0) sendMessage(creds, chatId, { text });
     setValue("");
     setShowEmoji(false);
@@ -216,7 +218,7 @@ const MessageForm = (props) => {
               <span>Add Group</span>
             </div>
 
-            {viewingBuddyWindow && <OpenGroupWindow chatId={chatId} /> }
+            {viewingBuddyWindow && <OpenGroupWindow firebaseGroups={props.firebaseGroups} buddyName={props.buddyName} chatId={chatId} /> }
 
           </div>
             <hr className='message-border' />

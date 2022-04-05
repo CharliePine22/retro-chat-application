@@ -1182,8 +1182,8 @@
 .user-settings-delete button {
   font-size: 0.75rem;
   border: 2px outset;
-  padding: 0.35rem 1rem;
-  width: 100%;
+  padding: 0.35rem 4rem;
+  margin-bottom: 25px;
 }
 
 .user-settings-delete button:active {
@@ -1192,6 +1192,10 @@
   -moz-box-shadow: inset 0px 0px 5px #c1c1c1;
   box-shadow: inset 0px 0px 5px #c1c1c1;
   outline: none;
+}
+
+.user-settings-delete form {
+  margin-bottom: 25px;
 }
 
 .user-status {
@@ -1218,6 +1222,7 @@
   height: 100%;
   font-size: 1.25rem;
   justify-content: space-evenly;
+  align-items: center;
 }
 
 .user-settings-actions button:hover {
@@ -1796,8 +1801,12 @@
 /* !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! Media queries !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! */
 
 /* Laptop monitors */
-@media (max-width:1024px) {
+@media (min-width:1024px) and (max-width:1300px) {
   .chat-feed {
+    width: 148%;
+  }
+
+  .header {
     width: 148%;
   }
 
@@ -1805,6 +1814,10 @@
     min-width: 148%;
     max-width: 148%;
     width: 150vh;
+  }
+
+  .nav {
+    width: 148%;
   }
 
   .new-friend-form input {
@@ -1816,10 +1829,18 @@
     margin-bottom: 10px;
   }
 
+  .user-channels-outer {
+    height: 68%;
+  }
+
+  .user-tabs {
+    margin-top: 30px;
+  }
+
 }
 
 /* Large monitors/screens */
-@media (max-width:1440px) {
+@media (min-width:1300px) {
   .new-friend-form input {
     height:30px;
   }
@@ -1835,6 +1856,10 @@
   }
 
   .user-channels-outer {
-    height: 71%;
+    height: 68%;
+  }
+
+  .user-tabs {
+    margin-top: 30px;
   }
 }
