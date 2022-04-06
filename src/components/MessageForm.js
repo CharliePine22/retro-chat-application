@@ -10,10 +10,10 @@ import { PictureOutlined } from "@ant-design/icons";
 
 // Message form images
 import sendButtonImage from "../assets/images/send-message-button.png";
-import colorPalette from "../assets/images/color-palette.png";
+import colorPalette from "../assets/images/greyscale-expressions.png";
 import warnIcon from "../assets/images/warn.png";
 import blockIcon from "../assets/images/block.png";
-import redDice from "../assets/images/red-dice.png";
+import redDice from "../assets/images/greyscale_games.png";
 import addGroupIcon from "../assets/images/add-group.png";
 
 // Message form emojis

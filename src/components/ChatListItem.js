@@ -19,11 +19,6 @@ const ChatListItem = (props) => {
     props.switchChannel(props.chat.id);
   };
 
-
-  const addToGroupHandler = () => {
-    
-  }
-
   // Grab friends status
   useEffect(() => {
     const fbUsersData = Object.keys(firebaseUsers).map(key => {
@@ -39,9 +34,9 @@ const ChatListItem = (props) => {
     const fbUsersData = Object.keys(firebaseUsers).map(key => {
       if (key == friendChannelName) {
         if(firebaseUsers[key].avatar !== '') {
-          return <img className="buddy-avatar" src={firebaseUsers[key].avatar} />;
+          return <img key={key} className="buddy-avatar" src={firebaseUsers[key].avatar} />;
         } else {
-          return <img className="buddy-avatar" src={buddyIcon} />;
+          return <img key='0' className="buddy-avatar" src={buddyIcon} />;
         }
       }
     })

@@ -5,6 +5,7 @@ import OpenStatusWindow from "./OpenStatusWindow";
 import awayBuddyIcon from "../assets/images/noBuddyIcon.png";
 import { FaEye } from "react-icons/fa";
 import { ThreeDots, BallTriangle } from "react-loader-spinner";
+import UserGroupItem from "./UserGroupItem";
 
 const ChatList = (props) => {
   ////////////////////////////////////// ! State Settings ! ////////////////////////////////////
@@ -142,6 +143,7 @@ const ChatList = (props) => {
 
   // Loop through chat engine to get users channels
   const getChannelsList = () => {
+    console.log(currentUserGroups);
     const keys = Object.keys(chatList);
     return keys.map((key) => {
       const chat = chatList[key];
@@ -156,6 +158,7 @@ const ChatList = (props) => {
         chat &&
         chat.people && (
           <ChatListItem
+            key={friendChannelName}
             friendChannelName={friendChannelName}
             loading={props.loading}
             switchChannel={switchChatChannel}
@@ -167,6 +170,10 @@ const ChatList = (props) => {
       );
     });
   };
+
+  const getGroupsList = () => {
+
+  }
 
   // Open and close your buddy list
   const viewBuddyListHandler = () => {
@@ -444,7 +451,7 @@ const ChatList = (props) => {
           </div>
         </div>
 
-        {/* Chat Channels */}
+        {/* Online and Settings Tabs */}
         <ul className="user-tabs">
           <li className="buddies-tab">
             <button
@@ -463,9 +470,10 @@ const ChatList = (props) => {
             </button>
           </li>
         </ul>
+
+        {/* Users Channels */}
         <div className="user-channels-outer">
           <div className="user-channels">
-            {/* Users list */}
             {currentTab == "buddies" && (
               <ul className={buddyListStyles}>
                 <span className="buddies" onClick={viewBuddyListHandler}>
@@ -480,9 +488,22 @@ const ChatList = (props) => {
                     )
                   </span>
                 </span>
+                {/* Buddies List */}
                 <div className="buddy-list">
                   {viewingBuddyList && chatList ? getChannelsList() : ""}
                 </div>
+                {/* Users custom groups list */}
+                <div className='groups-list'>
+                {currentUserGroups ?
+                    Object.keys(currentUserGroups).map((key) => {
+                      return <UserGroupItem
+                          key={key}
+                          title={key}
+                          data={currentUserGroups[key]}
+                        />
+                    
+                    }) : ''}
+                    </div>
               </ul>
             )}
 
@@ -542,12 +563,16 @@ const ChatList = (props) => {
 
                   {/* Delete settings */}
                   <div className="user-settings-delete">
-                   {!deletingBuddy && <button onClick={() => setDeletingBuddy(true)}>
-                      Delete Buddy
-                    </button>}
-                    {deletingBuddy && <form onSubmit={deleteUserFormHandler}>
-                      <input type="text" placeholder="Username" />
-                    </form>}
+                    {!deletingBuddy && (
+                      <button onClick={() => setDeletingBuddy(true)}>
+                        Delete Buddy
+                      </button>
+                    )}
+                    {deletingBuddy && (
+                      <form onSubmit={deleteUserFormHandler}>
+                        <input type="text" placeholder="Username" />
+                      </form>
+                    )}
                   </div>
                 </div>
               </>

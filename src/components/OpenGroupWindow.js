@@ -37,9 +37,9 @@ const OpenGroupWindow = (props) => {
           return;
         } else {
           // Fetch settings
-          let url = `https://retro-chat-app22-default-rtdb.firebaseio.com/users/${myUserName}/groups/${group}.json`;
+          let url = `https://retro-chat-app22-default-rtdb.firebaseio.com/users/${myUserName}/groups/${group}/users.json`;
           const response = await fetch(url, {
-            method: "PATCH",
+            method: "POST",
             headers: {
               "Content-Type": "application/json",
               "Access-Control-Allow-Origin": "*",
@@ -50,7 +50,7 @@ const OpenGroupWindow = (props) => {
 
             // Add group to database and then add the user as a part of the created group
             body: JSON.stringify({
-                users: props.buddyName
+                username: props.buddyName
             })
           });
           const result = await response.json();
@@ -60,19 +60,29 @@ const OpenGroupWindow = (props) => {
 
   // Adds user to group that's in user's group list
   const addUserToGroup = async () => {
+    // Flag to determine if user is in group or not
+      let flag;
     // Loop and see if user is already apart of the group
     const currentGroupUsers = Object.keys(firebaseGroups).map((key) => {
         if (key == groupItem) {
             // If user is in group, return true
-            if(Object.values(firebaseGroups[key]).includes(props.buddyName)) {
-                return true
-            }
-            return false
+           const users = Object.values(firebaseGroups[key].users)
+           return users.map((user) => {
+              if(props.buddyName == user.username) {
+                  return true
+              }
+            })
         }
     })
 
-    // If currentGroupUsers returns true, the user is apart of the group so throw an error
-    if(currentGroupUsers.includes(true)) {
+    // Removes undefined values from current group list
+    const userExists = currentGroupUsers[0].filter(function(x) {
+        return x !== undefined
+    })
+
+
+    // If userExists returns true, the user is apart of the group so throw an error
+    if(userExists[0]) {
         setError('User is already in this group!');
         return;
     }
@@ -86,7 +96,7 @@ const OpenGroupWindow = (props) => {
       // Add group to database
       let url = `https://retro-chat-app22-default-rtdb.firebaseio.com/users/${myUserName}/groups/${groupItem}/users.json`;
       const response = await fetch(url, {
-        method: "PATCH",
+        method: "POST",
         headers: {
           "Content-Type": "application/json",
           "Access-Control-Allow-Origin": "*",
@@ -123,7 +133,7 @@ const OpenGroupWindow = (props) => {
   const groupNames = Object.keys(firebaseGroups).map((key) => {
       return key
   })
- 
+
   return (
     <>
       <NewWindow
