@@ -490,7 +490,7 @@ const ChatList = (props) => {
                   {viewingBuddyList && chatList ? getChannelsList() : ""}
                 </div>
                 {/* Users custom groups list */}
-                <div className='groups-list'>
+                <div className='groups'>
                 {currentUserGroups ?
                     Object.keys(currentUserGroups).map((key) => {
                       return <UserGroupItem
@@ -500,6 +500,7 @@ const ChatList = (props) => {
                           chat={chatList}
                           switchChannel={switchChatChannel}
                           firebaseUsersList={props.firebaseUsersList}
+                          allUsers={props.allUsers}
                         />
                     }) : ''}
                     </div>

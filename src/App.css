@@ -154,7 +154,6 @@
   flex-shrink: 0;
   align-items: normal;
   justify-content: flex-start;
-  /* background-color: rgb(211, 211, 211); */
   background-color: #d6d6ce;
 }
 
@@ -828,6 +827,10 @@
   position: relative;
   border:1px solid black;
   border-radius: 100%;
+}
+
+.group-list {
+  border-left: 1px solid lightgray;
 }
 
 .inactive {

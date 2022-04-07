@@ -36,17 +36,26 @@ function App() {
     }
   };
 
-  // Use to  auto log user out and potentially set online status to offline
-  useEffect(() => {
-    const unloadCallback = (event) => {
-      event.preventDefault();
-      event.returnValue = "";
-      return "";
-    };
+  const alertUser = (event) => {
+    event.preventDefault()
+    event.returnValue = ''
+}
 
-    window.addEventListener("beforeunload", unloadCallback);
-    return () => window.removeEventListener("beforeunload", unloadCallback);
-  }, []);
+const handleTabClosing = () => {
+  localStorage.removeItem('username')
+}
+
+  // Use to  auto log user out and potentially set online status to offline
+//   useEffect(() => {
+//     window.addEventListener('beforeunload', alertUser)
+//     window.addEventListener('unload', handleTabClosing)
+//     return () => {
+//         window.removeEventListener('beforeunload', alertUser)
+//         window.removeEventListener('unload', handleTabClosing)
+//     }
+// })
+
+
 
   // Fetch messages based on current chat channel
   const grabMessages = (chatId) => {

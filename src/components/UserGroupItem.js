@@ -4,7 +4,7 @@ import buddyIcon from "../assets/images/noBuddyIcon.png";
 const UserGroupItem = (props) => {
   const [viewingGroupList, setViewingGroupList] = useState(false);
   const [currentChannel, setCurrentChannel] = useState(false);
-  const [friendStatus, setFriendStatus] = useState("");
+  const [onlineList, setOnlineList] = useState([]);
 
   // Grab current user to compare names
   const myUserName = localStorage.getItem("username");
@@ -19,11 +19,23 @@ const UserGroupItem = (props) => {
     return props.data.users[key];
   });
 
-  // console.log(users)
+  useEffect(() => {
+    users.map((user) => {
+      // Loop through chat engine users and compare to group to find group users
+      for (let i = 0; i < props.allUsers.length; i++) {
+        if (user.username == props.allUsers[i].username) {
+          // Determine if user is curerntly online and add count
+          if (props.allUsers[i]["is_online"]) {
+            setOnlineList((prev) => [...prev, props.allUsers[i].username]);
+          }
+        }
+      }
+    })
+  }, [props.allUsers])
+
 
   // Changes the chat channel/room to the selected friend
   const changeChannelHandler = (id) => {
-    console.log(id);
     setCurrentChannel(!currentChannel);
     props.switchChannel(id);
   };
@@ -43,56 +55,38 @@ const UserGroupItem = (props) => {
     userObj[friends] = friendId;
   });
 
-  // Grab friends status
-  useEffect(() => {
-    const fbUsersData = Object.keys(userObj).map((key) => {
-      // Grab the data that belongs to the buddy
-      if (key in firebaseUsers) {
-        setFriendStatus(firebaseUsers[key].status);
-      }
-    });
-  }, [props.allUsers, firebaseUsers]);
-
-  // Grab friends avatar
-  const grabUserImage = () => {
-    const fbUsersData = Object.keys(firebaseUsers).map((key) => {
-      if (key in userObj) {
-        if (firebaseUsers[key].avatar !== "") {
-          return (
-            <img
-              key={key}
-              className="buddy-avatar"
-              src={firebaseUsers[key].avatar}
-            />
-          );
-        } else {
-          return <img key="0" className="buddy-avatar" src={buddyIcon} />;
-        }
-      }
-    });
-
-    return fbUsersData;
-  };
-
+  // Function helper for rendering user info
   const renderUserInfo = () => {
     return users.map((user) => {
-      // console.log(firebaseUsers[user.username])
-      return <>
-       <div className="group-list-item">
-        <li
-          className="group-channel-name"
-          onClick={() => changeChannelHandler(userObj[user.username])}
-        >
-          <span><img className='buddy-avatar' src={firebaseUsers[user.username].avatar} /></span>
-          <p className="user-online-name">{user.username}</p>
-        </li>
-        <span className="friend-status">
-        <em>{firebaseUsers[user.username].status}</em>
-      </span>
-      </div>
-      </>;
-    })
-  }
+
+      return (
+        <>
+          <div className="group-list-item">
+            <li
+              key={user}
+              className="group-channel-name"
+              onClick={() => changeChannelHandler(userObj[user.username])}
+            >
+              {/* Grab friends avatar */}
+              <span>
+                <img
+                  className="buddy-avatar"
+                  src={firebaseUsers[user.username].avatar}
+                />
+              </span>
+              <p className="user-online-name">{user.username}</p>
+            </li>
+
+            {/* Grab friends status */}
+            <span className="friend-status">
+              <em>{firebaseUsers[user.username].status}</em>
+            </span>
+          </div>
+        </>
+      );
+    });
+  };
+
 
   // List arrow styles
   const buddyListStyles = viewingGroupList
@@ -108,12 +102,14 @@ const UserGroupItem = (props) => {
           onClick={(e) => setViewingGroupList(!viewingGroupList)}
         >
           {props.title}
+          <span>
+            {" "}
+            ({onlineList.filter((v,i,a) => a.indexOf(v) == i).length}/{users.length})
+          </span>
         </span>
       </div>
       <div className="group-list">
-          {viewingGroupList
-            ? renderUserInfo()
-            : ""}
+        {viewingGroupList ? renderUserInfo() : ""}
       </div>
     </>
   );
