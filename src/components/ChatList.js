@@ -143,7 +143,6 @@ const ChatList = (props) => {
 
   // Loop through chat engine to get users channels
   const getChannelsList = () => {
-    console.log(currentUserGroups);
     const keys = Object.keys(chatList);
     return keys.map((key) => {
       const chat = chatList[key];
@@ -170,10 +169,6 @@ const ChatList = (props) => {
       );
     });
   };
-
-  const getGroupsList = () => {
-
-  }
 
   // Open and close your buddy list
   const viewBuddyListHandler = () => {
@@ -405,6 +400,8 @@ const ChatList = (props) => {
     currentTab == "buddies" ? "active-tab" : "inactive-tab";
   const settingsTabStyles =
     currentTab == "buddies" ? "inactive-tab" : "active-tab";
+  
+  // console.log(currentUserGroups)
 
   //////////////////////////////////////// ! RENDER HTML ! //////////////////////////////////////////////////////
   return (
@@ -500,8 +497,10 @@ const ChatList = (props) => {
                           key={key}
                           title={key}
                           data={currentUserGroups[key]}
+                          chat={chatList}
+                          switchChannel={switchChatChannel}
+                          firebaseUsersList={props.firebaseUsersList}
                         />
-                    
                     }) : ''}
                     </div>
               </ul>
