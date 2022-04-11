@@ -25,18 +25,15 @@ const ChatList = (props) => {
   const [addingNewFriend, setAddingNewFriend] = useState(false);
   const [newFriend, setNewFriend] = useState("");
 
-  // The list of chat rooms and the handler to view
+  // The list of chat rooms, handler to view, and current length of friends list
   const [chatList, setChatList] = useState([]);
   const [viewingBuddyList, setViewingBuddyList] = useState(false);
+  const [currentBuddyLength, setCurrentBuddyLength] = useState(0);
 
   // Error and Loading States
   const [error, setError] = useState("");
   const [hasError, setHasError] = useState(false);
   const [loading, setLoading] = useState(false);
-
-  // User online status (online, away, offline)
-  const [currentUserAvailability, setCurrentUserAvailability] =
-    useState("online");
 
   // Username settings
   const myUserName = localStorage.getItem("username");
@@ -64,7 +61,12 @@ const ChatList = (props) => {
 
   // Grab all the chat rooms available to users
   useEffect(() => {
-    setChatList(props.chats);
+    const currentLength = []
+    if(props.chats) {
+      setChatList(props.chats);
+    } else {
+      console.log('Loading...')
+    }
     // Populate chat feed with current chatRoom messages
     const fetchCurrentMessages = () => {
       // If data is fetched and available display it
@@ -84,8 +86,17 @@ const ChatList = (props) => {
       setCurrentUserAvatar(props.firebaseUsersList[myUserName].avatar);
       setCurrentUserStatus(props.firebaseUsersList[myUserName].status);
       setCurrentUserGroups(props.firebaseUsersList[myUserName].groups);
+      for(let group in Object.values(currentUserGroups)) {
+        const keys = Object.values(currentUserGroups)[group].users
+       for(let user of Object.values(keys)) {
+         currentLength.push(user.username)
+       }
+      }
+      setCurrentBuddyLength(Object.keys(chatList).length - currentLength.length)
     }
   }, [props.chats]);
+
+
 
   // Loop to listen for escape key press
   useEffect(() => {
@@ -153,21 +164,48 @@ const ChatList = (props) => {
           ? chat.people[1].person.username
           : chat.people[0].person.username;
 
-      return (
-        chat &&
-        chat.people && (
-          <ChatListItem
-            key={friendChannelName}
-            friendChannelName={friendChannelName}
-            loading={props.loading}
-            switchChannel={switchChatChannel}
-            allUsers={props.allUsers}
-            firebaseUsersList={props.firebaseUsersList}
-            chat={chat}
-          />
-        )
-      );
+      // Check to see if user is in a group
+      const inGroup = determineInGroup(friendChannelName);
+
+      // If the user is not in a group, render them
+      if (!inGroup) {
+        return (
+          chat &&
+          chat.people && (
+            <ChatListItem
+              key={friendChannelName}
+              friendChannelName={friendChannelName}
+              loading={props.loading}
+              switchChannel={switchChatChannel}
+              allUsers={props.allUsers}
+              firebaseUsersList={props.firebaseUsersList}
+              chat={chat}
+            />
+          )
+        );
+      }
     });
+  };
+
+  // Determine if user is in a group
+  const determineInGroup = (buddy) => {
+    // Set empty array to hold group users
+    const usersInGroups = [];
+
+    // Loop through groups and push each username to the array
+    for (let group in currentUserGroups) {
+      const users = currentUserGroups[group].users;
+      for (let user of Object.values(users)) {
+        usersInGroups.push(user.username);
+      }
+    }
+
+    // If the array has the buddy name in it, they're in a group
+    if (usersInGroups.includes(buddy)) {
+      return true;
+    }
+    // Users that aren't in a group
+    return false;
   };
 
   // Open and close your buddy list
@@ -400,8 +438,6 @@ const ChatList = (props) => {
     currentTab == "buddies" ? "active-tab" : "inactive-tab";
   const settingsTabStyles =
     currentTab == "buddies" ? "inactive-tab" : "active-tab";
-  
-  // console.log(currentUserGroups)
 
   //////////////////////////////////////// ! RENDER HTML ! //////////////////////////////////////////////////////
   return (
@@ -478,10 +514,7 @@ const ChatList = (props) => {
                   <span>
                     {" "}
                     ({onlineUsers.length}/
-                    {chatList &&
-                      Object.keys(chatList) &&
-                      Object.keys(chatList).length >= 0 &&
-                      Object.keys(chatList).length}
+                    {chatList && currentBuddyLength}
                     )
                   </span>
                 </span>
@@ -490,20 +523,23 @@ const ChatList = (props) => {
                   {viewingBuddyList && chatList ? getChannelsList() : ""}
                 </div>
                 {/* Users custom groups list */}
-                <div className='groups'>
-                {currentUserGroups ?
-                    Object.keys(currentUserGroups).map((key) => {
-                      return <UserGroupItem
-                          key={key}
-                          title={key}
-                          data={currentUserGroups[key]}
-                          chat={chatList}
-                          switchChannel={switchChatChannel}
-                          firebaseUsersList={props.firebaseUsersList}
-                          allUsers={props.allUsers}
-                        />
-                    }) : ''}
-                    </div>
+                <div className="groups">
+                  {currentUserGroups
+                    ? Object.keys(currentUserGroups).map((key) => {
+                        return (
+                          <UserGroupItem
+                            key={key}
+                            title={key}
+                            data={currentUserGroups[key]}
+                            chat={chatList}
+                            switchChannel={switchChatChannel}
+                            firebaseUsersList={props.firebaseUsersList}
+                            allUsers={props.allUsers}
+                          />
+                        );
+                      })
+                    : ""}
+                </div>
               </ul>
             )}
 

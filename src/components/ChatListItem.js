@@ -13,6 +13,8 @@ const ChatListItem = (props) => {
     return obj.username == friendChannelName;
   });
 
+  // console.log(props.friendChannelName)
+
   // Changes the chat channel/room to the selected friend
   const changeChannelHandler = () => {
     setCurrentChannel(!currentChannel);
@@ -54,11 +56,7 @@ const ChatListItem = (props) => {
       <div className="channel-list-item">
         <li className="chat-channel-name" onClick={changeChannelHandler}>
           <span>{grabUserImage()}</span>
-          {user["is_online"] ? (
             <p className="user-online-name">{friendChannelName}</p>
-          ) : (
-            <p className="user-offline-name">{friendChannelName}</p>
-          )}
         </li>
         <span className="friend-status">
           <em>{friendStatus}</em>
