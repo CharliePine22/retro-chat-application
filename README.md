@@ -92,14 +92,14 @@ A chat application heavily inspired by AOL's 1997 "A.I.M" associated with Astrow
 
 ### Built With
 
-* [Next.js](https://nextjs.org/)
+* [HTML](https://www.w3schools.com/html/)
+* [CSS](https://developer.mozilla.org/en-US/docs/Web/CSS)
+* [JavaScript](https://www.javascript.com/)
+* [Firebase Realtime Database](https://firebase.google.com/)
 * [React.js](https://reactjs.org/)
-* [Vue.js](https://vuejs.org/)
-* [Angular](https://angular.io/)
-* [Svelte](https://svelte.dev/)
-* [Laravel](https://laravel.com)
 * [Bootstrap](https://getbootstrap.com)
-* [JQuery](https://jquery.com)
+* [Chat Engine API](https://chatengine.io/)
+
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 
