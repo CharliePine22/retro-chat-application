@@ -36,7 +36,7 @@
 <h3 align="center">Astro Chat</h3>
 
   <p align="center">
-    project_description
+    An old school chat application associaited with the Astroworld NFT project!
     <br />
     <a href="https://github.com/CharliePine22/retro_chat_application"><strong>Explore the docs »</strong></a>
     <br />
@@ -82,9 +82,9 @@
 <!-- ABOUT THE PROJECT -->
 ## About The Project
 
-[<img src="./src/assets/images/AstroworldPark.png" alt="Astroworld Park" width="80" height="80">](https://astroworld.io)
+[<img src="./src/assets/images/AstroworldPark.png" alt="Astroworld Park" width="100%" height="400">](https://astroworld.io)
 
-Here's a blank template to get started: To avoid retyping too much info. Do a search and replace with your text editor for the following: `github_username`, `repo_name`, `twitter_handle`, `linkedin_username`, `email_client`, `email`, `project_title`, `project_description`
+A chat application heavily inspired by AOL's 1997 "A.I.M" associated with Astroworld.io. Customize your own username, status, and avatar, add a buddy, and start chatting away, just like the old days!
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 
