@@ -30,7 +30,7 @@
 <br />
 <div align="center">
   <a href="https://github.com/CharliePine22/retro-chat-application">
-    <img src="./images/astroGlobe.png" alt="Logo" width="80" height="80">
+    <img src="./src/assets/images/astroGlobe.png" alt="Logo" width="80" height="80">
   </a>
 
 <h3 align="center">Astro Chat</h3>
@@ -38,14 +38,14 @@
   <p align="center">
     project_description
     <br />
-    <a href="https://github.com/CharliePine22/repo_name"><strong>Explore the docs »</strong></a>
+    <a href="https://github.com/CharliePine22/retro_chat_application"><strong>Explore the docs »</strong></a>
     <br />
     <br />
-    <a href="https://github.com/CharliePine22/repo_name">View Demo</a>
+    <a href="https://github.com/CharliePine22/retro_chat_application">View Demo</a>
     ·
-    <a href="https://github.com/CharliePine22/repo_name/issues">Report Bug</a>
+    <a href="https://github.com/CharliePine22/retro_chat_application/issues">Report Bug</a>
     ·
-    <a href="https://github.com/CharliePine22/repo_name/issues">Request Feature</a>
+    <a href="https://github.com/CharliePine22/retro_chat_application/issues">Request Feature</a>
   </p>
 </div>
 
@@ -215,7 +215,7 @@ Project Link: [https://github.com/github_username/repo_name](https://github.com/
 [license-shield]: https://img.shields.io/github/license/github_username/repo_name.svg?style=for-the-badge
 [license-url]: https://github.com/github_username/repo_name/blob/master/LICENSE.txt
 [linkedin-shield]: https://img.shields.io/badge/-LinkedIn-black.svg?style=for-the-badge&logo=linkedin&colorB=555
-[linkedin-url]: https://linkedin.com/in/linkedin_username
+[linkedin-url]: https://linkedin.com/in/charlespine
 [product-screenshot]: images/screenshot.png
 
 
