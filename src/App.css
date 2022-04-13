@@ -116,9 +116,10 @@
 
 .group-list-name::before {
   content: "►";
-  font-size: 1rem;
+  font-size: .8rem;
   position: relative;
   left: -2px;
+  bottom: 2px;
 }
 
 .group-list-name-active {
@@ -133,9 +134,10 @@
 
 .group-list-name-active::before {
   content: "⮟";
-  font-size: 1rem;
+  font-size: .8rem;
   position: relative;
   left: -5px;
+  bottom: 2px;
 }
 
 .group-list-item {
@@ -202,8 +204,9 @@
   width: 75%;
   font-size: 0.75rem;
   margin-left: 25px;
-  color: rgb(179, 179, 179);
-  font-weight: bolder;
+  color: #53acf9;
+  /* color: rgb(179, 179, 179); */
+  /* font-weight: bolder; */
 }
 
 .header {
@@ -325,8 +328,8 @@
 }
 
 .buddy-avatar {
-  height: 25px;
-  width: 25px;
+  height: 30px;
+  width: 30px;
   position: absolute;
   left: -10px;
 }
@@ -343,9 +346,10 @@
 
 .buddies-list-name::before {
   content: "►";
-  font-size: 1rem;
+  font-size: .8rem;
   position: relative;
   left: -2px;
+  bottom:2px;
 }
 
 .buddies-list-name-active {
@@ -361,9 +365,10 @@
 
 .buddies-list-name-active::before {
   content: "⮟";
-  font-size: 1rem;
+  font-size: .8rem;
   position: relative;
   left: -5px;
+  bottom: 2px;
 }
 
 
@@ -595,14 +600,15 @@
   width: 80% 
 }
 
-.message-expressions {
+.remove-group {
   display: flex;
   flex-direction: column;
   align-items: center;
   height: 100%;
+  cursor: pointer;
 }
 
-.message-expressions img {
+.remove-group img {
   height: 30px;
   width: 30px;
 }
@@ -879,6 +885,17 @@
   margin-bottom: 10px;
 }
 
+/* REMOVE GROUP WINDOW STYLES */
+.remove-group-window {
+  height:100%;
+  width:100%;
+  background: #d6d6ce;
+  display:flex;
+  flex-direction: column;
+  text-align: center;
+  align-items: center;
+  justify-content: flex-start;
+}
 
 /* ICON WINDOW STYLES */
 .icon-change-form {
@@ -1313,12 +1330,32 @@
   display:flex;
   list-style: none;
   align-items: flex-end;
-  margin: 0 0 0 5px;
+  margin: 0 5px 0 5px;
   padding: 0px;
 }
 
 .buddies-tab {
   box-sizing: border-box;
+}
+
+.requests-tab {
+  box-sizing: border-box;
+}
+
+.requests-tab button {
+  display:flex;
+  align-items: center;
+}
+
+.friend-requests-count {
+  background-color:blue;
+  border:1px solid black;
+  border-radius: 50%;
+  padding: 0rem .25rem;
+  color:white;
+  margin-left: 3px;
+  font-size: .75rem;
+  font-weight: 900;
 }
 
 .settings-tab {
@@ -1328,7 +1365,7 @@
 .inactive-tab {
     position: relative;
     appearance: none;
-    padding: 4px 8px;
+    padding: 4px 12.55px;
     margin: 0px;
     background: transparent;
     font: inherit;
@@ -1842,6 +1879,12 @@
   /* animation:fadeOut 1s 3s forwards; */
 }
 
+.success {
+  color:green;
+  font-size: 0.9rem;
+  margin-top: 3px;
+}
+
 @keyframes fadeOut {
   0% {
     opacity: 1;
@@ -1898,6 +1941,18 @@
     height:30px;
   }
 
+  .new-user-header {
+    top: 52px;
+    left: 20px;
+    width: 157.1%;
+  }
+
+  .new-user-welcome-container {
+    width: 157%;
+    margin-left: 20px;
+    margin-top: 85px;
+  }
+
   .user-actions {
     margin-top:0px;
     margin-bottom: 10px;
@@ -1910,6 +1965,10 @@
 
   .user-channels-outer {
     height: 68%;
+  }
+  
+  .inactive-tab {
+    padding: 4px 15px;
   }
 
   .user-tabs {

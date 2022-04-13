@@ -1,5 +1,5 @@
 // React hooks and components
-import { useState, useRef } from "react";
+import { useState, useEffect } from "react";
 import OpenGroupWindow from "./OpenGroupWindow";
 
 // Send message function
@@ -10,11 +10,11 @@ import { PictureOutlined } from "@ant-design/icons";
 
 // Message form images
 import sendButtonImage from "../assets/images/send-message-button.png";
-import colorPalette from "../assets/images/greyscale-expressions.png";
 import warnIcon from "../assets/images/warn.png";
 import blockIcon from "../assets/images/block.png";
 import redDice from "../assets/images/greyscale_games.png";
-import addGroupIcon from "../assets/images/add-group.png";
+import removeGroupIcon from "../assets/images/add-group.png";
+import addGroupIcon from "../assets/images/group.png";
 
 // Message form emojis
 import Picker from "emoji-picker-react";
@@ -29,6 +29,8 @@ const MessageForm = (props) => {
   const [value, setValue] = useState("");
   // Group State settings
   const [viewingBuddyWindow, setViewingBuddyWindow] = useState(false);
+  const [viewingRemoveGroup, setViewingRemoveGroup] = useState(false);
+  const [currentGroups, setCurrentGroups] = useState([]);
   // Emoji State settings
   const [showEmoji, setShowEmoji] = useState(false);
   const [chosenEmoji, setChosenEmoji] = useState(null);
@@ -36,14 +38,36 @@ const MessageForm = (props) => {
   const [showColors, setShowColors] = useState(false);
   const [chosenColor, setChosenColor] = useState(null);
 
-  const messageFormRef = useRef();
-
+  // Grab all groups buddy is assocaited with 
+  useEffect(() => {
+    determineInGroup()
+  }, [props.buddyName])
 
   // Handle text form input changes
   const handleChange = (e) => {
     setValue(e.target.value);
     // isTyping(props, chatId);
   };
+
+  const determineInGroup = () => {
+    // Set empty array to hold group users
+    const availableGroups = [];
+
+    // Loop through groups and push each username to the array
+    for (let group in props.firebaseGroups) {
+      const users = props.firebaseGroups[group].users;
+      for (let user of Object.values(users)) {
+        if (user.username == props.buddyName) {
+          availableGroups.push(group);
+        }
+      }
+    }
+    setCurrentGroups(availableGroups);
+  };
+
+  const showNoBuddyMessage = () => {
+    alert(`${props.buddyName} isn't in any groups!`)
+  }
 
   // Set the chosen color to the user's pick
   const handleColorChange = (color, event) => {
@@ -65,6 +89,11 @@ const MessageForm = (props) => {
   // Determines if group window is open or closed 
   const handleGroupWindow = () => {
     setViewingBuddyWindow(!viewingBuddyWindow)
+  }
+
+  // Determines if remove group window is open or closed
+  const removeGroupHandler = () => {
+    setViewingRemoveGroup(!viewingRemoveGroup)
   }
 
   // Allows users to submit messages by pressing the enter key
@@ -200,11 +229,16 @@ const MessageForm = (props) => {
 
         {/* Events */}
           <div className="message-events-container">
-            {/* Expressions */}
-            <div className="message-expressions">
-              <img src={colorPalette} />
-              <span>Expressions</span>
-            </div>
+            {/* Remove Group */}
+           {currentGroups.length > 0 ? <div className="remove-group" onClick={removeGroupHandler}>
+              <img src={removeGroupIcon} />
+              <span>Remove Group</span>
+            </div> : <div className="remove-group" onClick={showNoBuddyMessage}>
+              <img src={removeGroupIcon} />
+              <span>Remove Group</span>
+            </div>}
+              {/* Remove group window  */}
+            {viewingRemoveGroup && (<OpenGroupWindow firebaseGroups={props.firebaseGroups} buddyName={props.buddyName} currentGroups={currentGroups} removeGroupHandler={removeGroupHandler} action='remove'/>)}
 
             {/* Games */}
             <div className='message-games'>
@@ -218,7 +252,7 @@ const MessageForm = (props) => {
               <span>Add Group</span>
             </div>
 
-            {viewingBuddyWindow && <OpenGroupWindow firebaseGroups={props.firebaseGroups} buddyName={props.buddyName} chatId={chatId} /> }
+            {viewingBuddyWindow && <OpenGroupWindow handleGroupWindow={handleGroupWindow} firebaseGroups={props.firebaseGroups} buddyName={props.buddyName} chatId={chatId} action='add'/> }
 
           </div>
             <hr className='message-border' />

@@ -121,8 +121,7 @@ const ChatFeed = (props) => {
     );
   };
 
-  // If the user has no chats available (usually for new users)
-  // Show Welcome screen
+  // If the user has no chats available (usually for new users), show welcome screen
   if (props.activeChat == 0) {
     return <NewUserWelcome nav={Navbar}/>
   }

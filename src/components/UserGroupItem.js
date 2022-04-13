@@ -71,7 +71,7 @@ const UserGroupItem = (props) => {
               <span>
                 <img
                   className="buddy-avatar"
-                  src={firebaseUsers[user.username].avatar}
+                  src={firebaseUsers[user.username].avatar !== '' ? firebaseUsers[user.username].avatar : buddyIcon}
                 />
               </span>
               <p className="user-online-name">{user.username}</p>

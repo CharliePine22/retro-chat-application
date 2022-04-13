@@ -61,11 +61,11 @@ const ChatList = (props) => {
 
   // Grab all the chat rooms available to users
   useEffect(() => {
-    const currentLength = []
-    if(props.chats) {
+    const currentLength = [];
+    if (props.chats) {
       setChatList(props.chats);
     } else {
-      console.log('Loading...')
+      console.log("Loading...");
     }
     // Populate chat feed with current chatRoom messages
     const fetchCurrentMessages = () => {
@@ -86,17 +86,25 @@ const ChatList = (props) => {
       setCurrentUserAvatar(props.firebaseUsersList[myUserName].avatar);
       setCurrentUserStatus(props.firebaseUsersList[myUserName].status);
       setCurrentUserGroups(props.firebaseUsersList[myUserName].groups);
-      for(let group in Object.values(currentUserGroups)) {
-        const keys = Object.values(currentUserGroups)[group].users
-       for(let user of Object.values(keys)) {
-         currentLength.push(user.username)
-       }
+
+      // If the user has any groups determine buddy list length
+      if (currentUserGroups) {
+        for (let group in Object.values(currentUserGroups)) {
+          const keys = Object.values(currentUserGroups)[group].users;
+          for (let user of Object.values(keys)) {
+            currentLength.push(user.username);
+          }
+        }
+        setCurrentBuddyLength(
+          Object.keys(chatList).length - currentLength.length
+        );
+      } 
+      // If the user has no groups, set length equal to chat list
+      else {
+        setCurrentBuddyLength(Object.keys(chatList).length)
       }
-      setCurrentBuddyLength(Object.keys(chatList).length - currentLength.length)
     }
-  }, [props.chats]);
-
-
+  }, [props.chats, props.firebaseUsersList]);
 
   // Loop to listen for escape key press
   useEffect(() => {
@@ -128,21 +136,20 @@ const ChatList = (props) => {
     if (props.allUsers.length == 0 || chatList == null) return <div />;
 
     // Grab all the users that are online
-    const usersChats = Object.keys(chatList);
     const currentUsers = props.allUsers.filter((obj) => {
       // Don't include current user in count
-      if (obj.username == myUserName) return "";
+      if (obj.username == myUserName) return ""; 
+      // Dont include group users in count
+      else if(determineInGroup(obj.username)) return "";
       // Set online users list
       else {
-        if (usersChats.includes(obj.id.toString())) {
-          console.log(obj);
           // RETURNS ALL USERS ONLINE
-          return obj["is_online"] == true;
-        }
+          return obj["is_online"];
       }
     });
     setOnlineUsers(currentUsers);
-  }, [props.allUsers, useState]);
+  }, [props.allUsers, chatList, useState]);
+
 
   //////////////////////////////////// ! FUNCTIONS AND HANDLERS ! ///////////////////////////////
   // Switch to selected chat channel
@@ -187,7 +194,7 @@ const ChatList = (props) => {
     });
   };
 
-  // Determine if user is in a group
+  // Determine if user is in a group, return false if user is not
   const determineInGroup = (buddy) => {
     // Set empty array to hold group users
     const usersInGroups = [];
@@ -204,7 +211,7 @@ const ChatList = (props) => {
     if (usersInGroups.includes(buddy)) {
       return true;
     }
-    // Users that aren't in a group
+
     return false;
   };
 
@@ -272,7 +279,6 @@ const ChatList = (props) => {
     setLoading(true);
     e.preventDefault();
     createDirectChat(newFriend);
-    localStorage.setItem("newUser", false);
   };
 
   // Adjust sound volume
@@ -436,8 +442,10 @@ const ChatList = (props) => {
   // Tab button style settings
   const onlineTabStyles =
     currentTab == "buddies" ? "active-tab" : "inactive-tab";
+  const requestsTabStyles =
+    currentTab == "requests" ? "active-tab" : "inactive-tab";
   const settingsTabStyles =
-    currentTab == "buddies" ? "inactive-tab" : "active-tab";
+    currentTab == "settings" ? "active-tab" : "inactive-tab";
 
   //////////////////////////////////////// ! RENDER HTML ! //////////////////////////////////////////////////////
   return (
@@ -494,6 +502,14 @@ const ChatList = (props) => {
               Online
             </button>
           </li>
+          <li className="requests-tab">
+            <button
+              className={requestsTabStyles}
+              onClick={() => setCurrentTab("requests")}
+            >
+              Requests <span className='friend-requests-count'>1</span> 
+            </button>
+          </li>
           <li className="settings-tab">
             <button
               className={settingsTabStyles}
@@ -513,9 +529,7 @@ const ChatList = (props) => {
                   Buddies{" "}
                   <span>
                     {" "}
-                    ({onlineUsers.length}/
-                    {chatList && currentBuddyLength}
-                    )
+                    ({onlineUsers.length}/{chatList && currentBuddyLength})
                   </span>
                 </span>
                 {/* Buddies List */}
@@ -543,7 +557,16 @@ const ChatList = (props) => {
               </ul>
             )}
 
-            {/* User Settings */}
+             {/* Request tab settings */}
+             {currentTab == 'requests' && (
+              <>
+              <div style={{textAlign: "center", marginTop: "10px"}}>
+                <p>Coming soon...</p>
+              </div>
+              </>
+            )}
+
+            {/************************  User Settings ********************/}
             {currentTab == "settings" && (
               <>
                 <div className="user-settings-header">
@@ -613,6 +636,7 @@ const ChatList = (props) => {
                 </div>
               </>
             )}
+           
           </div>
         </div>
 
