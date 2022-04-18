@@ -5,10 +5,9 @@ import OpenStatusWindow from "./OpenStatusWindow";
 import awayBuddyIcon from "../assets/images/noBuddyIcon.png";
 import { FaEye } from "react-icons/fa";
 import { ThreeDots, BallTriangle } from "react-loader-spinner";
-import UserGroupItem from "./UserGroupItem";
 
 const ChatList = (props) => {
-  ////////////////////////////////////// ! State Settings ! ////////////////////////////////////
+          ////////////////////////////////////// ! State Settings ! ////////////////////////////////////
   // Tabs for online chats or requests
   const [currentTab, setCurrentTab] = useState("buddies");
   const [currentChat, setCurrentChat] = useState(0);
@@ -25,15 +24,18 @@ const ChatList = (props) => {
   const [addingNewFriend, setAddingNewFriend] = useState(false);
   const [newFriend, setNewFriend] = useState("");
 
-  // The list of chat rooms, handler to view, and current length of friends list
+  // The list of chat rooms and the handler to view
   const [chatList, setChatList] = useState([]);
   const [viewingBuddyList, setViewingBuddyList] = useState(false);
-  const [currentBuddyLength, setCurrentBuddyLength] = useState(0);
 
   // Error and Loading States
   const [error, setError] = useState("");
   const [hasError, setHasError] = useState(false);
   const [loading, setLoading] = useState(false);
+
+  // User online status (online, away, offline)
+  const [currentUserAvailability, setCurrentUserAvailability] =
+    useState("online");
 
   // Username settings
   const myUserName = localStorage.getItem("username");
@@ -52,29 +54,28 @@ const ChatList = (props) => {
   // User status and icon settings
   const [currentUserStatus, setCurrentUserStatus] = useState("");
   const [currentUserAvatar, setCurrentUserAvatar] = useState("");
-  const [currentUserGroups, setCurrentUserGroups] = useState([]);
 
-  // Grab chat rooms on render
-  let [onlineUsers, setOnlineUsers] = useState([]);
-
+  // Current online/active users
+  const [onlineUsers, setOnlineUsers] = useState(0);
+  const [sortedFriends, setSortedFriends] = useState([])
+  const [sortedObj, setSortedObj] = useState({});
   //////////////////////////////////// ! USE EFFECTS ! //////////////////////////////////////
-  const fetchCurrentMessages = () => {
-    // If data is fetched and available display it
-    if (chatList !== null && props.chats && chatList.length > 0) {
-      props.fetchChannelMessages(chatList[props.activeChat].id);
-    } else {
-      return "Fetching....";
-    }
-  };
 
   // Grab all the chat rooms available to users
+  let friendsList = []
   useEffect(() => {
-    if (props.chats) {
-      setChatList(props.chats);
-    } else {
-      console.log("Loading...");
-    }
-    // Populate chat feed with current chatRoom messages
+    let test = {}
+    // Set chatList to the chat object
+    setChatList(props.chats);
+    // On load, fetch the messages for the current chat room
+    const fetchCurrentMessages = () => {
+      // If the chatlist hasn't loaded yet, wait for data to come in
+      if (chatList !== null && props.chats && chatList.length > 0) {
+        props.fetchChannelMessages(chatList[props.activeChat].id);
+      } else {
+        return "Fetching....";
+      }
+    };
     fetchCurrentMessages();
 
     // If firebase fetching isn't done yet return and wait
@@ -83,11 +84,33 @@ const ChatList = (props) => {
     } else {
       // If it is done, set the current users avatar to their saved avatar and status
       setCurrentUserAvatar(props.firebaseUsersList[myUserName].avatar);
-      setCurrentUserStatus(props.firebaseUsersList[myUserName].status);
-      setCurrentUserGroups(props.firebaseUsersList[myUserName].groups);
+      setCurrentUserStatus(props.firebaseUsersList[myUserName].status)
     }
-  }, [props.chats, props.firebaseUsersList]);
 
+    // Create list or object 
+    for(let chat in chatList) {
+      test[chatList[chat].people[0].person.username == myUserName ? chatList[chat].people[1].person.username : chatList[chat].people[0].person.username] = chat;
+      friendsList.push(chatList[chat].people[0].person.username == myUserName ? chatList[chat].people[1].person.username : chatList[chat].people[0].person.username)
+    }
+    let objSortedByKeys = Object.fromEntries(Object.entries(test).sort((a,b)=>a[0].localeCompare(b[0])));
+    function objectFlip(obj) {
+      return Object.entries(obj).reduce((ret, entry) => {
+        const [ key, value ] = entry;
+        ret[ value ] = key;
+        return ret;
+      }, {});
+    }
+    setSortedObj(objectFlip(objSortedByKeys));
+
+
+    friendsList.sort(function(a,b) {
+      return a.toLowerCase().localeCompare(b.toLowerCase());
+    })
+    setSortedFriends(friendsList)
+
+  }, [props.chats]);
+
+  
   // Loop to listen for escape key press
   useEffect(() => {
     const handleEsc = (event) => {
@@ -100,9 +123,6 @@ const ChatList = (props) => {
         // Cancel username/password change
         setChangingPassword(false);
         setChangingUserName(false);
-
-        // Cancel delete buddy form
-        setDeletingBuddy(false);
       }
     };
     window.addEventListener("keydown", handleEsc);
@@ -112,114 +132,70 @@ const ChatList = (props) => {
     };
   }, []);
 
-  // Determine length of buddy list
-  useEffect(() => {
-    grabBuddyListLength()
-  }, [currentUserGroups]);
-
   //Determine user online/availability status
   useEffect(() => {
     // If theres no users or it hasn't finished fetching yet
-    if (props.allUsers.length == 0 || chatList == null) return <div />;
+    if (props.allUsers.length == 0) return <div />;
 
-    // Grab all the users that are online
-    const currentUsers = props.allUsers.filter((obj) => {
-      // Don't include current user in count
-      if (obj.username == myUserName) return ""; 
-      // Dont include group users in count
-      else if(determineInGroup(obj.username)) return "";
-      // Set online users list
-      else {
-          // RETURNS ALL USERS ONLINE
-          return obj["is_online"];
-      }
-    });
-    setOnlineUsers(currentUsers);
-  }, [props.allUsers, chatList, useState]);
+    if (chatList !== null) {
+      // Loop through users chat list and grab every user
+      // Show the online status of every user and return bool
+    const currentOnlineUsers = Object.keys(chatList).map(key => {
+      const allFriends = chatList[key].people[0].person.username == myUserName
+      ? chatList[key].people[1].person['is_online']
+      : chatList[key].people[0].person['is_online']
+      return allFriends
+    })
+
+    // Set length to how many trues/online users 
+    setOnlineUsers(currentOnlineUsers.filter(Boolean).length)
+  }
+    // setOnlineUsers(currentUsers);
+  }, [chatList, onlineUsers]);
 
   //////////////////////////////////// ! FUNCTIONS AND HANDLERS ! ///////////////////////////////
   // Switch to selected chat channel
   const switchChatChannel = (channelId) => {
-    props.setActiveChat(channelId);
+    localStorage.setItem("chatId", channelId);
     setCurrentChat(channelId);
+    props.setActiveChat(channelId);
   };
-
-  const grabBuddyListLength = () => {
-    const currentLength = [];
-    // If the user has any groups determine buddy list length
-    if (currentUserGroups) {
-      for (let group in Object.values(currentUserGroups)) {
-        const keys = Object.values(currentUserGroups)[group].users;
-        for (let user of Object.values(keys)) {
-          currentLength.push(user.username);
-        }
-      }
-      setCurrentBuddyLength(
-        Object.keys(chatList).length - currentLength.length
-      );
-    } 
-    // If the user has no groups, set length equal to chat list
-    else {
-      setCurrentBuddyLength(Object.keys(chatList).length)
-    }
-  }
 
   // Loop through chat engine to get users channels
   const getChannelsList = () => {
+    // Sort buddy list alphabetically
     const keys = Object.keys(chatList);
     return keys.map((key) => {
       const chat = chatList[key];
-
+      
+      console.log(sortedObj)
+     
+      
       if (chat.people.length < 2) return <div />; // Prevents chats that didnt properly delete with users from showing
-      const friendChannelName =
+     
+      let friendChannelName =
         chatList && chat && chat.people[0].person.username == myUserName
           ? chat.people[1].person.username
           : chat.people[0].person.username;
 
-      // Check to see if user is in a group
-      const inGroup = determineInGroup(friendChannelName);
 
-      // If the user is not in a group, render them
-      if (!inGroup) {
-        return (
-          chat &&
-          chat.people && (
-            <ChatListItem
-              key={friendChannelName}
-              friendChannelName={friendChannelName}
-              loading={props.loading}
-              changeLoadingTrue={props.changeLoadingTrue}
-              switchChannel={switchChatChannel}
-              allUsers={props.allUsers}
-              firebaseUsersList={props.firebaseUsersList}
-              chat={chat}
-             
-            />
-          )
-        );
-      }
+        // console.log(sortedObj[friendChannelName])
+    
+      
+      return (
+        chat &&
+        chat.people && (
+          <ChatListItem
+            friendChannelName={friendChannelName}
+            loading={props.loading}
+            switchChannel={switchChatChannel}
+            allUsers={props.allUsers}
+            firebaseUsersList={props.firebaseUsersList}
+            chat={chat}
+          />
+        )
+      );
     });
-  };
-
-  // Determine if user is in a group, return false if user is not
-  const determineInGroup = (buddy) => {
-    // Set empty array to hold group users
-    const usersInGroups = [];
-
-    // Loop through groups and push each username to the array
-    for (let group in currentUserGroups) {
-      const users = currentUserGroups[group].users;
-      for (let user of Object.values(users)) {
-        usersInGroups.push(user.username);
-      }
-    }
-
-    // If the array has the buddy name in it, they're in a group
-    if (usersInGroups.includes(buddy)) {
-      return true;
-    }
-
-    return false;
   };
 
   // Open and close your buddy list
@@ -241,14 +217,12 @@ const ChatList = (props) => {
       return friendUserNames;
     });
 
-
     // If the requested username is already in users friends list throw error
     if (currentFriends.includes(friend)) {
       setHasError(true);
       setError(`${friend} is already in your buddies list!`);
     }
 
-    // API Creds
     var myHeaders = new Headers();
     myHeaders.append("Project-ID", "b8a0fde0-1fae-4db8-9870-6bba5beb67c0");
     myHeaders.append("User-Name", localStorage.getItem("username"));
@@ -389,6 +363,7 @@ const ChatList = (props) => {
       body: JSON.stringify({ status: status }),
     });
     const result = await response.json();
+    console.log(result);
     setCurrentUserStatus(status);
 
     // Close status window when done
@@ -438,28 +413,13 @@ const ChatList = (props) => {
 
   // If chat rooms or userdata hasn't loaded yet, return and wait for load to complete
   if (!props.chats || props.allUsers.length == 0) {
-    return <div />;
+    return <div/>;
   }
+  
+  // Dynamic list styling for the buddy list arrow
+  // Show down arrow if buddy list is open, show right arrow if 
+  const buddyListStyles = viewingBuddyList ? 'buddies-list-name-active' : 'buddies-list-name'
 
-  // If the buddy length hasn't populated yet, keep loading
-  if(currentBuddyLength < 0) {
-    return 'Loading...'
-  }
-
-  // List arrow that changes based on the buddy list being viewed
-  const buddyListStyles = viewingBuddyList
-    ? "buddies-list-name-active"
-    : "buddies-list-name";
-
-  // Tab button style settings
-  const onlineTabStyles =
-    currentTab == "buddies" ? "active-tab" : "inactive-tab";
-  const requestsTabStyles =
-    currentTab == "requests" ? "requests-active-tab" : "inactive-tab";
-  const settingsTabStyles =
-    currentTab == "settings" ? "active-tab" : "inactive-tab";
-
-  //////////////////////////////////////// ! RENDER HTML ! //////////////////////////////////////////////////////
   return (
     <>
       <div className="chat-list-container">
@@ -467,7 +427,10 @@ const ChatList = (props) => {
         <div className="user">
           {/* Username */}
           <div className="user-details">
-            <p className="user-name">{props.userName}</p>
+            <p className="user-name">
+              {props.userName}{" "}
+              {/* <span className="user-availability">{`(${currentUserAvailability})`}</span> */}
+            </p>
 
             {/* Status  */}
             <span onClick={setStatusHandler} className="user-status">
@@ -504,152 +467,102 @@ const ChatList = (props) => {
           </div>
         </div>
 
-        {/* Online and Settings Tabs */}
-        <ul className="user-tabs">
-          <li className="buddies-tab">
-            <button
-              className={onlineTabStyles}
-              onClick={() => setCurrentTab("buddies")}
-            >
-              Online
-            </button>
-          </li>
-          <li className="requests-tab">
-            <button
-              className={requestsTabStyles}
-              onClick={() => setCurrentTab("requests")}
-            >
-              Requests <span className='friend-requests-count'>1</span> 
-            </button>
-          </li>
-          <li className="settings-tab">
-            <button
-              className={settingsTabStyles}
-              onClick={() => setCurrentTab("settings")}
-            >
-              Settings
-            </button>
-          </li>
-        </ul>
+        {/* Chat Channels */}
+        <div className="user-tabs">
+          <button autoFocus onClick={() => setCurrentTab("buddies")}>
+            Online
+          </button>
+          <button onClick={() => setCurrentTab("settings")}>Settings</button>
+        </div>
+        <div className="user-channels">
 
-        {/* Users Channels */}
-        <div className="user-channels-outer">
-          <div className="user-channels">
-            {currentTab == "buddies" && (
-              <ul className={buddyListStyles}>
-                <span className="buddies" onClick={viewBuddyListHandler}>
-                  Buddies{" "}
-                  <span>
-                    {" "}
-                    ({onlineUsers.length}/{chatList && currentBuddyLength})
-                  </span>
+          {/* Users list */}
+          {currentTab == "buddies" && (
+            <ul className={buddyListStyles}>
+              <span className="buddies" onClick={viewBuddyListHandler}>
+                Buddies{" "}
+                <span>
+                  {" "}
+                  ({onlineUsers}/
+                  {chatList &&
+                    Object.keys(chatList) &&
+                    Object.keys(chatList).length >= 0 &&
+                    Object.keys(chatList).length}
+                  )
                 </span>
-                {/* Buddies List */}
-                <div className="buddy-list">
-                  {viewingBuddyList && chatList ? getChannelsList() : ""}
-                </div>
-                {/* Users custom groups list */}
-                <div className="groups">
-                  {currentUserGroups
-                    ? Object.keys(currentUserGroups).map((key) => {
-                        return (
-                          <UserGroupItem
-                            key={key}
-                            title={key}
-                            data={currentUserGroups[key]}
-                            chat={chatList}
-                            switchChannel={switchChatChannel}
-                            firebaseUsersList={props.firebaseUsersList}
-                            allUsers={props.allUsers}
-                          />
-                        );
-                      })
-                    : ""}
-                </div>
-              </ul>
-            )}
-
-             {/* Request tab settings */}
-             {currentTab == 'requests' && (
-              <>
-              <div style={{textAlign: "center", marginTop: "10px"}}>
-                <p>Coming soon...</p>
+              </span>
+              <div className="buddy-list">
+                {viewingBuddyList && chatList ? getChannelsList() : ""}
               </div>
-              </>
-            )}
+            </ul>
+          )}
 
-            {/************************  User Settings ********************/}
-            {currentTab == "settings" && (
-              <>
-                <div className="user-settings-header">
-                  <h3>User Settings</h3>
+          {/* User Settings */}
+          {currentTab == "settings" && (
+            <>
+              <div className="user-settings-header">
+                <h3>User Settings</h3>
+              </div>
+              <div className="user-settings-actions">
+                {/* Username Settings */}
+                <div className="user-settings-username">
+                  {!changingUserName ? (
+                    <p>ScreenName: {props.userName}</p>
+                  ) : (
+                    <form onSubmit={userNameChangeHandler}>
+                      <input
+                        type="text"
+                        value={newUserName}
+                        onChange={(e) => setNewUserName(e.target.value)}
+                        placeholder="New username"
+                      />
+                    </form>
+                  )}
+                  <button onClick={() => setChangingUserName(true)}>
+                    Change ScreenName
+                  </button>
                 </div>
-                <div className="user-settings-actions">
-                  {/* Username Settings */}
-                  <div className="user-settings-username">
-                    {!changingUserName ? (
-                      <p>ScreenName: {props.userName}</p>
-                    ) : (
-                      <form onSubmit={userNameChangeHandler}>
-                        <input
-                          type="text"
-                          value={newUserName}
-                          onChange={(e) => setNewUserName(e.target.value)}
-                          placeholder="New username"
-                        />
-                      </form>
-                    )}
-                    <button onClick={() => setChangingUserName(true)}>
-                      Change ScreenName
-                    </button>
-                  </div>
 
-                  {/* Password settings */}
-                  <div className="user-settings-password">
-                    {!changingPassword ? (
-                      <p>
-                        Password:{" "}
-                        {hideUserPassword
-                          ? props.creds.userSecret.replace(/./g, "*")
-                          : props.creds.userSecret}{" "}
-                        <FaEye
-                          onClick={() => setHideUserPassword(!hideUserPassword)}
-                          className="hide-password-icon"
-                        />
-                      </p>
-                    ) : (
-                      <form onSubmit={passwordChangeHandler}>
-                        <input
-                          type="text"
-                          value={userPassword}
-                          onChange={(e) => setUserPassword(e.target.value)}
-                          placeholder="New password"
-                        />
-                      </form>
-                    )}
-                    <button onClick={() => setChangingPassword(true)}>
-                      {!changingPassword ? "Change Password" : ""}
-                    </button>
-                  </div>
-
-                  {/* Delete settings */}
-                  <div className="user-settings-delete">
-                    {!deletingBuddy && (
-                      <button onClick={() => setDeletingBuddy(true)}>
-                        Delete Buddy
-                      </button>
-                    )}
-                    {deletingBuddy && (
-                      <form onSubmit={deleteUserFormHandler}>
-                        <input type="text" placeholder="Username" />
-                      </form>
-                    )}
-                  </div>
+                {/* Password settings */}
+                <div className="user-settings-password">
+                  {!changingPassword ? (
+                    <p>
+                      Password:{" "}
+                      {hideUserPassword
+                        ? props.creds.userSecret.replace(/./g, "*")
+                        : props.creds.userSecret}{" "}
+                      <FaEye
+                        onClick={() => setHideUserPassword(!hideUserPassword)}
+                        className="hide-password-icon"
+                      />
+                    </p>
+                  ) : (
+                    <form onSubmit={passwordChangeHandler}>
+                      <input
+                        type="text"
+                        value={userPassword}
+                        onChange={(e) => setUserPassword(e.target.value)}
+                        placeholder="New password"
+                      />
+                    </form>
+                  )}
+                  <button onClick={() => setChangingPassword(true)}>
+                    {!changingPassword ? "Change Password" : ""}
+                  </button>
                 </div>
-              </>
-            )}
-           
-          </div>
+
+                {/* Delete settings */}
+                <div className="user-settings-delete">
+                  <button onClick={() => setDeletingBuddy(true)}>
+                    Delete Buddy
+                  </button>
+                  <form onSubmit={deleteUserFormHandler}>
+                    <input type="text" placeholder="Username" />
+                  </form>
+                </div>
+              </div>
+            </>
+          )}
         </div>
 
         {/* User Options */}
