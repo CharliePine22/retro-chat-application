@@ -69,7 +69,6 @@ const ChatList = (props) => {
 
   // Grab all the chat rooms available to users
   useEffect(() => {
-    const currentLength = [];
     if (props.chats) {
       setChatList(props.chats);
     } else {
@@ -86,23 +85,6 @@ const ChatList = (props) => {
       setCurrentUserAvatar(props.firebaseUsersList[myUserName].avatar);
       setCurrentUserStatus(props.firebaseUsersList[myUserName].status);
       setCurrentUserGroups(props.firebaseUsersList[myUserName].groups);
-
-      // If the user has any groups determine buddy list length
-      if (currentUserGroups) {
-        for (let group in Object.values(currentUserGroups)) {
-          const keys = Object.values(currentUserGroups)[group].users;
-          for (let user of Object.values(keys)) {
-            currentLength.push(user.username);
-          }
-        }
-        setCurrentBuddyLength(
-          Object.keys(chatList).length - currentLength.length
-        );
-      } 
-      // If the user has no groups, set length equal to chat list
-      else {
-        setCurrentBuddyLength(Object.keys(chatList).length)
-      }
     }
   }, [props.chats, props.firebaseUsersList]);
 
@@ -130,6 +112,11 @@ const ChatList = (props) => {
     };
   }, []);
 
+  // Determine length of buddy list
+  useEffect(() => {
+    grabBuddyListLength()
+  }, [currentUserGroups]);
+
   //Determine user online/availability status
   useEffect(() => {
     // If theres no users or it hasn't finished fetching yet
@@ -156,6 +143,26 @@ const ChatList = (props) => {
     props.setActiveChat(channelId);
     setCurrentChat(channelId);
   };
+
+  const grabBuddyListLength = () => {
+    const currentLength = [];
+    // If the user has any groups determine buddy list length
+    if (currentUserGroups) {
+      for (let group in Object.values(currentUserGroups)) {
+        const keys = Object.values(currentUserGroups)[group].users;
+        for (let user of Object.values(keys)) {
+          currentLength.push(user.username);
+        }
+      }
+      setCurrentBuddyLength(
+        Object.keys(chatList).length - currentLength.length
+      );
+    } 
+    // If the user has no groups, set length equal to chat list
+    else {
+      setCurrentBuddyLength(Object.keys(chatList).length)
+    }
+  }
 
   // Loop through chat engine to get users channels
   const getChannelsList = () => {

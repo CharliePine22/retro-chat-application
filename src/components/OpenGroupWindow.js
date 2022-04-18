@@ -17,7 +17,7 @@ const OpenGroupWindow = (props) => {
   const firebaseGroups = props.firebaseGroups;
 
   const getUserFirebaseKey = () => {
-    const keys = Object.values(firebaseGroups);
+    const keys = firebaseGroups && Object.values(firebaseGroups);
     for(const group in keys) {
       const entries = Object.entries(keys[group].users)
       for(const user in entries) {
@@ -50,7 +50,7 @@ const OpenGroupWindow = (props) => {
   const createNewGroup = async () => {
     const group = titleCase(groupName);
     // If the user already has the group in their lists, throw an error
-    if (groupNames.includes(group)) {
+    if (groupNames && groupNames.includes(group)) {
       setError("This group already exists, select it from the groups list!");
       return;
     } else {
@@ -193,9 +193,13 @@ const OpenGroupWindow = (props) => {
   };
 
   // Reformat fetched group into array
-  const groupNames = Object.keys(firebaseGroups).map((key) => {
-    return key;
-  });
+  let groupNames;
+
+  if(!firebaseGroups == null) {
+    groupNames = Object.keys(firebaseGroups).map((key) => {
+      return key;
+    });
+  }
 
   return (
     <>
@@ -236,7 +240,7 @@ const OpenGroupWindow = (props) => {
               <div className="current-groups-container">
                 <ul className="current-groups-list">
                   {/* If the user is adding a buddy to group */}
-                  {props.action == "add" && groupNames.length > 0
+                  {props.action == "add" && groupNames && groupNames.length > 0
                     ? groupNames.map((group, key) => (
                         <div
                           key={key}
@@ -253,7 +257,7 @@ const OpenGroupWindow = (props) => {
                           />
                         </div>
                       ))
-                    : props.action == "add" && groupNames.length == 0
+                    : props.action == "add" && !groupNames
                     ? "No available groups..."
                     : ""}
                   {/* If the user is removing a buddy from group */}

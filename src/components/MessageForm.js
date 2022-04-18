@@ -42,7 +42,7 @@ const MessageForm = (props) => {
   // Grab all groups buddy is assocaited with
   useEffect(() => {
     determineInGroup();
-  }, [props.buddyName]);
+  }, [props.buddyName,]);
 
   // Handle text form input changes
   const handleChange = (e) => {
