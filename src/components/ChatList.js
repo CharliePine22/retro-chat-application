@@ -58,6 +58,14 @@ const ChatList = (props) => {
   let [onlineUsers, setOnlineUsers] = useState([]);
 
   //////////////////////////////////// ! USE EFFECTS ! //////////////////////////////////////
+  const fetchCurrentMessages = () => {
+    // If data is fetched and available display it
+    if (chatList !== null && props.chats && chatList.length > 0) {
+      props.fetchChannelMessages(chatList[props.activeChat].id);
+    } else {
+      return "Fetching....";
+    }
+  };
 
   // Grab all the chat rooms available to users
   useEffect(() => {
@@ -68,14 +76,6 @@ const ChatList = (props) => {
       console.log("Loading...");
     }
     // Populate chat feed with current chatRoom messages
-    const fetchCurrentMessages = () => {
-      // If data is fetched and available display it
-      if (chatList !== null && props.chats && chatList.length > 0) {
-        props.fetchChannelMessages(chatList[props.activeChat].id);
-      } else {
-        return "Fetching....";
-      }
-    };
     fetchCurrentMessages();
 
     // If firebase fetching isn't done yet return and wait
@@ -150,13 +150,11 @@ const ChatList = (props) => {
     setOnlineUsers(currentUsers);
   }, [props.allUsers, chatList, useState]);
 
-
   //////////////////////////////////// ! FUNCTIONS AND HANDLERS ! ///////////////////////////////
   // Switch to selected chat channel
   const switchChatChannel = (channelId) => {
-    localStorage.setItem("chatId", channelId);
-    setCurrentChat(channelId);
     props.setActiveChat(channelId);
+    setCurrentChat(channelId);
   };
 
   // Loop through chat engine to get users channels
@@ -183,10 +181,12 @@ const ChatList = (props) => {
               key={friendChannelName}
               friendChannelName={friendChannelName}
               loading={props.loading}
+              changeLoadingTrue={props.changeLoadingTrue}
               switchChannel={switchChatChannel}
               allUsers={props.allUsers}
               firebaseUsersList={props.firebaseUsersList}
               chat={chat}
+             
             />
           )
         );
@@ -233,6 +233,7 @@ const ChatList = (props) => {
           : chat.people[0].person.username;
       return friendUserNames;
     });
+
 
     // If the requested username is already in users friends list throw error
     if (currentFriends.includes(friend)) {
@@ -381,7 +382,6 @@ const ChatList = (props) => {
       body: JSON.stringify({ status: status }),
     });
     const result = await response.json();
-    console.log(result);
     setCurrentUserStatus(status);
 
     // Close status window when done
@@ -434,6 +434,11 @@ const ChatList = (props) => {
     return <div />;
   }
 
+  // If the buddy length hasn't populated yet, keep loading
+  if(currentBuddyLength < 0) {
+    return 'Loading...'
+  }
+
   // List arrow that changes based on the buddy list being viewed
   const buddyListStyles = viewingBuddyList
     ? "buddies-list-name-active"
@@ -443,7 +448,7 @@ const ChatList = (props) => {
   const onlineTabStyles =
     currentTab == "buddies" ? "active-tab" : "inactive-tab";
   const requestsTabStyles =
-    currentTab == "requests" ? "active-tab" : "inactive-tab";
+    currentTab == "requests" ? "requests-active-tab" : "inactive-tab";
   const settingsTabStyles =
     currentTab == "settings" ? "active-tab" : "inactive-tab";
 

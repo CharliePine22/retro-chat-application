@@ -13,11 +13,9 @@ const ChatListItem = (props) => {
     return obj.username == friendChannelName;
   });
 
-  // console.log(props.friendChannelName)
-
   // Changes the chat channel/room to the selected friend
   const changeChannelHandler = () => {
-    setCurrentChannel(!currentChannel);
+    props.changeLoadingTrue();
     props.switchChannel(props.chat.id);
   };
 

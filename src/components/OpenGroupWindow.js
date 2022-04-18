@@ -54,6 +54,7 @@ const OpenGroupWindow = (props) => {
       setError("This group already exists, select it from the groups list!");
       return;
     } else {
+      try {
       // Fetch settings
       let url = `https://retro-chat-app22-default-rtdb.firebaseio.com/users/${myUserName}/groups/${group}/users.json`;
       const response = await fetch(url, {
@@ -72,6 +73,13 @@ const OpenGroupWindow = (props) => {
         }),
       });
       const result = await response.json();
+    } catch(err) {
+      setError(err)
+    }
+    setSuccess(`${props.buddyName} added to ${groupName}!`)
+      setTimeout(() => {
+        props.handleGroupWindow()
+      }, 2500)
     }
   };
 
@@ -130,7 +138,7 @@ const OpenGroupWindow = (props) => {
       setSuccess(`${props.buddyName} added to ${groupItem}!`)
       setTimeout(() => {
         props.handleGroupWindow()
-      }, 2000)
+      }, 2500)
     }
   };
 
@@ -155,6 +163,7 @@ const OpenGroupWindow = (props) => {
     } catch (err) {
       setError(err);
     } 
+    // If removal is successful, display success message and after 2 seconds, close the window.
     setSuccess(`${props.buddyName} removed from ${groupItem}!`)
       setTimeout(() => {
         props.removeGroupHandler()

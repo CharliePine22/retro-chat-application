@@ -23,7 +23,7 @@ function App() {
 
   // First update for grabbing all users
   const firstChatEngineUpdate = useRef(true);
-  const firstFirebaseUpdate = useRef(true);
+
 
   // Chaning sound volume settings
   const changeVolume = (volume) => {
@@ -36,14 +36,14 @@ function App() {
     }
   };
 
-  const alertUser = (event) => {
-    event.preventDefault()
-    event.returnValue = ''
-}
+//   const alertUser = (event) => {
+//     event.preventDefault()
+//     event.returnValue = ''
+// }
 
-const handleTabClosing = () => {
-  localStorage.removeItem('username')
-}
+// const handleTabClosing = () => {
+//   localStorage.removeItem('username')
+// }
 
   // Use to  auto log user out and potentially set online status to offline
 //   useEffect(() => {
@@ -55,12 +55,17 @@ const handleTabClosing = () => {
 //     }
 // })
 
+const changeLoadingTrue = () => {
+  setLoading(true);
+}
 
+const changeLoadingFalse = () => {
+  setLoading(false);
+}
 
   // Fetch messages based on current chat channel
   const grabMessages = (chatId) => {
     setCurrentChatId(chatId);
-    setLoading(true);
     var myHeaders = new Headers();
     myHeaders.append("Project-ID", "b8a0fde0-1fae-4db8-9870-6bba5beb67c0");
     myHeaders.append("User-Name", localStorage.getItem("username"));
@@ -159,6 +164,8 @@ const handleTabClosing = () => {
             allUsers={allUsers}
             firebaseUsersList={firebaseUsersList}
             loading={loading}
+            changeLoadingTrue={changeLoadingTrue}
+            changeLoadingFalse={changeLoadingFalse}
             fetchChannelMessages={grabMessages}
             changeVolume={changeVolume}
           />
@@ -169,6 +176,8 @@ const handleTabClosing = () => {
           <ChatFeed
             {...chatAppProps}
             loading={loading}
+            changeLoadingTrue={changeLoadingTrue}
+            changeLoadingFalse={changeLoadingFalse}
             fetchChannelMessages={grabMessages}
             chatMessages={chatMessages}
             firebaseUsersList={firebaseUsersList}
