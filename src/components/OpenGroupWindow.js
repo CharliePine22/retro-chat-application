@@ -192,10 +192,11 @@ const OpenGroupWindow = (props) => {
     setGroupName("");
   };
 
-  // Reformat fetched group into array
+  // Empty until firebase finishes fetching
   let groupNames;
 
-  if(!firebaseGroups == null) {
+  // If the data is finished fetching, reformat fetched group into array
+  if(firebaseGroups != null) {
     groupNames = Object.keys(firebaseGroups).map((key) => {
       return key;
     });
@@ -257,7 +258,7 @@ const OpenGroupWindow = (props) => {
                           />
                         </div>
                       ))
-                    : props.action == "add" && !groupNames
+                    : props.action == "add" && groupNames == null
                     ? "No available groups..."
                     : ""}
                   {/* If the user is removing a buddy from group */}

@@ -74,13 +74,15 @@ const UserGroupItem = (props) => {
                   src={firebaseUsers[user.username].avatar !== '' ? firebaseUsers[user.username].avatar : buddyIcon}
                 />
               </span>
-              <p className="user-online-name">{user.username}</p>
+              {user['is_online'] ? <p className="user-online-name">{user.username}</p> : <p className="user-offline-name">{user.username}</p>}
             </li>
 
             {/* Grab friends status */}
-            <span className="friend-status">
+            {user['is_online'] ? <span className="friend-status-online">
               <em>{firebaseUsers[user.username].status}</em>
-            </span>
+            </span> : <span className="friend-status-offline">
+              <em>{firebaseUsers[user.username].status}</em>
+            </span>}
           </div>
         </>
       );

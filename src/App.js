@@ -7,6 +7,7 @@ import ChatFeed from "./components/ChatFeed";
 import WelcomeScreen from "./components/WelcomeScreen";
 import ChatList from "./components/ChatList";
 
+
 function App() {
   // Sound and volume settings
   const [soundVolume, setSoundVolume] = useState(1);
@@ -23,7 +24,7 @@ function App() {
 
   // First update for grabbing all users
   const firstChatEngineUpdate = useRef(true);
-  const firstFirebaseUpdate = useRef(true);
+
 
   // Chaning sound volume settings
   const changeVolume = (volume) => {
@@ -36,22 +37,36 @@ function App() {
     }
   };
 
-  // Use to  auto log user out and potentially set online status to offline
-  useEffect(() => {
-    const unloadCallback = (event) => {
-      event.preventDefault();
-      event.returnValue = "";
-      return "";
-    };
+//   const alertUser = (event) => {
+//     event.preventDefault()
+//     event.returnValue = ''
+// }
 
-    window.addEventListener("beforeunload", unloadCallback);
-    return () => window.removeEventListener("beforeunload", unloadCallback);
-  }, []);
+// const handleTabClosing = () => {
+//   localStorage.removeItem('username')
+// }
+
+  // Use to  auto log user out and potentially set online status to offline
+//   useEffect(() => {
+//     window.addEventListener('beforeunload', alertUser)
+//     window.addEventListener('unload', handleTabClosing)
+//     return () => {
+//         window.removeEventListener('beforeunload', alertUser)
+//         window.removeEventListener('unload', handleTabClosing)
+//     }
+// })
+
+const changeLoadingTrue = () => {
+  setLoading(true);
+}
+
+const changeLoadingFalse = () => {
+  setLoading(false);
+}
 
   // Fetch messages based on current chat channel
   const grabMessages = (chatId) => {
     setCurrentChatId(chatId);
-    setLoading(true);
     var myHeaders = new Headers();
     myHeaders.append("Project-ID", "b8a0fde0-1fae-4db8-9870-6bba5beb67c0");
     myHeaders.append("User-Name", localStorage.getItem("username"));
@@ -132,17 +147,6 @@ function App() {
     };
   }, []);
 
-  // useEffect(() => {
-  //   let mounted = true;
-  //   if (firstChatEngineUpdate.current) {
-  //     firstChatEngineUpdate.current = false;
-  //     if (mounted) {
-  //       getAllUsers();
-  //     }
-  //   }
-
-  //   fetchFirebaseInfo();
-  // }, []);
 
   // If login failes return them back to same page
   if (!localStorage.getItem("username"))
@@ -161,6 +165,8 @@ function App() {
             allUsers={allUsers}
             firebaseUsersList={firebaseUsersList}
             loading={loading}
+            changeLoadingTrue={changeLoadingTrue}
+            changeLoadingFalse={changeLoadingFalse}
             fetchChannelMessages={grabMessages}
             changeVolume={changeVolume}
           />
@@ -171,8 +177,11 @@ function App() {
           <ChatFeed
             {...chatAppProps}
             loading={loading}
+            changeLoadingTrue={changeLoadingTrue}
+            changeLoadingFalse={changeLoadingFalse}
             fetchChannelMessages={grabMessages}
             chatMessages={chatMessages}
+            firebaseUsersList={firebaseUsersList}
           />
         )}
         renderChatSettings={(chatAppState) => {}}

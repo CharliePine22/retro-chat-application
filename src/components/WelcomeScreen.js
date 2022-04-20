@@ -10,14 +10,17 @@ const WelcomeScreen = (props) => {
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
+  // Handler to open the login window
   const openLoginWindow = () => {
     setLoading(false);
     setIsLoggingIn(!isLoggingIn);
     setError(false);
   };
 
+  // Grab every user's username
   const allUserNames = props.allUsers.map((user) => user.username);
 
+  // Add created user into firebase
   const addUserDetails = async (user) => {
     let url = `https://retro-chat-app22-default-rtdb.firebaseio.com/users/${user}.json`;
     const response = await fetch(url, {
@@ -28,8 +31,10 @@ const WelcomeScreen = (props) => {
         "Access-Control-Allow-Methods" : "DELETE, POST, GET, OPTIONS, PUT",
         "Access-Control-Allow-Headers": "Content-Type, Authorization, X-Requested-With"
        },
+       
       body: JSON.stringify({
-        status: 'User has no status..'
+        status: 'User has no status..',
+        avatar: ''
       }),
     });
     const result = await response.json();
@@ -37,6 +42,7 @@ const WelcomeScreen = (props) => {
 
   // If the user is signing up
   const signupFormSubmitHandler = async (data) => {
+
     // If the username exists already, throw error
     if (allUserNames.includes(data.username)) {
       setError("Username already exists, please try a different username!");
@@ -61,14 +67,15 @@ const WelcomeScreen = (props) => {
       .catch((error) => console.log("error", error));
     addUserDetails(data.username);
 
-    localStorage.setItem("username", data.username);
-    localStorage.setItem("password", data.password);
-    setIsLoggingIn(false);
-    window.location.reload();
+    formSubmitHandler({username: data.username, password: data.password})
+    // localStorage.setItem("username", data.username);
+    // localStorage.setItem("password", data.password);
+    // setIsLoggingIn(false);
+    // window.location.reload();
   };
 
+  // If the user is logging in
   const formSubmitHandler = async (data) => {
-    // If the user is logging in
     setLoading(true);
     const authObject = {
       "Project-ID": "b8a0fde0-1fae-4db8-9870-6bba5beb67c0",

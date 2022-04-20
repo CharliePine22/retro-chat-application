@@ -1,5 +1,4 @@
 import { useState, useEffect } from "react";
-import { FaTrash } from "react-icons/fa";
 import buddyIcon from "../assets/images/noBuddyIcon.png";
 
 const ChatListItem = (props) => {
@@ -16,48 +15,42 @@ const ChatListItem = (props) => {
 
   // Changes the chat channel/room to the selected friend
   const changeChannelHandler = () => {
-    setCurrentChannel(!currentChannel);
+    props.changeLoadingTrue();
     props.switchChannel(props.chat.id);
   };
 
   // Grab friends status
   useEffect(() => {
-    const fbUsers = Object.keys(firebaseUsers);
-    const fbUsersData = Object.keys(firebaseUsers).map(key => {
+    const fbUsersData = Object.keys(firebaseUsers).map((key) => {
+      // Grab the data that belongs to the buddy
       if (key == friendChannelName) {
-        setFriendStatus(firebaseUsers[key].status)
+        setFriendStatus(firebaseUsers[key].status);
       }
-    })
-    
-    // const user = props.allUsers.find((obj) => {
-    //   return obj.username == friendChannelName;
-    // });
-    // if (user["custom_json"] === "{}") {
-    //   setFriendStatus("No user status");
-    // } else {
-    //   setFriendStatus(user["custom_json"]);
-    // }
+    });
   }, [props.allUsers, firebaseUsers]);
 
   // Grab friends avatar
   const grabUserImage = () => {
-    const fbUsersData = Object.keys(firebaseUsers).map(key => {
+    const fbUsersData = Object.keys(firebaseUsers).map((key) => {
       if (key == friendChannelName) {
-        return <img className="buddy-avatar" src={firebaseUsers[key].avatar} />;
+        if (firebaseUsers[key].avatar !== "") {
+          return (
+            <img
+              key={key}
+              className="buddy-avatar"
+              src={firebaseUsers[key].avatar}
+            />
+          );
+        } else {
+          return <img key="0" className="buddy-avatar" src={buddyIcon} />;
+        }
       }
-    })
+    });
 
     return fbUsersData;
-    // const user = props.allUsers.find((obj) => {
-    //   return obj.username == friendChannelName;
-    // });
-    // if (user.avatar == null) {
-    //   return <img className="buddy-avatar" src={buddyIcon} />;
-    // } else {
-    //   return <img className="buddy-avatar" src={user.avatar} />;
-    // }
   };
 
+  // If data hasn't fetched on time of render, return loading
   if (!props.chat || props.chat == undefined || props.allUsers.length == 0) {
     console.log("Loading...");
   }
@@ -73,9 +66,15 @@ const ChatListItem = (props) => {
             <p className="user-offline-name">{friendChannelName}</p>
           )}
         </li>
-        <span className="friend-status">
-          <em>{friendStatus}</em>
-        </span>
+        {user["is_online"] ? (
+          <span className="friend-status-online">
+            <em>{friendStatus}</em>
+          </span>
+        ) : (
+          <span className="friend-status-offline">
+            <em>{friendStatus}</em>
+          </span>
+        )}
       </div>
     </>
   );

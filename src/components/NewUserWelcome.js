@@ -28,8 +28,7 @@ const NewUserWelcome = (props) => {
            <h1>Welcome to <span>{colorifyHeading()}</span></h1>
            <p>To start, click the <button>Add a Buddy</button> located at the bottom of your Buddies list and type in the name of the friend you'd like to chat with!
            <p>Feel free to add <strong>ChattyCathy</strong> to get started!</p>
-           </p>
-           
+           </p>   
         </div>
       </div>
       )

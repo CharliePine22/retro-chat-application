@@ -13,21 +13,23 @@ const LoginForm = (props) => {
   const [password, setPassword] = useState("");
   const [newUser, setNewUser] = useState(false);
 
+  // Swap between new and existing user settings
   const changeAuthenticationHandler = () => {
     setNewUser(!newUser);
   };
 
+  // Submit form data based on if user is new or existing 
   const formSubmitHandler = (e) => {
     e.preventDefault();
+    // If existing user
     if (!newUser) {
       const data = { username, password };
-      props.formSubmit(data, false);
+      props.formSubmit(data);
     } else {
       const data = { username, password };
       props.signupFormSubmit(data);
     }
   };
-
 
   return (
     <>
