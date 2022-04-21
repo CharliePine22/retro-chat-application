@@ -155,10 +155,6 @@ const OpenGroupWindow = (props) => {
           "Access-Control-Allow-Headers":
             "Content-Type, Authorization, X-Requested-With",
         },
-        // Add group to database and then add the user as a part of the created group
-        body: JSON.stringify({
-          username: props.buddyName,
-        }),
       });
     } catch (err) {
       setError(err);

@@ -7,7 +7,6 @@ import ChatFeed from "./components/ChatFeed";
 import WelcomeScreen from "./components/WelcomeScreen";
 import ChatList from "./components/ChatList";
 
-
 function App() {
   // Sound and volume settings
   const [soundVolume, setSoundVolume] = useState(1);
@@ -140,7 +139,7 @@ const changeLoadingFalse = () => {
         getAllUsers();
         fetchFirebaseInfo();
       }
-    }, 5000);
+    }, 3000);
     return () => {
       clearInterval(intervalId);
       mounted = false;

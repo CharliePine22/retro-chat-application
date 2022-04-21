@@ -115,8 +115,9 @@ const ChatList = (props) => {
 
   // Determine length of buddy list
   useEffect(() => {
-    grabBuddyListLength()
-  }, [currentUserGroups]);
+    grabBuddyListLength() 
+  }, [currentUserGroups, chatList]);
+
 
   //Determine user online/availability status
   useEffect(() => {
@@ -162,6 +163,13 @@ const ChatList = (props) => {
 
   const grabBuddyListLength = () => {
     const currentLength = [];
+    // If any of the keys have falsey values, remove them
+    // Happens after a user deletes a buddy
+    Object.keys(chatList).forEach(key => {
+      if (!chatList[key]) delete chatList[key];
+    });
+    
+    
     // If the user has any groups determine buddy list length
     if (currentUserGroups) {
       for (let group in Object.values(currentUserGroups)) {
@@ -180,13 +188,17 @@ const ChatList = (props) => {
     }
   }
 
+
   // Loop through chat engine to get users channels
   const getChannelsList = () => {
     const keys = Object.keys(chatList);
     return keys.map((key) => {
       const chat = chatList[key];
-
+      if(chat == null){
+        return <div/>
+      }
       if (chat.people.length < 2) return <div />; // Prevents chats that didnt properly delete with users from showing
+      
       const friendChannelName =
         chatList && chat && chat.people[0].person.username == myUserName
           ? chat.people[1].person.username
@@ -250,6 +262,7 @@ const ChatList = (props) => {
     const keys = Object.keys(chatList);
     const currentFriends = keys.map((key) => {
       const chat = chatList[key];
+      if(chat == null) return <div/>
       const friendUserNames =
         chat.people[0].person.username == myUserName
           ? chat.people[1].person.username
@@ -291,12 +304,15 @@ const ChatList = (props) => {
           // If theres no error, close the add buddy input form
           setAddingNewFriend(false);
           setNewFriend("");
-        }
+          setLoading(false);
+        } else {
         // If there is still an error or issue, keep the form open
         setAddingNewFriend(true);
         setLoading(false);
+        }
       });
   };
+
 
   // Send a friend request
   const addFriendHandler = (e) => {

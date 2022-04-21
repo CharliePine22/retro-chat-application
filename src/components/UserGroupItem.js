@@ -43,6 +43,9 @@ const UserGroupItem = (props) => {
   // Grab chat engine username to find corresponding id for chat channel use
   const chatEngineUsers = Object.keys(props.chat).map((key) => {
     // Grab the name of the user
+    if(props.chat[key] == null) {
+      return <div />
+    }
     const friends =
       props.chat[key].people[0].person.username == myUserName
         ? props.chat[key].people[1].person.username

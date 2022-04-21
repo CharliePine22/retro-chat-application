@@ -101,6 +101,7 @@ const ChatFeed = (props) => {
     return keys.map((key, index) => {
       const message = currentMessagesList[key];
       const lastMessageKey = index === 0 ? null : keys[index - 1];
+      if(message.sender.username == null) return <div/>
       const isMyMessage = userName === message.sender.username;
       return (
         <>

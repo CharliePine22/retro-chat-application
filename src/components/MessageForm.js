@@ -12,7 +12,6 @@ import { PictureOutlined } from "@ant-design/icons";
 import { IconContext } from "react-icons";
 import { FaUserMinus } from "react-icons/fa";
 
-
 // Message form images
 import sendButtonImage from "../assets/images/send-message-button.png";
 import warnIcon from "../assets/images/warn.png";
@@ -33,7 +32,12 @@ const MessageForm = (props) => {
   const { chatId, creds } = props;
   // Value for message form
   const [value, setValue] = useState("");
+  // Modal trigger
   const [show, setShow] = useState(false);
+  // Error, Loading, and Success state management
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
+  const [success, setSuccess] = useState('');
   // Group State settings
   const [viewingBuddyWindow, setViewingBuddyWindow] = useState(false);
   const [viewingRemoveGroup, setViewingRemoveGroup] = useState(false);
@@ -72,6 +76,7 @@ const MessageForm = (props) => {
     setCurrentGroups(availableGroups);
   };
 
+
   // ALert that triggers if the user clicks remove buddy but
   // the buddy is not associated with any groups
   const showNoBuddyMessage = () => {
@@ -105,24 +110,83 @@ const MessageForm = (props) => {
     setViewingRemoveGroup(!viewingRemoveGroup);
   };
 
+  // Grabs firebase database key that represents users to delete specific user from group
+  const getUserFirebaseKey = () => {
+    const keys = props.firebaseGroups && Object.values(props.firebaseGroups);
+    for(const group in keys) {
+      const entries = Object.entries(keys[group].users)
+      for(const user in entries) {
+        if(entries[user][1].username == props.buddyName) {
+          return entries[user][0]
+        }
+      }
+    }
+  };
+
+  // Remove buddy from firebase database if associated with groups
+  const deleteFirebaseInfo = async (group) => {
+    const currentUsername = localStorage.getItem('username');
+    try {
+    const response = await fetch(`https://retro-chat-app22-default-rtdb.firebaseio.com/users/${currentUsername}/groups/${group}/users/${getUserFirebaseKey()}.json`, {
+      method: "DELETE",
+      headers: {
+        "Content-Type": "application/json",
+        "Access-Control-Allow-Origin": "*",
+        "Access-Control-Allow-Methods": "DELETE, POST, GET, OPTIONS, PUT",
+        "Access-Control-Allow-Headers":
+          "Content-Type, Authorization, X-Requested-With",
+      },
+    }); 
+  } catch(err) {
+    console.log(err)
+    setError(err)
+  }
+
+  // If successful show success message
+  setSuccess(`${props.buddyName} removed from your friends list!`)
+      setTimeout(() => {
+        setShow(false);
+      }, 2000)
+  }
+
+  // Remove buddy from friends list
   const deleteBuddyHandler = () => {
+    setLoading(true);
     var myHeaders = new Headers();
     myHeaders.append("Project-ID", "b8a0fde0-1fae-4db8-9870-6bba5beb67c0");
     myHeaders.append("User-Name", localStorage.getItem("username"));
     myHeaders.append("User-Secret", localStorage.getItem("password"));
-
+    
     var requestOptions = {
       method: "DELETE",
       headers: myHeaders,
-      redirect: 'follow'
     };
-
+    
     // deletes user based off of the chat id
     fetch(`https://api.chatengine.io/chats/${chatId}/`, requestOptions)
       .then((response) => response.json())
-      .then((result) => console.log(result))
-      .catch((error) => console.log("error", error));
+      .then((result) =>{
+        // If the chatId or data provided is invalid, throw an Error
+        if(result.detail == 'Not found.') {
+          setError('Oops, something went wrong! Try again later!');
+        }
+      })
+      .catch((error) => setError(error));
+      // If user is successfully deleted, delete user from firebase as well.
+      if(error == '') {
+        if(currentGroups.length > 0) {
+          deleteFirebaseInfo(currentGroups[0]);
+        }
+        setLoading(false);
+        setSuccess(`${props.buddyName} removed from your friends list!`)
+        setTimeout(() => {
+          setShow(false);
+          setSuccess('')
+        }, 2000)
+      }
+      
   }
+
 
   // Allows users to submit messages by pressing the enter key
   const onEnterPress = (e) => {
@@ -147,15 +211,15 @@ const MessageForm = (props) => {
 
   const showModal = () => {
     setShow(true);
+    setLoading(false);
   }
 
   const closeModal = () => {
     setShow(false);
   }
 
-
   return <>
-    <Modal closeModal={closeModal} deleteBuddy={deleteBuddyHandler} buddyName={props.buddyName} show={show}/>
+    <Modal stopLoading={(e) => setLoading(false)} closeModal={closeModal} loading={loading} success={success} removeMessage={(e) => {setError(''); setSuccess('')}} error={error} deleteBuddy={deleteBuddyHandler} buddyName={props.buddyName} show={show}/>
     <form className="message-form" onSubmit={formSubmitHandler}>
       {/* RICH TEXTAREA SETTINGS */}
       <div className="message-tab-actions">
@@ -259,7 +323,7 @@ const MessageForm = (props) => {
       />
 
       {/* TEXTAREA SETTINGS */}
-      <div className={show ? 'message-form-actions-modal' : 'message-form-actions'}>
+      <div className='message-form-actions'>
         {/* Warning and Blocking */}
         <div className="user-warnings-container">
           <div className="warning">
