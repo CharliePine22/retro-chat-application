@@ -33,10 +33,10 @@
     <img src="./src/assets/images/astroGlobe.png" alt="Logo" width="80" height="80">
   </a>
 
-<h3 align="center">Astro Chat</h3>
+<h3 align="center">Retro Chat</h3>
 
   <p align="center">
-    An old school chat application associaited with the Astroworld NFT project!
+    An old school chat application based on Aol's Instant Messenger(AIM)!
     <br />
     <a href="https://github.com/CharliePine22/retro_chat_application"><strong>Explore the docs »</strong></a>
     <br />
