@@ -108,8 +108,9 @@ A chat application heavily inspired by AOL's 1997 "A.I.M" associated with Astrow
 <!-- GETTING STARTED -->
 ## Getting Started
 
-This is an example of how you may give instructions on setting up your project locally.
-To get a local copy up and running follow these simple example steps.
+You can either create an account or try it out with the following Test Credentials:
+User: Test
+password: Test
 
 ### Prerequisites
 
