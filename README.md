@@ -30,7 +30,7 @@
 <br />
 <div align="center">
   <a href="https://github.com/CharliePine22/retro-chat-application">
-    <img src="./src/assets/images/astroGlobe.png" alt="Logo" width="80" height="80">
+    <img src="./src/assets/images/noBuddyIcon.png" alt="Logo" width="80" height="80">
   </a>
 
 <h3 align="center">Retro Chat</h3>
