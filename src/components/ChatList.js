@@ -279,7 +279,7 @@ const ChatList = (props) => {
 
     // API Creds
     var myHeaders = new Headers();
-    myHeaders.append("Project-ID", "b8a0fde0-1fae-4db8-9870-6bba5beb67c0");
+    myHeaders.append("Project-ID", process.env.REACT_APP_PROJECT_ID);
     myHeaders.append("User-Name", localStorage.getItem("username"));
     myHeaders.append("User-Secret", localStorage.getItem("password"));
     myHeaders.append("Content-Type", "application/json");
@@ -300,7 +300,7 @@ const ChatList = (props) => {
             "That username does not exist, please check your spelling and try again."
           );
           setHasError(true);
-        } else if (!hasError) {
+        } if (!hasError) {
           // If theres no error, close the add buddy input form
           setAddingNewFriend(false);
           setNewFriend("");
@@ -332,7 +332,7 @@ const ChatList = (props) => {
     e.preventDefault();
 
     var myHeaders = new Headers();
-    myHeaders.append("Project-ID", "b8a0fde0-1fae-4db8-9870-6bba5beb67c0");
+    myHeaders.append("Project-ID", process.env.REACT_APP_PROJECT_ID);
     myHeaders.append("User-Name", localStorage.getItem("username"));
     myHeaders.append("User-Secret", localStorage.getItem("password"));
     myHeaders.append("Content-Type", "application/json");
@@ -357,7 +357,7 @@ const ChatList = (props) => {
     e.preventDefault();
 
     var myHeaders = new Headers();
-    myHeaders.append("Project-ID", "b8a0fde0-1fae-4db8-9870-6bba5beb67c0");
+    myHeaders.append("Project-ID", process.env.REACT_APP_PROJECT_ID);
     myHeaders.append("User-Name", localStorage.getItem("username"));
     myHeaders.append("User-Secret", localStorage.getItem("password"));
     myHeaders.append("Content-Type", "application/json");

@@ -18,7 +18,7 @@ const WelcomeScreen = (props) => {
   };
 
   // Grab every user's username
-  const allUserNames = props.allUsers.map((user) => user.username);
+  const allUserNames = props.allUsers.length > 0 && props.allUsers.map((user) => user.username);
 
   // Add created user into firebase
   const addUserDetails = async (user) => {
@@ -50,7 +50,7 @@ const WelcomeScreen = (props) => {
     }
 
     var myHeaders = new Headers();
-    myHeaders.append("PRIVATE-KEY", "e20c09ad-f36b-4f4a-b309-99ae04944996");
+    myHeaders.append("PRIVATE-KEY", process.env.REACT_APP_PRIVATE_KEY);
     myHeaders.append("Content-Type", "application/json");
     var requestOptions = {
       method: "POST",
@@ -78,7 +78,7 @@ const WelcomeScreen = (props) => {
   const formSubmitHandler = async (data) => {
     setLoading(true);
     const authObject = {
-      "Project-ID": "b8a0fde0-1fae-4db8-9870-6bba5beb67c0",
+      "Project-ID": process.env.REACT_APP_PROJECT_ID,
       "User-Name": data.username,
       "User-Secret": data.password,
     };

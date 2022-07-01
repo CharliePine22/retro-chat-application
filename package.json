@@ -23,6 +23,7 @@
     "react-new-window": "^0.2.1",
     "react-rte": "^0.16.5",
     "react-scripts": "5.0.0",
+    "react-transition-group": "^4.4.2",
     "use-sound": "^4.0.1"
   },
   "scripts": {

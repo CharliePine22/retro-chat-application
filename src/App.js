@@ -67,7 +67,7 @@ const changeLoadingFalse = () => {
   const grabMessages = (chatId) => {
     setCurrentChatId(chatId);
     var myHeaders = new Headers();
-    myHeaders.append("Project-ID", "b8a0fde0-1fae-4db8-9870-6bba5beb67c0");
+    myHeaders.append("Project-ID", process.env.REACT_APP_PROJECT_ID);
     myHeaders.append("User-Name", localStorage.getItem("username"));
     myHeaders.append("User-Secret", localStorage.getItem("password"));
 
@@ -87,7 +87,7 @@ const changeLoadingFalse = () => {
   // Grab every user in chat engine database
   const getAllUsers = () => {
     var myHeaders = new Headers();
-    myHeaders.append("PRIVATE-KEY", "e20c09ad-f36b-4f4a-b309-99ae04944996");
+    myHeaders.append("PRIVATE-KEY", process.env.REACT_APP_PRIVATE_KEY);
 
     var requestOptions = {
       method: "GET",
@@ -155,7 +155,7 @@ const changeLoadingFalse = () => {
     <>
       <ChatEngine
         height="100vh"
-        projectID="b8a0fde0-1fae-4db8-9870-6bba5beb67c0"
+        projectID={process.env.REACT_APP_PROJECT_ID}
         userName={localStorage.getItem("username")}
         userSecret={localStorage.getItem("password")}
         renderChatList={(chatAppProps) => (

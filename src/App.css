@@ -320,6 +320,7 @@
   width: 100%;
 }
 
+
 .their-message {
   color: red;
   font-weight: bold;
@@ -2017,7 +2018,12 @@
 }
 
 /* !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! Media queries !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! */
-
+@-moz-document url-prefix() {
+  .loading-messages {
+    height: 50%;
+    width:50%;
+  }
+}
 /* Laptop monitors */
 @media (min-width:1024px) and (max-width:1300px) {
 
