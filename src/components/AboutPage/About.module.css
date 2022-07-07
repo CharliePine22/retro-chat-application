@@ -1,0 +1,247 @@
+.about-container {
+  background-color: #111319;
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+  width: 80%;
+  float: right;
+  padding-bottom: 120px;
+  padding-top: 120px;
+}
+
+/* Section with the about me information */
+.about-content {
+  height: auto;
+  padding: 0 20px;
+  position: relative;
+  margin-left: auto;
+  margin-right: auto;
+  width: 100%;
+}
+
+.about-info {
+  width: 100%;
+  height: auto;
+  clear: both;
+  display: flex;
+  padding-top: 60px;
+}
+
+.about-info h3 {
+  float: left;
+  color: #fff;
+  font-size: 24px;
+  font-weight: normal;
+  margin-bottom: 35px;
+  margin-top: 0;
+}
+
+.about-info p {
+  max-width: 90%;
+  color: #a9afc3;
+  margin: 0;
+  line-height: 50px;
+}
+
+.about-info h3 span {
+  font-weight: 900;
+}
+
+.about-info-left {
+  width: 50%;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Right side of about section, with image */
+.about-info-right {
+  width: 50%;
+  padding-left: 130px;
+}
+
+.about-info-right img {
+  position: relative;
+  min-width: 100%;
+  height: 400px;
+  width: 300px;
+  border-radius: 5%;
+}
+
+.about-title {
+  width: 100%;
+  float: left;
+  color: #fff;
+}
+
+.about-title h3 {
+  font-size: 45px;
+  font-weight: normal;
+  line-height: 1;
+  margin: 0;
+  text-shadow: 3px 3px #000000;
+}
+
+/* Hobbies Section */
+.hobbies {
+  width: 100%;
+  color: #fff;
+  margin-top: 30px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.hobbies p {
+  width: 75%;
+  color: #a3a9bd;
+  line-height: 40px;
+  text-align: center;
+}
+
+.hobbies h3 {
+  text-align: center;
+  font-size: 30px;
+  font-weight: normal;
+  margin-bottom: 20px;
+  margin-top: 15px;
+}
+
+.hobbies-list {
+  width: 100%;
+  padding-top: 30px;
+}
+
+.hobbies-list ul {
+  list-style: none;
+  display: flex;
+  padding: 0;
+  justify-content: space-evenly;
+}
+
+.hobbies-list li {
+  cursor: pointer;
+  color: #a3a9bd;
+  transition: all 0.5s;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.hobbies-list li:hover {
+  color: #fff;
+  transform: scale(1.5);
+}
+
+.hobbies-list li:hover > span {
+  opacity: 1;
+}
+
+.hobbies-list li span {
+  opacity: 0;
+  font-size: 1rem;
+}
+
+@media screen and (min-width: 0px) and (max-width: 1435px) {
+  .about-container {
+    width: 100%;
+    line-height: 2;
+  }
+}
+
+@media screen and (min-width: 812px) {
+  .about-info-right {
+    width: 50%;
+    padding-left: 0;
+  }
+}
+
+/* Tablets to Small Laptops */
+@media screen and (min-width: 813px) and (max-width: 1435px) {
+  .about-info-left {
+    width: 55%;
+  }
+
+  .about-info-right {
+    width: 45%;
+  }
+
+  .about-info p {
+    font-size: 1em;
+  }
+}
+
+/* Desktops */
+@media screen and (min-width: 1600px) {
+  .about-info {
+    justify-content: space-between;
+  }
+
+  .about-info p {
+    font-size: 1.3em;
+    line-height: 65px;
+  }
+
+  .about-info-left {
+    width: 60%;
+  }
+
+  .about-info-right {
+    width: 40%;
+    margin-right: 15px;
+  }
+
+  .hobbies {
+    margin-top: 60px;
+  }
+
+  .hobbies p {
+    font-size: 1.15em;
+  }
+}
+
+/* Mobile Devices */
+@media screen and (min-width: 320px) and (max-width: 812px) {
+  .about-info {
+    flex-direction: column-reverse;
+  }
+
+  .about-info p {
+    max-width: 100%;
+    line-height: 40px;
+  }
+
+  .about-info-left {
+    width: 100%;
+    align-items: center;
+    text-align: center;
+    padding-bottom: 50px;
+  }
+
+  .about-info-right {
+    width: 100%;
+    padding-left: 0;
+  }
+
+  .about-title {
+    text-align: center;
+    float: none;
+  }
+
+  .hobbies h3 {
+    margin: 0;
+  }
+
+  .hobbies p {
+    width: 100%;
+  }
+
+  .hobbies-list li {
+    justify-content: flex-end;
+    width: 33%;
+    text-align: center;
+  }
+
+  .hobbies-list li span {
+    font-size: 0.75rem;
+  }
+}

@@ -1,0 +1,266 @@
+.container {
+  background-color: #111319;
+  margin: 0;
+  padding-bottom: 120px;
+  padding-top: 120px;
+  display: flex;
+  flex-direction: column;
+  float: right;
+  height: 100%;
+  width: 80%;
+}
+
+.portfolio-content {
+  display: flex;
+  flex-direction: column;
+  color: #fff;
+  padding: 0 20px;
+  position: relative;
+}
+
+.portfolio-content p {
+  margin: 0;
+  color: #a9afc3;
+}
+
+.portfolio-content h3 {
+  font-size: 45px;
+  font-weight: normal;
+  line-height: 1;
+  margin: 0;
+  float: left;
+  color: #fff;
+  text-shadow: 3px 3px #000000;
+}
+
+.portfolio-description {
+  width: 100%;
+  height: auto;
+  clear: both;
+  display: flex;
+  flex-direction: column;
+  padding-top: 30px;
+}
+
+/* Portfolio Projects */
+.projects {
+  display: flex;
+  margin: 50px 0;
+  border: 1px solid black;
+  border-radius: 4px;
+  -webkit-box-shadow: 0 0 5px black;
+  box-shadow: 0 0 5px black;
+}
+
+/* Portfolio Nav */
+.projects-nav {
+  height: 100%;
+  width: 18%;
+  border-right: 1px solid rgba(255, 255, 255, 0.2);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.projects-nav span {
+  cursor: pointer;
+  color: #a3a9bd;
+  transition: all 0.25s;
+  display: flex;
+  width: 100%;
+  justify-content: center;
+  margin: 60px auto;
+}
+
+/* React */
+.react-active {
+  color: #61dbfb !important;
+}
+
+.react:hover {
+  color: #61dbfb;
+}
+
+/* Python */
+.python-active {
+  color: rgba(255, 210, 62, 1) !important;
+}
+
+.python:hover {
+  color: rgba(255, 210, 62, 1);
+  /* background: -moz-linear-gradient(90deg, rgba(52,113,162,1) 0%, rgba(52,113,162,1) 38%, rgba(255,210,62,1) 100%);
+    background: -webkit-linear-gradient(90deg, rgba(52,113,162,1) 0%, rgba(52,113,162,1) 38%, rgba(255,210,62,1) 100%);
+    background-image: linear-gradient(90deg, rgba(52,113,162,1) 0%, rgba(52,113,162,1) 38%, rgba(255,210,62,1) 100%);
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr="#3471a2",endColorstr="#ffd23e",GradientType=1); */
+  /* background-image: linear-gradient(to right, rgba(52,113,162,1), rgba(255,210,62,1)); */
+  /* color: transparent; */
+  /* -webkit-background-clip: text;
+    background-clip: text; */
+}
+
+/* HTML */
+.frontend {
+  display: flex !important;
+  justify-content: space-evenly !important;
+}
+
+.frontend-active {
+  justify-content: space-evenly !important;
+}
+
+.frontend:hover svg:first-of-type {
+  color: #e34f26 !important;
+  transition: all 0.25s;
+}
+.frontend:hover svg:nth-child(2) {
+  color: #2965f1 !important;
+  transition: all 0.25s;
+}
+.frontend:hover svg:nth-child(3) {
+  color: #f7df1e !important;
+  transition: all 0.25s;
+}
+
+.javascript {
+  height: 100%;
+}
+
+/* Portfolio Projects Container */
+.projects-container {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #111319;
+  perspective: 1000px;
+  transform-style: preserve-3d;
+}
+
+.language-title {
+  margin: 0;
+  margin-top: 7px;
+}
+
+.language-title h3 {
+  transform: translateX(-25px);
+  animation: animateTitle 500ms forwards;
+}
+
+.current-projects {
+  display: flex;
+  width: 100%;
+  justify-content: space-evenly;
+  align-items: baseline;
+  margin-bottom: 20px;
+}
+
+/* Carousel Component Styles */
+.carousel {
+  width: 100%;
+}
+
+/* Disable hidden overflows on carousel for popcard effect to work on mobile */
+.carousel > div {
+  overflow: visible !important;
+}
+
+.carousel > div > div {
+  overflow: visible !important;
+}
+
+/* Animate Front Card title to the back */
+@keyframes animateTitle {
+  0% {
+    transform: translateX(-25px);
+    opacity: 0;
+  }
+
+  100% {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+/* Once the screen gets below a laptop, hide nav and take up full screen */
+@media screen and (max-width: 1435px) {
+  .container {
+    width: 100%;
+  }
+}
+
+/* Laptops and Large Desktops */
+@media screen and (min-width: 1440px) {
+  .projects-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+  }
+
+  .language-title h3 {
+    font-size: 2.25rem;
+  }
+}
+
+/* Tablets to Small Laptops */
+@media screen and (min-width: 813px) and (max-width: 1435px) {
+  .projects-nav {
+    width: 13%;
+  }
+}
+
+/* Mobile Devices */
+@media screen and (min-width: 320px) and (max-width: 812px) {
+  .portfolio {
+    align-items: center;
+  }
+
+  .portfolio-content {
+    /* align-items: center; */
+    float: none;
+  }
+
+  .portfolio-content h3 {
+    text-align: center;
+  }
+
+  .language-title h3 {
+    font-size: 2em;
+    margin: 5px 0 10px;
+  }
+
+  .portfolio-description {
+    align-items: center;
+    text-align: center;
+    width: 100%;
+  }
+
+  .portfolio-description p {
+    width: 75%;
+  }
+
+  .projects {
+    flex-direction: column;
+    width: 95%;
+    overflow: hidden;
+    margin: 20px auto;
+  }
+
+  .projects-container {
+    width: 100%;
+    height: 100%;
+  }
+
+  .projects-nav {
+    width: 100%;
+    flex-direction: row;
+    height: 15%;
+    border-right: none;
+    border-bottom: 1px solid white;
+  }
+
+  .projects-nav span {
+    margin: 10px auto;
+  }
+}

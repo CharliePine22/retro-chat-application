@@ -1,0 +1,180 @@
+.container {
+  display: flex;
+  justify-content: center;
+  width: 80%;
+  float: right;
+  background-color: #191c26;
+  margin: 0;
+  padding: 0;
+  height: 100vh;
+}
+
+.description-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  padding: 80px 20px;
+  width: 500px;
+  animation-name: fadeInHome;
+  animation-iteration-count: 1;
+  animation-timing-function: ease-in;
+  animation-duration: 800ms;
+}
+
+.description {
+  color: #a3a9bd;
+  font-size: 1.5rem;
+  text-align: center;
+  line-height: 1.5;
+}
+
+.description h1 {
+  text-align: center;
+  font-size: 3.25rem;
+  font-weight: normal;
+  color: white;
+  margin-bottom: 14px;
+  margin-top: 10px;
+  line-height: 1.2;
+  text-shadow: 3px 3px #000000;
+}
+
+.description p {
+  margin-top: 0;
+  font-size: 18px;
+  line-height: 32px;
+}
+
+.headshot-container {
+  height: 300px;
+  width: 300px;
+  background: url("../../assets/images/current-cj-image.jpg");
+  background-repeat: no-repeat;
+  background-size: cover;
+  border-radius: 50%;
+  position: relative;
+  box-shadow: 0px 2px 5px 1px black;
+}
+
+.icon-border {
+  border-right: 1px solid grey;
+  height: 26px;
+}
+
+.resume {
+  display: inline-block;
+  text-decoration: none;
+  color: #fff;
+  border: 2px solid #fff;
+  border-radius: 30px;
+  padding: 10px 35px 10px;
+  margin-top: 18px;
+  font-size: 18px;
+  transition: all 0.25s;
+}
+
+.resume:hover {
+  border: 2px solid black;
+  transform: translateY(-10px);
+  color: black;
+  font-weight: bold;
+  background-color: #fff;
+  box-shadow: 1px 5px 5px 1px black;
+}
+
+.socials {
+  list-style: none;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 0;
+  margin-top: 0;
+}
+
+.socials li {
+  padding: 0 15px;
+  transition: all 0.35s;
+  line-height: 1px;
+}
+
+.facebook:hover,
+.instagram:hover,
+.twitch:hover,
+.github:hover,
+.linkedin:hover {
+  transform: scale(1.5);
+  transition: all 0.35s;
+  color: white;
+  cursor: pointer;
+}
+
+@keyframes fadeInHome {
+  0% {
+    opacity: 0;
+    transform: translateY(60px);
+  }
+
+  100% {
+    opacity: 1;
+    transform: translateY(0px);
+  }
+}
+
+/* Mobile Devices */
+@media screen and (min-width: 320px) and (max-width: 812px) {
+  .container {
+    width: 100%;
+    line-height: 2;
+  }
+
+  .description-container {
+    padding: 55px 20px 75px;
+  }
+
+  .description h1 {
+    font-size: 2.75rem;
+    margin-top: 20px;
+  }
+
+  .description p {
+    margin: 20px 20px;
+  }
+
+  .headshot-container {
+    height: 225px;
+    width: 225px;
+  }
+
+  .icon-border {
+    height: 25px;
+  }
+}
+
+/* Mac 1440x759 */
+@media screen and (min-width: 812px) and (max-width: 1435px) {
+  .container {
+    width: 100%;
+    line-height: 2;
+  }
+
+  .description {
+    line-height: 1.2;
+  }
+
+  .description-container {
+    padding: 30px 20px 30px;
+  }
+
+  .headshot-container {
+    height: 248px;
+    width: 248px;
+  }
+}
+
+@media screen and (width: 1024px) {
+  .headshot-container {
+    width: 60%;
+    height: 250px;
+  }
+}

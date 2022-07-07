@@ -1,0 +1,15 @@
+.fade-in-section {
+  opacity: 0;
+  transform: translateX(-20vh);
+  visibility: hidden;
+  transition: opacity 900ms cubic-bezier(0.42, 0, 0.58, 1),
+    transform 900ms cubic-bezier(0.42, 0, 0.58, 1),
+    visibility 1300ms cubic-bezier(0.42, 0, 0.58, 1);
+  will-change: opacity, transform, visibility;
+}
+
+.fade-in-section.is-visible {
+  opacity: 1;
+  transform: none;
+  visibility: visible;
+}

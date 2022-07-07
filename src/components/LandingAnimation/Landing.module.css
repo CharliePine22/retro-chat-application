@@ -1,0 +1,162 @@
+.icon {
+  height: 61px;
+  width: 61px;
+  /* border-radius: 10px;
+  border: 1px solid white; */
+  z-index: 10;
+}
+
+.icon-container {
+  animation: rotatingSpinner linear 1s forwards,
+    endSpinner 300ms linear 1s forwards, fadeIcon 400ms linear 1.3s forwards,
+    rippleEffect 0.75s linear 1s forwards;
+  animation-timing-function: cubic-bezier(0, 0, 1, 1);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border: 2px solid white;
+  height: 65px;
+  width: 65px;
+  border-radius: 10px;
+  z-index: 10;
+}
+
+.landing-container {
+  height: 100vh;
+  width: 100%;
+  background-color: transparent;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  position: absolute;
+  overflow: hidden;
+  animation: hideLanding 1s linear 2.5s forwards;
+  animation-timing-function: cubic-bezier(0.42, 0, 1, 1);
+}
+
+.landing-left {
+  background-color: black;
+  width: 50%;
+  height: 100%;
+  border-right: 1px solid transparent;
+  animation: slideLeft 800ms forwards;
+  animation-timing-function: cubic-bezier(0, 0, 0.58, 1);
+  animation-delay: 1.8s;
+  position: absolute;
+  z-index: 9;
+  left: 0;
+}
+
+.landing-right {
+  background-color: black;
+  border-left: 1px solid transparent;
+  width: 50%;
+  height: 100%;
+  animation: slideRight 800ms forwards;
+  animation-timing-function: cubic-bezier(0, 0, 0.58, 1);
+  animation-delay: 1.8s;
+  position: absolute;
+  right: 0;
+  z-index: 9;
+}
+
+/* Rotating icon animation */
+@keyframes rotatingSpinner {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+/* End spinner clicking animation */
+@keyframes endSpinner {
+  50% {
+    transform: scale(1.15);
+    box-shadow: 0px 0px 5px #fff;
+    -moz-box-shadow: 0px 0px 5px #fff;
+    -webkit-box-shadow: 0px 0px 5px #fff;
+  }
+  100% {
+    transform: scale(1);
+    box-shadow: 0px 0px 1px #fff;
+    -moz-box-shadow: 0px 0px 1px #fff;
+    -webkit-box-shadow: 0px 0px 1px #fff;
+  }
+}
+
+/* Hide icon after animation finishes */
+@keyframes hideLanding {
+  0% {
+    z-index: 0;
+  }
+
+  100% {
+    z-index: -1;
+  }
+}
+
+/* Fade the icon out animation */
+@keyframes fadeIcon {
+  0% {
+    opacity: 1;
+  }
+
+  100% {
+    opacity: 0;
+  }
+}
+
+/* SLides left div out animation */
+@keyframes slideLeft {
+  0% {
+    left: 0;
+    border-right: 1px solid white;
+  }
+  100% {
+    left: -50%;
+    border-right: 1px solid transparent;
+  }
+}
+
+/* SLides right div out animation */
+@keyframes slideRight {
+  0% {
+    border-left: 1px solid white;
+    right: 0;
+  }
+  100% {
+    border-left: 1px solid transparent;
+    right: -50%;
+  }
+}
+
+/* Ripple Effect For Icon */
+@keyframes rippleEffect {
+  0% {
+    height: 65px;
+    width: 65px;
+  }
+  50% {
+    opacity: 1;
+  }
+  100% {
+    height: 200px;
+    width: 200px;
+    opacity: 0;
+  }
+}
+
+/* Mobile Devices */
+@media screen and (min-width: 320px) and (max-width: 435px) {
+  /* .icon {
+    left: 44%;
+    bottom: 48%;
+    height: 55px;
+    width: 55px;
+  } */
+}

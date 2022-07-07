@@ -1,0 +1,355 @@
+.actions {
+  width: 100%;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+}
+
+.action {
+  cursor: pointer;
+  opacity: 0.5;
+  transition: all 200ms ease;
+}
+
+.action:hover {
+  opacity: 1;
+  transform: scale(1.25) translateY(-5px);
+}
+
+.back {
+  opacity: 0;
+  position: absolute;
+  right: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  text-align: center;
+  width: 100%;
+  transform: translateY(35%);
+  cursor: default;
+}
+
+.background {
+  position: absolute;
+  background: rgba(35, 39, 40, 0.5);
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: -1;
+  transform: scale(0.2, 0.9);
+  border-radius: 0.5em;
+  opacity: 0;
+  overflow: hidden;
+}
+
+.background img {
+  position: relative;
+  bottom: 190px;
+  opacity: 30%;
+  border-radius: 100%/0 0 30px 30px;
+}
+
+.card {
+  position: relative;
+  width: 12.5em;
+  cursor: pointer;
+  transition: 250ms;
+  z-index: 100;
+  height: 22em;
+  display: flex;
+  animation: cardTransition 1000ms forwards;
+  opacity: 0;
+}
+
+.card:hover > .background {
+  transform: scale(1.25, 1.05);
+  transition: transform 200ms cubic-bezier(0.21, 1, 0.81, 1),
+    opacity 100ms linear;
+  opacity: 1;
+}
+
+/* Hover effects for front of card */
+.card:hover > .front {
+  transform: translateY(-30%) scale(0.8);
+  justify-content: normal;
+}
+
+.card:hover > .front .stats {
+  font-size: 1em;
+  position: absolute;
+  bottom: -32%;
+  right: -62px;
+  flex-direction: column;
+  align-items: center;
+  width: 19.5em;
+}
+
+.card:hover > .front .stack {
+  font-size: 1.15em;
+}
+
+.card:hover > .front .title {
+  animation: projectTitle 200ms forwards;
+  cursor: default;
+  margin-bottom: 0;
+}
+
+.card:hover .language-name {
+  display: flex;
+  line-height: 1.2;
+}
+
+.card:hover .stack-item {
+  display: flex;
+  height: 60px;
+  flex-direction: column;
+  align-items: center;
+  font-weight: normal;
+  text-align: center;
+  width: 33%;
+  font-size: 0.95em;
+  justify-content: space-around;
+}
+
+.card:hover .stack-item img {
+  transform: none;
+  border: none;
+  width: 1.5em;
+  height: 1.5em;
+}
+
+.card:hover > .rank {
+  transform: translate(127%, -27%);
+}
+
+.card:hover > .thumbnail {
+  cursor: default;
+}
+
+.card:hover .stack-items {
+  width: 90%;
+  justify-content: space-evenly;
+}
+
+.card:hover .stack-items .stack-item img {
+  transform: translateX(0);
+}
+
+/* Hover Effects for back of card */
+
+.card:hover > .back {
+  opacity: 1;
+  transition: transform 250ms ease, opacity 150ms linear;
+  transform: translateY(0);
+  line-height: 1.25;
+  top: 50%;
+  bottom: 0;
+}
+
+.description {
+  font-size: 0.9rem;
+  text-align: center;
+  width: 18.2em;
+}
+
+.front {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  transition: 250ms;
+  width: 100%;
+}
+
+.front .title {
+  margin: 0.75em 0;
+  font-size: 1em;
+  text-shadow: 2px 4px 3px rgba(0, 0, 0, 0.3);
+}
+
+img {
+  height: 300px;
+  width: 225px;
+}
+
+.language-name {
+  display: none;
+}
+
+.project-info {
+  display: flex;
+}
+
+.rank {
+  position: absolute;
+  font-weight: bold;
+  display: flex;
+  justify-content: center;
+  width: 1px;
+  top: -0.25px;
+  right: 1em;
+  font-size: 1.125rem;
+  background: rgba(0, 0, 0, 0.65);
+  padding: 0.2em 0.85em 0.15em;
+  clip-path: polygon(
+    50% 0%,
+    100% 0,
+    100% 35%,
+    100% 70%,
+    100% 100%,
+    48% 83%,
+    0 100%,
+    0% 70%,
+    0% 35%,
+    0 0
+  );
+  transition: transform 200ms cubic-bezier(0.21, 1, 0.81, 1);
+}
+
+.stack-items {
+  display: flex;
+}
+
+.stack-items img {
+  width: 1.5em !important;
+  height: 1.5em;
+  border-radius: 50%;
+  border: 2px solid #111319;
+  background-color: transparent;
+}
+
+.stack-items .stack-item:nth-of-type(1) img {
+  transform: translateX(20%);
+}
+.stack-items .stack-item:nth-of-type(2) img {
+  z-index: 2;
+}
+.stack-items .stack-item:nth-of-type(3) img {
+  transform: translateX(-23%);
+  z-index: 3;
+}
+
+.stats {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-weight: bold;
+}
+
+.stack {
+  color: #fff !important;
+  font-size: 0.9em;
+}
+
+.thumbnail {
+  border-radius: 0.5em;
+  box-shadow: 2.5px 5px 5px 0 black;
+}
+
+/* Animation for front to back project title transition */
+@keyframes projectTitle {
+  0% {
+    text-align: left;
+    opacity: 1;
+  }
+
+  20% {
+    text-align: left;
+    opacity: 0;
+  }
+
+  60% {
+    text-align: center;
+    opacity: 0;
+    transform: scale(1.2);
+  }
+
+  100% {
+    text-align: center;
+    opacity: 1;
+    transform: scale(1.2);
+  }
+}
+
+/* Animation for cards fading in on state change */
+@keyframes cardTransition {
+  0% {
+    opacity: 0;
+    transform: translateX(-25px) translateY(-25px) translateZ(50px);
+  }
+
+  100% {
+    opacity: 1;
+    transform: translateX(0) translateY(0px) translateZ(0px);
+  }
+}
+
+/* Small Laptops */
+@media screen and (min-width: 1024px) {
+  .card:hover > .rank {
+    transform: translate(127%, -27.75%);
+  }
+}
+
+/* Mobile Devices & Small Tablets */
+@media screen and (min-width: 375px) and (max-width: 768px) {
+  .title {
+    text-align: center;
+  }
+
+  .stats {
+    justify-content: center;
+  }
+
+  .card:hover > .rank {
+    transform: translate(123%, -28%);
+  }
+}
+
+@media screen and (min-width: 768px) and (max-width: 1024px) {
+  .thumbnail {
+    width: auto !important;
+    margin: 0 10px;
+  }
+
+  .description {
+    font-size: 0.7em;
+  }
+
+  .rank {
+    display: none;
+  }
+}
+
+@media screen and (min-width: 320px) and (max-width: 600px) {
+  .card {
+    width: 70%;
+    margin: 10px auto;
+  }
+
+  .card:hover .stack-items {
+    width: 100%;
+  }
+
+  .card:hover .stack-item {
+    justify-content: space-evenly;
+  }
+
+  .card:hover > .front .stats {
+    right: -60px;
+    bottom: -36%;
+  }
+
+  .card:hover > .back {
+    top: 56%;
+  }
+
+  .front {
+    justify-content: flex-start;
+  }
+
+  .thumbnail {
+    height: 85%;
+  }
+}
